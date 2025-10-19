@@ -16,9 +16,9 @@ export default function Header({ title, description, keywords }: HeaderProps) {
         <meta name="keywords" content={keywords} />
       </Helmet>
       <Breadcrumb>
-        {title !== "ホーム" ? (
+        {title !== "クイズ" ? (
           <>
-            <Breadcrumb.Item href="/">ホーム</Breadcrumb.Item>
+            <Breadcrumb.Item href="/">クイズ</Breadcrumb.Item>
             <Breadcrumb.Item active>{title}</Breadcrumb.Item>
           </>
         ) : (

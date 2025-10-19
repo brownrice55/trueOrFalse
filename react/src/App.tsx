@@ -13,8 +13,8 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/">クイズ</Nav.Link>
-              <Nav.Link href="/">クイズ一覧</Nav.Link>
-              <Nav.Link href="/">新規登録</Nav.Link>
+              <Nav.Link href="/list">クイズ一覧</Nav.Link>
+              <Nav.Link href="/add">新規登録</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

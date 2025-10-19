@@ -3,7 +3,7 @@ import Header from "../components/Header";
 export default function Home() {
   return (
     <>
-      <Header title="ホーム" description="" keywords="" />
+      <Header title="クイズ" description="" keywords="" />
     </>
   );
 }
