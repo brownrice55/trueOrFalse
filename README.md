@@ -1,8 +1,8 @@
 # TrueOrFalse
 
-> まるばつクイズ
+> まるばつクイズ（選択問題も入れることにしたので、後で名前を変更予定）
 
-<p>難しいことを覚えるのが難しいので、まるばつクイズにして覚えてみることにした。</p>
+<p>難しいことを覚えるのが難しいので、まるばつクイズや選択問題にして覚えてみることにした。</p>
 
 ## 基本機能
 
@@ -17,20 +17,33 @@
 ### グローバルメニュー
 
 <ul>
-<li>クイズ</li>
+<li>クイズスタート</li>
 <li>クイズ一覧</li>
 <li>新規登録</li>
+<li>カテゴリー設定</li>
 </ul>
 
 ## 大まかなイメージ
 
-| クイズ　スタート                                                                                        | クイズ　問題                                                                                            | クイズ　答え                                                                                            |
+| 新規登録（まるばつ）                                                                                    | 新規登録（選択問題）                                                                                    | カテゴリ設定                                                                                            |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/cf99a628-9f9e-4731-8e06-44845711a151" width="200"> | <img src="https://github.com/user-attachments/assets/d0cecc8f-1b4c-4e50-84a9-a69f1f00ef70" width="200"> | <img src="https://github.com/user-attachments/assets/d3c40fbd-3e2d-4380-b2f0-3a1fb051bdd7" width="200"> |
+| <img src="https://github.com/user-attachments/assets/5bb6e692-31fb-4560-b220-606db54a0cf5" width="200"> | <img src="https://github.com/user-attachments/assets/4889b6c1-b653-476a-b42b-5d7be3c39106" width="200"> | <img src="https://github.com/user-attachments/assets/711507d5-2b3a-4adb-bda2-f588e1c0ca6d" width="200"> |
 
-| 問題一覧                                                                                                | 問題詳細                                                                                                | 新規登録                                                                                                |
+| クイズ　スタート                                                                                        | クイズ　結果                                                                                            |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="https://github.com/user-attachments/assets/b9d9a802-87fb-4e00-ae3c-5bdf868e2278" width="200"> | <img src="https://github.com/user-attachments/assets/f4a23608-9829-4424-8600-bd53b6c7831f" width="200"> |
+
+| クイズ　問題（まるばつ）                                                                                | クイズ　答え（まるばつ）                                                                                |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="https://github.com/user-attachments/assets/7e5ff1fd-ea4b-4ca2-9a40-f05ca6a80ac8" width="200"> | <img src="https://github.com/user-attachments/assets/706d8f50-1823-426e-94a1-3fbb13d8429a" width="200"> |
+
+| クイズ　問題（選択問題）                                                                                | クイズ　答え（選択問題）                                                                                |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="https://github.com/user-attachments/assets/9063fd3c-eac4-4593-abad-678508405efa" width="200"> | <img src="https://github.com/user-attachments/assets/597ad86d-7523-4ad1-8922-5160018ed576" width="200"> |
+
+| クイズ一覧                                                                                              | クイズ詳細（まるばつ）                                                                                  | クイズ詳細（選択問題）                                                                                  |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/8641829b-7160-44fc-99b8-b4ee4a16caff" width="200"> | <img src="https://github.com/user-attachments/assets/d78309dc-6e22-497a-8328-d10c604d38f1" width="200"> | <img src="https://github.com/user-attachments/assets/e8ee0d30-9659-4992-be92-09bbd841af0b" width="200"> |
+| <img src="https://github.com/user-attachments/assets/e94ae3df-3d26-4a1b-80ea-1ece7219f1db" width="200"> | <img src="https://github.com/user-attachments/assets/b2f6f8c2-d204-4ca3-86f5-4e87e441ca72" width="200"> | <img src="https://github.com/user-attachments/assets/030d6494-488b-46f8-a606-08ca27c01f58" width="200"> |
 
 ### 参考
 
