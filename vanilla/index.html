@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz</title>
+    <style>
+      .app {
+        display: none;
+      }
+      body.loaded .app {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="app">
+      <header class="header">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="container-fluid">
+            <div class="navbar-brand">Quiz</div>
+            <button
+              class="navbar-toggler js-globalNavBtn"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse js-globalNav" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item py-2 px-3 active" data-index="0">
+                  クイズスタート
+                </li>
+                <li class="nav-item py-2 px-3" data-index="1">クイズ一覧</li>
+                <li class="nav-item py-2 px-3" data-index="2">新規登録</li>
+                <li class="nav-item py-2 px-3" data-index="3">
+                  カテゴリー設定
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <main class="container">
+        <section class="js-section pt-3">
+          <div class="js-quiz">
+            <h2 class="lead">クイズスタート</h2>
+            <div class="my-3">
+              <label for="category" class="form-label">カテゴリー</label>
+              <select class="form-select" aria-label="category" id="category">
+                <option value="all" selected>全てのカテゴリー</option>
+                <option value="add">カテゴリーを追加する</option>
+              </select>
+            </div>
+            <div class="my-3">
+              <label for="type" class="form-label">クイズの種類</label>
+              <select class="form-select" aria-label="type" id="type">
+                <option value="all" selected>指定しない</option>
+                <option value="trueOrFalse">まるばつクイズ</option>
+                <option value="selection">選択問題</option>
+              </select>
+            </div>
+            <div class="my-3">
+              <label for="number" class="form-label">問題数</label>
+              <select class="form-select" aria-label="number" id="number">
+                <option value="all" selected>全て</option>
+                <option value="10" selected>10</option>
+              </select>
+            </div>
+            <div class="my-3">
+              <label for="priority" class="form-label">優先順位</label>
+              <select class="form-select" aria-label="priority" id="priority">
+                <option value="random" selected>
+                  指定しない（ランダムで表示）
+                </option>
+                <option value="highPriority">高いものから表示</option>
+              </select>
+            </div>
+            <div class="my-3 text-center">
+              <button type="submit" class="btn btn-primary px-4 py-2">
+                スタート
+              </button>
+            </div>
+          </div>
+          <div class="js-quiz"></div>
+          <div class="js-quiz"></div>
+          <div class="js-quiz"></div>
+        </section>
+        <section class="js-section pt-3">
+          <div class="js-list">
+            <h2 class="lead">クイズ一覧</h2>
+            <div class="my-3">
+              <button class="btn btn-primary btn-sm float-end">詳細</button>
+              問題の一文が入ります。<br />
+              <span>正解率：80%</span>
+            </div>
+            <div class="my-3">
+              <button class="btn btn-primary btn-sm float-end">詳細</button>
+              問題の一文が入ります。<br />
+              <span>正解率：80%</span>
+            </div>
+            <div class="my-3">
+              <button class="btn btn-primary btn-sm float-end">詳細</button>
+              問題の一文が入ります。<br />
+              <span>正解率：80%</span>
+            </div>
+          </div>
+          <div class="js-list"></div>
+        </section>
+        <section class="js-section pt-3">
+          <div>
+            <h2 class="lead">新規登録</h2>
+            <div class="my-3">
+              <label for="category" class="form-label">カテゴリー</label>
+              <select class="form-select" aria-label="category" id="category">
+                <option selected>選択してください</option>
+                <option value="add">カテゴリーを追加する</option>
+              </select>
+            </div>
+            <div class="my-3">
+              <label for="type" class="form-label">クイズの種類</label>
+              <select class="form-select" aria-label="type" id="type">
+                <option value="trueOrFalse">まるばつクイズ</option>
+                <option value="selection">選択問題</option>
+              </select>
+            </div>
+            <div class="my-3">
+              <label for="question" class="form-label">問題</label>
+              <textarea class="form-control" id="question" rows="3"></textarea>
+            </div>
+            <div class="js-addNew-type">
+              <div class="my-3">
+                <label for="answer" class="form-label">答え</label>
+                <div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="answer"
+                      id="answer1"
+                      value="0"
+                    />
+                    <label class="form-check-label" for="answer1">まる</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="answer"
+                      id="answer2"
+                      value="1"
+                    />
+                    <label class="form-check-label" for="answer2">ばつ</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="js-addNew-type">
+              <div>
+                <div class="my-3">
+                  <label for="numberOfOptions" class="form-label"
+                    >選択肢の数</label
+                  >
+                  <select
+                    class="form-select js-selectOptionNumber"
+                    aria-label="numberOfOptions"
+                    id="numberOfOptions"
+                  >
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                  </select>
+                </div>
+                <div class="my-3 js-displayOptionInputs">
+                  <div class="input-group mb-3">
+                    <div class="input-group-text">
+                      <input
+                        class="form-check-input mt-0"
+                        type="checkbox"
+                        value=""
+                      />
+                    </div>
+                    <input type="text" class="form-control" />
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-text">
+                      <input
+                        class="form-check-input mt-0"
+                        type="checkbox"
+                        value=""
+                      />
+                    </div>
+                    <input type="text" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="my-3">
+              <label for="explanation" class="form-label">解説</label>
+              <textarea
+                class="form-control"
+                id="explanation"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="my-3">
+              <label for="type" class="form-label">優先順位</label>
+              <select class="form-select" aria-label="type" id="type">
+                <option value="high">高い</option>
+                <option value="medium">普通</option>
+                <option value="low">低い</option>
+              </select>
+            </div>
+          </div>
+        </section>
+        <section class="js-section pt-3">
+          <div>
+            <h2 class="lead">カテゴリー設定</h2>
+            <div class="my-3">
+              <input type="text" class="form-control" id="" />
+            </div>
+            <div class="my-3">
+              <input type="text" class="form-control" id="" />
+            </div>
+            <div class="my-3">
+              <input type="text" class="form-control" id="" />
+            </div>
+            <div class="my-3 text-end">
+              <button type="submit" class="btn btn-primary px-3 py-1">
+                追加する
+              </button>
+            </div>
+            <div class="my-3 text-center">
+              <button type="submit" class="btn btn-primary px-4 py-2 me-3">
+                キャンセルする
+              </button>
+              <button type="submit" class="btn btn-primary px-4 py-2">
+                保存する
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

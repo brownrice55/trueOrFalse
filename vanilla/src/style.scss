@@ -1,0 +1,11 @@
+@import 'the-new-css-reset/css/reset.css';
+@import 'bootstrap/scss/bootstrap';
+
+$colorBg: #fff;
+body {
+  background: $colorBg;
+}
+
+.section {
+  padding: 20px auto;
+}
