@@ -25,13 +25,13 @@
 
 ## 大まかなイメージ
 
-| 新規登録（まるばつ）                                                                                    | 新規登録（選択問題）                                                                                    | カテゴリ設定                                                                                            |
+| 新規登録（まるばつ）                                                                                    | 新規登録（選択問題）                                                                                    | カテゴリー設定                                                                                          |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/5bb6e692-31fb-4560-b220-606db54a0cf5" width="200"> | <img src="https://github.com/user-attachments/assets/4889b6c1-b653-476a-b42b-5d7be3c39106" width="200"> | <img src="https://github.com/user-attachments/assets/711507d5-2b3a-4adb-bda2-f588e1c0ca6d" width="200"> |
+| <img src="https://github.com/user-attachments/assets/5bb6e692-31fb-4560-b220-606db54a0cf5" width="200"> | <img src="https://github.com/user-attachments/assets/4889b6c1-b653-476a-b42b-5d7be3c39106" width="200"> | <img src="https://github.com/user-attachments/assets/e21fc3d2-75f2-4aa0-9b4c-d2b5a5a7d0ff" width="200"> |
 
 | クイズ　スタート                                                                                        | クイズ　結果                                                                                            |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/b9d9a802-87fb-4e00-ae3c-5bdf868e2278" width="200"> | <img src="https://github.com/user-attachments/assets/f4a23608-9829-4424-8600-bd53b6c7831f" width="200"> |
+| <img src="https://github.com/user-attachments/assets/b9d9a802-87fb-4e00-ae3c-5bdf868e2278" width="200"> | <img src="https://github.com/user-attachments/assets/f375ae19-430a-4c47-ab4e-b58a4f57f5d1" width="200"> |
 
 | クイズ　問題（まるばつ）                                                                                | クイズ　答え（まるばつ）                                                                                |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -43,7 +43,7 @@
 
 | クイズ一覧                                                                                              | クイズ詳細（まるばつ）                                                                                  | クイズ詳細（選択問題）                                                                                  |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/e94ae3df-3d26-4a1b-80ea-1ece7219f1db" width="200"> | <img src="https://github.com/user-attachments/assets/b2f6f8c2-d204-4ca3-86f5-4e87e441ca72" width="200"> | <img src="https://github.com/user-attachments/assets/030d6494-488b-46f8-a606-08ca27c01f58" width="200"> |
+| <img src="https://github.com/user-attachments/assets/b163f61b-c000-446d-af60-2fa87725753c" width="200"> | <img src="https://github.com/user-attachments/assets/b2f6f8c2-d204-4ca3-86f5-4e87e441ca72" width="200"> | <img src="https://github.com/user-attachments/assets/030d6494-488b-46f8-a606-08ca27c01f58" width="200"> |
 
 ### 参考
 
