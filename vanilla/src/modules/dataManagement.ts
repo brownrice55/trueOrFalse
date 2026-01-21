@@ -1,5 +1,5 @@
 export function getDataFromLocalStorage(aName: string) {
-  let data = aName === 'quizCategory' ? [] : new Map();
+  let data = new Map();
   const dataFromLocalStorage: string | null = localStorage.getItem(aName);
   if (dataFromLocalStorage !== 'undefined') {
     if (typeof dataFromLocalStorage === 'string') {

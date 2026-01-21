@@ -50,15 +50,19 @@
           <div class="js-quiz">
             <h2 class="lead">クイズスタート</h2>
             <div class="my-3">
-              <label for="category" class="form-label">カテゴリー</label>
-              <select class="form-select" aria-label="category" id="category">
+              <label for="category-start" class="form-label">カテゴリー</label>
+              <select
+                class="form-select"
+                aria-label="category"
+                id="category-start"
+              >
                 <option value="all" selected>全てのカテゴリー</option>
                 <option value="add">カテゴリーを追加する</option>
               </select>
             </div>
             <div class="my-3">
-              <label for="type" class="form-label">クイズの種類</label>
-              <select class="form-select" aria-label="type" id="type">
+              <label for="type-start" class="form-label">クイズの種類</label>
+              <select class="form-select" aria-label="type" id="type-start">
                 <option value="all" selected>指定しない</option>
                 <option value="trueOrFalse">まるばつクイズ</option>
                 <option value="selection">選択問題</option>
@@ -72,8 +76,12 @@
               </select>
             </div>
             <div class="my-3">
-              <label for="priority" class="form-label">優先順位</label>
-              <select class="form-select" aria-label="priority" id="priority">
+              <label for="priority-start" class="form-label">優先順位</label>
+              <select
+                class="form-select"
+                aria-label="priority"
+                id="priority-start"
+              >
                 <option value="random" selected>
                   指定しない（ランダムで表示）
                 </option>
@@ -134,7 +142,7 @@
             </div>
             <div class="js-addNew-type">
               <div class="my-3">
-                <label for="answer" class="form-label">答え</label>
+                <label class="form-label">答え</label>
                 <div>
                   <div class="form-check form-check-inline">
                     <input
@@ -143,6 +151,7 @@
                       name="answer"
                       id="answer1"
                       value="0"
+                      checked
                     />
                     <label class="form-check-label" for="answer1">まる</label>
                   </div>
@@ -214,8 +223,8 @@
               ></textarea>
             </div>
             <div class="my-3">
-              <label for="type" class="form-label">優先順位</label>
-              <select class="form-select" aria-label="type" id="type">
+              <label for="priority" class="form-label">優先順位</label>
+              <select class="form-select" aria-label="type" id="priority">
                 <option value="high">高い</option>
                 <option value="medium">普通</option>
                 <option value="low">低い</option>
@@ -226,25 +235,36 @@
         <section class="js-section pt-3">
           <div>
             <h2 class="lead">カテゴリー設定</h2>
-            <div class="my-3">
-              <input type="text" class="form-control" id="" />
-            </div>
-            <div class="my-3">
-              <input type="text" class="form-control" id="" />
-            </div>
-            <div class="my-3">
-              <input type="text" class="form-control" id="" />
+            <div class="js-inputCategory">
+              <div class="my-3">
+                <input type="text" class="form-control" id="" />
+              </div>
+              <div class="my-3">
+                <input type="text" class="form-control" id="" />
+              </div>
+              <div class="my-3">
+                <input type="text" class="form-control" id="" />
+              </div>
             </div>
             <div class="my-3 text-end">
-              <button type="submit" class="btn btn-primary px-3 py-1">
+              <button
+                type="submit"
+                class="btn btn-primary px-3 py-1 js-buttonAddInput"
+              >
                 追加する
               </button>
             </div>
             <div class="my-3 text-center">
-              <button type="submit" class="btn btn-primary px-4 py-2 me-3">
+              <button
+                type="submit"
+                class="btn btn-primary px-4 py-2 me-3 js-buttonCancel"
+              >
                 キャンセルする
               </button>
-              <button type="submit" class="btn btn-primary px-4 py-2">
+              <button
+                type="submit"
+                class="btn btn-primary px-4 py-2 js-buttonSave"
+              >
                 保存する
               </button>
             </div>

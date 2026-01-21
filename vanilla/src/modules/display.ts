@@ -9,11 +9,12 @@ const funcForDisplay = (aIndex: number) => {
 };
 
 import type { Inputs } from '../types/inputs.type';
-export function setupInitialDisplay(
-  quizCategory: string[],
+import type { InputsCategory } from '../types/inputsCategory.type';
+export function setupDisplay(
+  quizCategory: Map<number, InputsCategory>,
   quizData: Map<number, Inputs>
 ) {
-  const pageIndex = !quizCategory.length ? 3 : !quizData.size ? 2 : 0;
+  const pageIndex = !quizCategory.size ? 3 : !quizData.size ? 2 : 0;
   funcForDisplay(pageIndex);
 }
 

@@ -1,12 +1,10 @@
 import './style.scss';
 import 'bootstrap';
 import { getDataFromLocalStorage } from './modules/dataManagement';
-import {
-  setupInitialDisplay,
-  switchPage,
-  closeGlobalMenu,
-} from './modules/display';
+import { setupDisplay, switchPage, closeGlobalMenu } from './modules/display';
+import { saveCategoryData } from './modules/categorySettings';
 import type { Inputs } from './types/inputs.type';
+import type { InputsCategory } from './types/inputsCategory.type';
 
 document.body.classList.add('loaded');
 
@@ -16,7 +14,10 @@ const quizData = getDataFromLocalStorage('quizData');
 const globalNavElm = document.querySelector<HTMLElement>('.js-globalNav');
 const globalNavLiElms = globalNavElm?.querySelectorAll<HTMLLIElement>('li');
 
-setupInitialDisplay(quizCategory as string[], quizData as Map<number, Inputs>);
+setupDisplay(
+  quizCategory as Map<number, InputsCategory>,
+  quizData as Map<number, Inputs>
+);
 
 globalNavLiElms?.forEach((elm) => {
   elm.addEventListener('click', function (e: MouseEvent) {
@@ -29,3 +30,5 @@ globalNavLiElms?.forEach((elm) => {
 if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
+
+saveCategoryData(quizData as Map<number, Inputs>);
