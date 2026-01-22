@@ -1,8 +1,12 @@
 import './style.scss';
 import 'bootstrap';
 import { getDataFromLocalStorage } from './modules/dataManagement';
-import { setupDisplay, switchPage, closeGlobalMenu } from './modules/display';
-import { saveCategoryData } from './modules/categorySettings';
+import {
+  setupDisplay,
+  switchPage,
+  closeGlobalMenu,
+  setCategoryInputs,
+} from './modules/display';
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
 
@@ -31,4 +35,7 @@ if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
 
-saveCategoryData(quizData as Map<number, Inputs>);
+setCategoryInputs(
+  quizCategory as Map<number, InputsCategory>,
+  quizData as Map<number, Inputs>
+);
