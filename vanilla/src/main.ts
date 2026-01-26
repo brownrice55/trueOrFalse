@@ -1,6 +1,7 @@
 import './style.scss';
 import 'bootstrap';
 import { getDataFromLocalStorage } from './modules/dataManagement';
+import { addCategoryInput } from './modules/categorySettings';
 import {
   setupDisplay,
   switchPage,
@@ -39,3 +40,5 @@ setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>
 );
+
+addCategoryInput();
