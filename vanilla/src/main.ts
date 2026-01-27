@@ -39,10 +39,14 @@ if (globalNavElm) {
 const buttonSaveElm =
   document.querySelector<HTMLButtonElement>('.js-buttonSave');
 
+const inputCategoryAreaElm =
+  document.querySelector<HTMLElement>('.js-inputCategory');
+
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  buttonSaveElm as HTMLButtonElement
+  buttonSaveElm as HTMLButtonElement,
+  inputCategoryAreaElm as HTMLElement
 );
 
-addCategoryInput();
+addCategoryInput(inputCategoryAreaElm as HTMLElement);

@@ -1,10 +1,15 @@
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
-import { setupDisplay, setCategoryInputs } from '../modules/display';
+import {
+  setupDisplay,
+  setCategoryInputs,
+  getCategoryInputHTML,
+} from '../modules/display';
 
 export function saveCategoryData(
   quizData: Map<number, Inputs>,
-  buttonSaveElm: HTMLButtonElement
+  buttonSaveElm: HTMLButtonElement,
+  inputCategoryAreaElm: HTMLElement
 ) {
   const inputCategoryElms = document.querySelectorAll<HTMLInputElement>(
     '.js-inputCategory input'
@@ -43,14 +48,13 @@ export function saveCategoryData(
     setCategoryInputs(
       newMap as Map<number, InputsCategory>,
       quizData as Map<number, Inputs>,
-      buttonSaveElm as HTMLButtonElement
+      buttonSaveElm as HTMLButtonElement,
+      inputCategoryAreaElm as HTMLElement
     );
   });
 }
 
-export function addCategoryInput() {
-  const inputCategoryAreaElm =
-    document.querySelector<HTMLElement>('.js-inputCategory');
+export function addCategoryInput(inputCategoryAreaElm: HTMLElement) {
   const buttonAddInputElm =
     document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
   buttonAddInputElm?.addEventListener('click', function () {
@@ -63,20 +67,49 @@ export function addCategoryInput() {
   });
 }
 
-export function setValidation(buttonSaveElm: HTMLButtonElement) {
-  const inputCategoryElm =
-    document.querySelector<HTMLElement>('.js-inputCategory');
-  inputCategoryElm?.addEventListener('keyup', function (e) {
+export function getCategoryInputValues(
+  inputCategoryElms: NodeListOf<HTMLInputElement>
+) {
+  let inputValues: string[] = [];
+
+  inputCategoryElms.forEach((elm) => {
+    elm.classList.remove('border', 'border-danger', 'border-3');
+    inputValues.push(elm.value);
+  });
+
+  return inputValues;
+}
+
+export function setValidation(
+  buttonSaveElm: HTMLButtonElement,
+  initialInputValues: string[],
+  quizCategory: Map<number, InputsCategory>,
+  inputCategoryAreaElm: HTMLElement
+) {
+  inputCategoryAreaElm?.addEventListener('keyup', function (e) {
     if (e?.target instanceof HTMLInputElement) {
       (e.target as HTMLInputElement).value = e.target.value.trim();
     }
-
-    let inputValues: string[] = [];
     const inputCategoryElms = this.querySelectorAll<HTMLInputElement>('input');
 
-    inputCategoryElms.forEach((elm) => {
-      elm.classList.remove('border', 'border-danger', 'border-3');
-      inputValues.push(elm.value);
+    let inputValues: string[] = getCategoryInputValues(inputCategoryElms);
+
+    const buttonCancelElm =
+      document.querySelector<HTMLButtonElement>('.js-buttonCancel');
+    let isSame =
+      JSON.stringify(initialInputValues) === JSON.stringify(inputValues);
+    if (buttonCancelElm) {
+      buttonCancelElm.disabled = isSame;
+    }
+
+    buttonCancelElm?.addEventListener('click', function () {
+      inputValues = initialInputValues;
+
+      if (inputCategoryAreaElm !== null) {
+        inputCategoryAreaElm.innerHTML = getCategoryInputHTML(quizCategory);
+      }
+      buttonSaveElm.disabled = true;
+      this.disabled = true;
     });
 
     const inputsArray = Object.values(inputValues);
@@ -84,7 +117,7 @@ export function setValidation(buttonSaveElm: HTMLButtonElement) {
     const getIndexArray = (inputsArray: string[], aIndex: number) => {
       let result = [];
       for (let cnt = 0, len = inputsArray.length; cnt < len; ++cnt) {
-        if (inputsArray[cnt] === inputsArray[aIndex]) {
+        if (inputsArray[cnt] === inputsArray[aIndex] && inputsArray[aIndex]) {
           result.push(cnt);
         }
       }
@@ -95,6 +128,9 @@ export function setValidation(buttonSaveElm: HTMLButtonElement) {
     indexArray = indexArray.length > 1 ? indexArray : [];
 
     const getNextIndex = (indexArray: number[], nextIndex: number) => {
+      if (!inputsArray[nextIndex]) {
+        return ++nextIndex;
+      }
       for (let cnt = 0, len = indexArray.length; cnt < len; ++cnt) {
         if (nextIndex === indexArray[cnt]) {
           getNextIndex(indexArray, ++nextIndex);
@@ -125,6 +161,6 @@ export function setValidation(buttonSaveElm: HTMLButtonElement) {
       );
     });
 
-    buttonSaveElm.disabled = !indexArray.length ? false : true;
+    buttonSaveElm.disabled = !indexArray.length && !isSame ? false : true;
   });
 }
