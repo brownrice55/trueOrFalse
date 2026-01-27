@@ -4,9 +4,12 @@ import { setupDisplay, setCategoryInputs } from '../modules/display';
 
 export function saveCategoryData(
   quizData: Map<number, Inputs>,
-  inputCategoryElms: NodeListOf<HTMLInputElement>
+  buttonSaveElm: HTMLButtonElement
 ) {
-  const buttonSaveElm = document.querySelector('.js-buttonSave');
+  const inputCategoryElms = document.querySelectorAll<HTMLInputElement>(
+    '.js-inputCategory input'
+  );
+
   buttonSaveElm?.addEventListener('click', function () {
     let newMap = new Map<number, InputsCategory>();
     let empty = 0;
@@ -39,7 +42,8 @@ export function saveCategoryData(
 
     setCategoryInputs(
       newMap as Map<number, InputsCategory>,
-      quizData as Map<number, Inputs>
+      quizData as Map<number, Inputs>,
+      buttonSaveElm as HTMLButtonElement
     );
   });
 }
@@ -59,60 +63,68 @@ export function addCategoryInput() {
   });
 }
 
-export function setValidation(inputCategoryElms: NodeListOf<HTMLInputElement>) {
-  inputCategoryElms.forEach((elm) => {
-    elm.addEventListener('keyup', function () {
-      let inputValues: string[] = [];
-      inputCategoryElms.forEach((elm2) => {
-        elm2.classList.remove('border', 'border-danger', 'border-3');
-        inputValues.push(elm2.value);
-      });
+export function setValidation(buttonSaveElm: HTMLButtonElement) {
+  const inputCategoryElm =
+    document.querySelector<HTMLElement>('.js-inputCategory');
+  inputCategoryElm?.addEventListener('keyup', function (e) {
+    if (e?.target instanceof HTMLInputElement) {
+      (e.target as HTMLInputElement).value = e.target.value.trim();
+    }
 
-      const inputsArray = Object.values(inputValues);
+    let inputValues: string[] = [];
+    const inputCategoryElms = this.querySelectorAll<HTMLInputElement>('input');
 
-      const getIndexArray = (inputsArray: string[], aIndex: number) => {
-        let result = [];
-        for (let cnt = 0, len = inputsArray.length; cnt < len; ++cnt) {
-          if (inputsArray[cnt] === inputsArray[aIndex]) {
-            result.push(cnt);
-          }
-        }
-        return result;
-      };
+    inputCategoryElms.forEach((elm) => {
+      elm.classList.remove('border', 'border-danger', 'border-3');
+      inputValues.push(elm.value);
+    });
 
-      let indexArray = getIndexArray(inputsArray, 0);
-      indexArray = indexArray.length > 1 ? indexArray : [];
+    const inputsArray = Object.values(inputValues);
 
-      const getNextIndex = (indexArray: number[], nextIndex: number) => {
-        for (let cnt = 0, len = indexArray.length; cnt < len; ++cnt) {
-          if (nextIndex === indexArray[cnt]) {
-            getNextIndex(indexArray, ++nextIndex);
-          }
-        }
-        return nextIndex;
-      };
-
-      let nextIndex = getNextIndex(indexArray, 1);
-
-      for (let cnt = 1, len = inputsArray.length; cnt < len; ++cnt) {
-        if (nextIndex < len) {
-          nextIndex = getNextIndex(indexArray, cnt);
-          let indexArray2 = getIndexArray(inputsArray, cnt);
-          if (indexArray.length > 1 && indexArray2.length > 1) {
-            indexArray = indexArray.concat(indexArray2);
-          } else if (indexArray2.length > 1) {
-            indexArray = indexArray2;
-          }
+    const getIndexArray = (inputsArray: string[], aIndex: number) => {
+      let result = [];
+      for (let cnt = 0, len = inputsArray.length; cnt < len; ++cnt) {
+        if (inputsArray[cnt] === inputsArray[aIndex]) {
+          result.push(cnt);
         }
       }
+      return result;
+    };
 
-      indexArray.forEach((index) => {
-        inputCategoryElms[index].classList.add(
-          'border',
-          'border-danger',
-          'border-3'
-        );
-      });
+    let indexArray = getIndexArray(inputsArray, 0);
+    indexArray = indexArray.length > 1 ? indexArray : [];
+
+    const getNextIndex = (indexArray: number[], nextIndex: number) => {
+      for (let cnt = 0, len = indexArray.length; cnt < len; ++cnt) {
+        if (nextIndex === indexArray[cnt]) {
+          getNextIndex(indexArray, ++nextIndex);
+        }
+      }
+      return nextIndex;
+    };
+
+    let nextIndex = getNextIndex(indexArray, 1);
+
+    for (let cnt = 1, len = inputsArray.length; cnt < len; ++cnt) {
+      if (nextIndex < len) {
+        nextIndex = getNextIndex(indexArray, cnt);
+        let indexArray2 = getIndexArray(inputsArray, cnt);
+        if (indexArray.length > 1 && indexArray2.length > 1) {
+          indexArray = indexArray.concat(indexArray2);
+        } else if (indexArray2.length > 1) {
+          indexArray = indexArray2;
+        }
+      }
+    }
+
+    indexArray.forEach((index) => {
+      inputCategoryElms[index].classList.add(
+        'border',
+        'border-danger',
+        'border-3'
+      );
     });
+
+    buttonSaveElm.disabled = !indexArray.length ? false : true;
   });
 }

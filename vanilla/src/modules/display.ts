@@ -48,7 +48,8 @@ export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
 
 export function setCategoryInputs(
   quizCategory: Map<number, InputsCategory>,
-  quizData: Map<number, Inputs>
+  quizData: Map<number, Inputs>,
+  buttonSaveElm: HTMLButtonElement
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -66,11 +67,10 @@ export function setCategoryInputs(
     inputCategoryAreaElm.innerHTML = inputsData;
   }
 
-  const inputCategoryElms = document.querySelectorAll<HTMLInputElement>(
-    '.js-inputCategory input'
+  saveCategoryData(
+    quizData as Map<number, Inputs>,
+    buttonSaveElm as HTMLButtonElement
   );
 
-  saveCategoryData(quizData as Map<number, Inputs>, inputCategoryElms);
-
-  setValidation(inputCategoryElms);
+  setValidation(buttonSaveElm);
 }

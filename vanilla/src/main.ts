@@ -36,9 +36,13 @@ if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
 
+const buttonSaveElm =
+  document.querySelector<HTMLButtonElement>('.js-buttonSave');
+
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
-  quizData as Map<number, Inputs>
+  quizData as Map<number, Inputs>,
+  buttonSaveElm as HTMLButtonElement
 );
 
 addCategoryInput();
