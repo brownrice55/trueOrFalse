@@ -7,15 +7,14 @@ import {
 } from '../modules/display';
 
 export function saveCategoryData(
-  quizData: Map<number, Inputs>,
-  buttonSaveElm: HTMLButtonElement,
-  inputCategoryAreaElm: HTMLElement
+  aQuizData: Map<number, Inputs>,
+  aButtonSaveElm: HTMLButtonElement,
+  aInputCategoryAreaElm: HTMLElement
 ) {
-  const inputCategoryElms = document.querySelectorAll<HTMLInputElement>(
-    '.js-inputCategory input'
-  );
+  aButtonSaveElm?.addEventListener('click', function () {
+    const inputCategoryElms =
+      aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
 
-  buttonSaveElm?.addEventListener('click', function () {
     let newMap = new Map<number, InputsCategory>();
     let empty = 0;
     let cnt = 0;
@@ -29,7 +28,7 @@ export function saveCategoryData(
       };
       if (elm.value) {
         values.categoryName = elm.value;
-        values.isActive = true;
+        values.isActive = elm?.dataset?.isActive?.toLowerCase() === 'true';
         newMap.set(cnt, values);
         ++cnt;
       }
@@ -42,37 +41,36 @@ export function saveCategoryData(
 
     setupDisplay(
       newMap as Map<number, InputsCategory>,
-      quizData as Map<number, Inputs>
+      aQuizData as Map<number, Inputs>
     );
 
     setCategoryInputs(
       newMap as Map<number, InputsCategory>,
-      quizData as Map<number, Inputs>,
-      buttonSaveElm as HTMLButtonElement,
-      inputCategoryAreaElm as HTMLElement
+      aQuizData as Map<number, Inputs>,
+      aButtonSaveElm as HTMLButtonElement,
+      aInputCategoryAreaElm as HTMLElement
     );
   });
 }
 
-export function addCategoryInput(inputCategoryAreaElm: HTMLElement) {
+export function addCategoryInput(aInputCategoryAreaElm: HTMLElement) {
   const buttonAddInputElm =
     document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
   buttonAddInputElm?.addEventListener('click', function () {
     const div = document.createElement('div');
+    div.classList.add('my-3');
 
-    div.innerHTML = `<div class="my-3">
-    <input type="text" class="form-control" value="" data-isActive="false" />
-    </div>`;
-    inputCategoryAreaElm?.appendChild(div);
+    div.innerHTML = `<input type="text" class="form-control" value="" data-isActive="false" />`;
+    aInputCategoryAreaElm?.appendChild(div);
   });
 }
 
 export function getCategoryInputValues(
-  inputCategoryElms: NodeListOf<HTMLInputElement>
+  aInputCategoryElms: NodeListOf<HTMLInputElement>
 ) {
   let inputValues: string[] = [];
 
-  inputCategoryElms.forEach((elm) => {
+  aInputCategoryElms.forEach((elm) => {
     elm.classList.remove('border', 'border-danger', 'border-3');
     inputValues.push(elm.value);
   });
@@ -81,12 +79,12 @@ export function getCategoryInputValues(
 }
 
 export function setValidation(
-  buttonSaveElm: HTMLButtonElement,
-  initialInputValues: string[],
-  quizCategory: Map<number, InputsCategory>,
-  inputCategoryAreaElm: HTMLElement
+  aButtonSaveElm: HTMLButtonElement,
+  aInitialInputValues: string[],
+  aQuizCategory: Map<number, InputsCategory>,
+  aInputCategoryAreaElm: HTMLElement
 ) {
-  inputCategoryAreaElm?.addEventListener('keyup', function (e) {
+  aInputCategoryAreaElm?.addEventListener('keyup', function (e) {
     if (e?.target instanceof HTMLInputElement) {
       (e.target as HTMLInputElement).value = e.target.value.trim();
     }
@@ -97,46 +95,42 @@ export function setValidation(
     const buttonCancelElm =
       document.querySelector<HTMLButtonElement>('.js-buttonCancel');
     let isSame =
-      JSON.stringify(initialInputValues) ===
+      JSON.stringify(aInitialInputValues) ===
       JSON.stringify(inputValues.filter(Boolean));
     if (buttonCancelElm) {
       buttonCancelElm.disabled = isSame;
     }
 
     buttonCancelElm?.addEventListener('click', function () {
-      inputValues = initialInputValues;
+      inputValues = aInitialInputValues;
 
-      if (inputCategoryAreaElm !== null) {
-        inputCategoryAreaElm.innerHTML = getCategoryInputHTML(quizCategory);
+      if (aInputCategoryAreaElm !== null) {
+        aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
       }
-      buttonSaveElm.disabled = true;
+      aButtonSaveElm.disabled = true;
       this.disabled = true;
     });
 
-    const inputsArray = Object.values(inputValues);
-
     const getDuplicateValuesIndices = (
-      inputsArray: string[],
+      aInputValues: string[],
       aIndex: number
     ) => {
-      let result = [];
-      for (let cnt = 0, len = inputsArray.length; cnt < len; ++cnt) {
-        if (inputsArray[cnt] === inputsArray[aIndex] && inputsArray[aIndex]) {
+      let result: number[] = [];
+
+      aInputValues.forEach((val, cnt) => {
+        if (val === aInputValues[aIndex] && aInputValues[aIndex]) {
           result.push(cnt);
         }
-      }
+      });
       return result;
     };
 
-    let duplicateValuesIndices = getDuplicateValuesIndices(inputsArray, 0);
-    duplicateValuesIndices =
-      duplicateValuesIndices.length > 1 ? duplicateValuesIndices : [];
-
     const getNextIndex = (
+      aInputValues: string[],
       aDuplicateValuesIndices: number[],
       aNextIndex: number
     ) => {
-      if (!inputsArray[aNextIndex]) {
+      if (!aInputValues[aNextIndex]) {
         return ++aNextIndex;
       }
       for (
@@ -145,25 +139,33 @@ export function setValidation(
         ++cnt
       ) {
         if (aNextIndex === aDuplicateValuesIndices[cnt]) {
-          getNextIndex(aDuplicateValuesIndices, ++aNextIndex);
+          getNextIndex(aInputValues, aDuplicateValuesIndices, ++aNextIndex);
         }
       }
       return aNextIndex;
     };
 
-    let nextIndex = getNextIndex(duplicateValuesIndices, 1);
+    let duplicateValuesIndices: number[] = [];
+    let nextIndex: number = getNextIndex(
+      inputValues,
+      duplicateValuesIndices,
+      0
+    );
 
-    for (let cnt = 1, len = inputsArray.length; cnt < len; ++cnt) {
-      if (nextIndex < len) {
-        nextIndex = getNextIndex(duplicateValuesIndices, cnt);
-        let indexArray2 = getDuplicateValuesIndices(inputsArray, cnt);
-        if (duplicateValuesIndices.length > 1 && indexArray2.length > 1) {
-          duplicateValuesIndices = duplicateValuesIndices.concat(indexArray2);
-        } else if (indexArray2.length > 1) {
-          duplicateValuesIndices = indexArray2;
+    const inputValuesLength = inputValues.length;
+    inputValues.forEach((_, cnt) => {
+      if (nextIndex < inputValuesLength) {
+        nextIndex = getNextIndex(inputValues, duplicateValuesIndices, cnt);
+        let tempIndices = getDuplicateValuesIndices(inputValues, cnt);
+        if (duplicateValuesIndices.length > 1 && tempIndices.length > 1) {
+          if (duplicateValuesIndices.every((i) => i !== tempIndices[0])) {
+            duplicateValuesIndices = duplicateValuesIndices.concat(tempIndices);
+          }
+        } else if (tempIndices.length > 1) {
+          duplicateValuesIndices = tempIndices;
         }
       }
-    }
+    });
 
     duplicateValuesIndices.forEach((index) => {
       inputCategoryElms[index].classList.add(
@@ -173,7 +175,7 @@ export function setValidation(
       );
     });
 
-    buttonSaveElm.disabled =
+    aButtonSaveElm.disabled =
       !duplicateValuesIndices.length && !isSame ? false : true;
   });
 }

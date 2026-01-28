@@ -16,10 +16,10 @@ const funcForDisplay = (aIndex: number) => {
 };
 
 export function setupDisplay(
-  quizCategory: Map<number, InputsCategory>,
-  quizData: Map<number, Inputs>
+  aQuizCategory: Map<number, InputsCategory>,
+  aQuizData: Map<number, Inputs>
 ) {
-  const pageIndex = !quizCategory.size ? 3 : !quizData.size ? 2 : 0;
+  const pageIndex = !aQuizCategory.size ? 3 : !aQuizData.size ? 2 : 0;
   funcForDisplay(pageIndex);
 }
 
@@ -51,46 +51,45 @@ export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
 }
 
 export function getCategoryInputHTML(
-  quizCategory: Map<number, InputsCategory>
+  aQuizCategory: Map<number, InputsCategory>
 ) {
-  const len = quizCategory.size ? quizCategory.size : 3;
+  const len = aQuizCategory.size ? aQuizCategory.size : 3;
   let inputsData = '';
   for (let cnt = 0; cnt < len; ++cnt) {
-    const currentData = quizCategory.get(cnt);
+    const currentData = aQuizCategory.get(cnt);
     inputsData += `<div class="my-3">
-    <input type="text" class="form-control" id="input-${cnt}" value="${currentData?.categoryName || ''}" data-isActive="${currentData?.isActive || false}" data-index="${cnt}" />
+    <input type="text" class="form-control" id="input-${cnt}" value="${currentData?.categoryName || ''}" data-is-active="${currentData?.isActive || false}" data-index="${cnt}" />
     </div>`;
   }
   return inputsData;
 }
 
 export function setCategoryInputs(
-  quizCategory: Map<number, InputsCategory>,
-  quizData: Map<number, Inputs>,
-  buttonSaveElm: HTMLButtonElement,
-  inputCategoryAreaElm: HTMLElement
+  aQuizCategory: Map<number, InputsCategory>,
+  aQuizData: Map<number, Inputs>,
+  aButtonSaveElm: HTMLButtonElement,
+  aInputCategoryAreaElm: HTMLElement
 ) {
-  if (inputCategoryAreaElm !== null) {
-    inputCategoryAreaElm.innerHTML = getCategoryInputHTML(quizCategory);
+  if (aInputCategoryAreaElm !== null) {
+    aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
   }
-
   const inputCategoryElms =
-    inputCategoryAreaElm?.querySelectorAll<HTMLInputElement>('input');
+    aInputCategoryAreaElm?.querySelectorAll<HTMLInputElement>('input');
 
   let initialInputValues: string[] = getCategoryInputValues(
     inputCategoryElms as NodeListOf<HTMLInputElement>
   );
 
   saveCategoryData(
-    quizData as Map<number, Inputs>,
-    buttonSaveElm as HTMLButtonElement,
-    inputCategoryAreaElm
+    aQuizData as Map<number, Inputs>,
+    aButtonSaveElm as HTMLButtonElement,
+    aInputCategoryAreaElm
   );
 
   setValidation(
-    buttonSaveElm,
+    aButtonSaveElm,
     initialInputValues,
-    quizCategory,
-    inputCategoryAreaElm
+    aQuizCategory,
+    aInputCategoryAreaElm
   );
 }
