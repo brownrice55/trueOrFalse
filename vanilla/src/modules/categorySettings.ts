@@ -97,7 +97,8 @@ export function setValidation(
     const buttonCancelElm =
       document.querySelector<HTMLButtonElement>('.js-buttonCancel');
     let isSame =
-      JSON.stringify(initialInputValues) === JSON.stringify(inputValues);
+      JSON.stringify(initialInputValues) ===
+      JSON.stringify(inputValues.filter(Boolean));
     if (buttonCancelElm) {
       buttonCancelElm.disabled = isSame;
     }
@@ -114,7 +115,10 @@ export function setValidation(
 
     const inputsArray = Object.values(inputValues);
 
-    const getIndexArray = (inputsArray: string[], aIndex: number) => {
+    const getDuplicateValuesIndices = (
+      inputsArray: string[],
+      aIndex: number
+    ) => {
       let result = [];
       for (let cnt = 0, len = inputsArray.length; cnt < len; ++cnt) {
         if (inputsArray[cnt] === inputsArray[aIndex] && inputsArray[aIndex]) {
@@ -124,36 +128,44 @@ export function setValidation(
       return result;
     };
 
-    let indexArray = getIndexArray(inputsArray, 0);
-    indexArray = indexArray.length > 1 ? indexArray : [];
+    let duplicateValuesIndices = getDuplicateValuesIndices(inputsArray, 0);
+    duplicateValuesIndices =
+      duplicateValuesIndices.length > 1 ? duplicateValuesIndices : [];
 
-    const getNextIndex = (indexArray: number[], nextIndex: number) => {
-      if (!inputsArray[nextIndex]) {
-        return ++nextIndex;
+    const getNextIndex = (
+      aDuplicateValuesIndices: number[],
+      aNextIndex: number
+    ) => {
+      if (!inputsArray[aNextIndex]) {
+        return ++aNextIndex;
       }
-      for (let cnt = 0, len = indexArray.length; cnt < len; ++cnt) {
-        if (nextIndex === indexArray[cnt]) {
-          getNextIndex(indexArray, ++nextIndex);
+      for (
+        let cnt = 0, len = aDuplicateValuesIndices.length;
+        cnt < len;
+        ++cnt
+      ) {
+        if (aNextIndex === aDuplicateValuesIndices[cnt]) {
+          getNextIndex(aDuplicateValuesIndices, ++aNextIndex);
         }
       }
-      return nextIndex;
+      return aNextIndex;
     };
 
-    let nextIndex = getNextIndex(indexArray, 1);
+    let nextIndex = getNextIndex(duplicateValuesIndices, 1);
 
     for (let cnt = 1, len = inputsArray.length; cnt < len; ++cnt) {
       if (nextIndex < len) {
-        nextIndex = getNextIndex(indexArray, cnt);
-        let indexArray2 = getIndexArray(inputsArray, cnt);
-        if (indexArray.length > 1 && indexArray2.length > 1) {
-          indexArray = indexArray.concat(indexArray2);
+        nextIndex = getNextIndex(duplicateValuesIndices, cnt);
+        let indexArray2 = getDuplicateValuesIndices(inputsArray, cnt);
+        if (duplicateValuesIndices.length > 1 && indexArray2.length > 1) {
+          duplicateValuesIndices = duplicateValuesIndices.concat(indexArray2);
         } else if (indexArray2.length > 1) {
-          indexArray = indexArray2;
+          duplicateValuesIndices = indexArray2;
         }
       }
     }
 
-    indexArray.forEach((index) => {
+    duplicateValuesIndices.forEach((index) => {
       inputCategoryElms[index].classList.add(
         'border',
         'border-danger',
@@ -161,6 +173,7 @@ export function setValidation(
       );
     });
 
-    buttonSaveElm.disabled = !indexArray.length && !isSame ? false : true;
+    buttonSaveElm.disabled =
+      !duplicateValuesIndices.length && !isSame ? false : true;
   });
 }
