@@ -3,6 +3,8 @@ import {
   saveCategoryData,
   setValidation,
   getCategoryInputValues,
+  editOrDeleteCategoryName,
+  addCategoryInput,
 } from '../modules/categorySettings';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -57,8 +59,17 @@ export function getCategoryInputHTML(
   let inputsData = '';
   for (let cnt = 0; cnt < len; ++cnt) {
     const currentData = aQuizCategory.get(cnt);
-    inputsData += `<div class="my-3">
-    <input type="text" class="form-control" id="input-${cnt}" value="${currentData?.categoryName || ''}" data-is-active="${currentData?.isActive || false}" data-index="${cnt}" />
+    let isDisabled = '';
+    inputsData += '<div class="my-3 position-relative">';
+    if (currentData?.isActive) {
+      inputsData += `<span>問題に設定済みのカテゴリー名</span>`;
+      inputsData += `<div class="position-absolute bottom-0 end-0">
+                      <button class="btn btn-primary me-1 js-categoryEditBtn">編集する</button>
+                      <button class="btn btn-primary js-categoryDeleteBtn">削除する</button>
+                    </div>`;
+      isDisabled = ' disabled';
+    }
+    inputsData += `<input type="text" class="form-control" id="input-${cnt}" value="${currentData?.categoryName || ''}" data-is-active="${currentData?.isActive || false}" data-index="${cnt}" ${isDisabled} />
     </div>`;
   }
   return inputsData;
@@ -66,30 +77,61 @@ export function getCategoryInputHTML(
 
 export function setCategoryInputs(
   aQuizCategory: Map<number, InputsCategory>,
-  aQuizData: Map<number, Inputs>,
-  aButtonSaveElm: HTMLButtonElement,
-  aInputCategoryAreaElm: HTMLElement
+  aQuizData: Map<number, Inputs>
 ) {
-  if (aInputCategoryAreaElm !== null) {
-    aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
-  }
-  const inputCategoryElms =
-    aInputCategoryAreaElm?.querySelectorAll<HTMLInputElement>('input');
+  const inputCategoryAreaElm =
+    document.querySelector<HTMLElement>('.js-inputCategory');
 
-  let initialInputValues: string[] = getCategoryInputValues(
-    inputCategoryElms as NodeListOf<HTMLInputElement>
+  if (inputCategoryAreaElm !== null) {
+    inputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+  }
+
+  const inputCategoryElms =
+    inputCategoryAreaElm?.querySelectorAll<HTMLInputElement>('input');
+
+  const initialInputValues: string[] = getCategoryInputValues(
+    inputCategoryElms as NodeListOf<HTMLInputElement>,
+    true
   );
+
+  const buttonSaveElm =
+    document.querySelector<HTMLButtonElement>('.js-buttonSave');
+
+  const buttonAddInputElm =
+    document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
 
   saveCategoryData(
     aQuizData as Map<number, Inputs>,
-    aButtonSaveElm as HTMLButtonElement,
-    aInputCategoryAreaElm
+    buttonSaveElm as HTMLButtonElement,
+    inputCategoryAreaElm as HTMLElement
   );
 
-  setValidation(
-    aButtonSaveElm,
+  addCategoryInput(
+    inputCategoryAreaElm as HTMLElement,
+    buttonAddInputElm as HTMLButtonElement
+  );
+
+  const buttonCancelElm =
+    document.querySelector<HTMLButtonElement>('.js-buttonCancel');
+
+  editOrDeleteCategoryName(
+    inputCategoryAreaElm as HTMLElement,
     initialInputValues,
     aQuizCategory,
-    aInputCategoryAreaElm
+    buttonSaveElm as HTMLButtonElement,
+    buttonCancelElm as HTMLButtonElement,
+    buttonAddInputElm as HTMLButtonElement
+  );
+
+  let isUnderEdit = false;
+
+  setValidation(
+    buttonSaveElm as HTMLButtonElement,
+    initialInputValues,
+    aQuizCategory,
+    inputCategoryAreaElm as HTMLElement,
+    isUnderEdit,
+    buttonCancelElm as HTMLButtonElement,
+    buttonAddInputElm as HTMLButtonElement
   );
 }

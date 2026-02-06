@@ -1,7 +1,6 @@
 import './style.scss';
 import 'bootstrap';
 import { getDataFromLocalStorage } from './modules/dataManagement';
-import { addCategoryInput } from './modules/categorySettings';
 import {
   setupDisplay,
   switchPage,
@@ -36,17 +35,7 @@ if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
 
-const buttonSaveElm =
-  document.querySelector<HTMLButtonElement>('.js-buttonSave');
-
-const inputCategoryAreaElm =
-  document.querySelector<HTMLElement>('.js-inputCategory');
-
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
-  quizData as Map<number, Inputs>,
-  buttonSaveElm as HTMLButtonElement,
-  inputCategoryAreaElm as HTMLElement
+  quizData as Map<number, Inputs>
 );
-
-addCategoryInput(inputCategoryAreaElm as HTMLElement);
