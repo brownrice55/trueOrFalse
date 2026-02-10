@@ -35,8 +35,9 @@
 
 | カテゴリー設定（編集時）                                                                                | カテゴリー設定（削除確認）                                                                              | カテゴリー設定（編集途中の場合のページ遷移確認）                                                        |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/0bfdc973-8f59-43ff-98e9-80d6647ffec6" width="200"> | <img src="https://github.com/user-attachments/assets/59a70dbc-402c-475c-b95e-acefd1b65f98" width="200"> | <img src="https://github.com/user-attachments/assets/99f81cab-e38f-4e72-ad9e-3a9a987dc8dd" width="200"> |
+| <img src="https://github.com/user-attachments/assets/ae32dfcc-5b91-4656-b45b-2cc00639442b" width="200"> | <img src="https://github.com/user-attachments/assets/59a70dbc-402c-475c-b95e-acefd1b65f98" width="200"> | <img src="https://github.com/user-attachments/assets/99f81cab-e38f-4e72-ad9e-3a9a987dc8dd" width="200"> |
 
+<p>編集中はその他のinputやボタンは非活性にする</p>
 <p>編集途中で他のページに移動する際は、「変更された箇所は保存されません」という旨のアラートを表示する</p>
 
 | クイズ　スタート                                                                                        | クイズ　結果                                                                                            |

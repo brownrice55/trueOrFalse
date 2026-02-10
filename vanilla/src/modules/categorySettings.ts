@@ -1,5 +1,6 @@
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
+import type { Listener } from '../types/listener.type';
 import {
   setupDisplay,
   setCategoryInputs,
@@ -78,7 +79,108 @@ export function getCategoryInputValues(
   return inputValues;
 }
 
-export function setValidation(
+export function setInputValidationForCategory(
+  aInitialInputValues: string[],
+  aButtonCancelElm: HTMLButtonElement,
+  aButtonSaveElm: HTMLButtonElement,
+  aIsUnderEdit: boolean,
+  aInputCategoryAreaElm: HTMLInputElement
+) {
+  const inputCategoryElms =
+    aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
+  let inputValues: string[] = getCategoryInputValues(inputCategoryElms, true);
+
+  let isSame =
+    JSON.stringify(aInitialInputValues) ===
+    JSON.stringify(inputValues.filter(Boolean));
+  aButtonCancelElm.disabled = aIsUnderEdit ? true : isSame;
+  const getDuplicateValuesIndices = (
+    aInputValues: string[],
+    aIndex: number
+  ) => {
+    let result: number[] = [];
+    aInputValues.forEach((val, cnt) => {
+      if (val === aInputValues[aIndex] && aInputValues[aIndex]) {
+        result.push(cnt);
+      }
+    });
+    return result;
+  };
+
+  const getNextIndex = (
+    aInputValues: string[],
+    aDuplicateValuesIndices: number[],
+    aNextIndex: number
+  ) => {
+    if (!aInputValues[aNextIndex]) {
+      return ++aNextIndex;
+    }
+    for (let cnt = 0, len = aDuplicateValuesIndices.length; cnt < len; ++cnt) {
+      if (aNextIndex === aDuplicateValuesIndices[cnt]) {
+        getNextIndex(aInputValues, aDuplicateValuesIndices, ++aNextIndex);
+      }
+    }
+    return aNextIndex;
+  };
+
+  let duplicateValuesIndices: number[] = [];
+  let nextIndex: number = getNextIndex(inputValues, duplicateValuesIndices, 0);
+
+  const inputValuesLength = inputValues.length;
+  inputValues.forEach((_, cnt) => {
+    if (nextIndex < inputValuesLength) {
+      nextIndex = getNextIndex(inputValues, duplicateValuesIndices, cnt);
+      let tempIndices = getDuplicateValuesIndices(inputValues, cnt);
+      if (duplicateValuesIndices.length > 1 && tempIndices.length > 1) {
+        if (duplicateValuesIndices.every((i) => i !== tempIndices[0])) {
+          duplicateValuesIndices = duplicateValuesIndices.concat(tempIndices);
+        }
+      } else if (tempIndices.length > 1) {
+        duplicateValuesIndices = tempIndices;
+      }
+    }
+  });
+  duplicateValuesIndices.forEach((index) => {
+    inputCategoryElms[index].classList.add(
+      'border',
+      'border-danger',
+      'border-3'
+    );
+  });
+
+  if (aIsUnderEdit) {
+    aButtonSaveElm.disabled = true;
+  } else {
+    let inputValues: string[] = getCategoryInputValues(
+      inputCategoryElms,
+      false
+    );
+    let isSame =
+      JSON.stringify(aInitialInputValues) ===
+      JSON.stringify(inputValues.filter(Boolean));
+    aButtonSaveElm.disabled =
+      !duplicateValuesIndices.length && !isSame ? false : true;
+  }
+}
+
+const handleEventForsetInputValidationForCategory: Listener['handleEvent'] =
+  function (this, e) {
+    if (e?.target instanceof HTMLInputElement) {
+      (e.target as HTMLInputElement).value = e.target.value.trim();
+    }
+
+    const inputCategoryAreaElm = e.currentTarget;
+
+    setInputValidationForCategory(
+      this.initialInputValues,
+      this.buttonCancelElm,
+      this.buttonSaveElm,
+      this.isUnderEdit,
+      inputCategoryAreaElm as HTMLInputElement
+    );
+  };
+
+export function setButtonDisabledForCategory(
   aButtonSaveElm: HTMLButtonElement,
   aInitialInputValues: string[],
   aQuizCategory: Map<number, InputsCategory>,
@@ -87,99 +189,7 @@ export function setValidation(
   aButtonCancelElm: HTMLButtonElement,
   aButtonAddInputElm: HTMLButtonElement
 ) {
-  let inputValues: string[];
-  aInputCategoryAreaElm?.addEventListener('keyup', function (e) {
-    if (e?.target instanceof HTMLInputElement) {
-      (e.target as HTMLInputElement).value = e.target.value.trim();
-    }
-    const inputCategoryElms = this.querySelectorAll<HTMLInputElement>('input');
-    inputValues = getCategoryInputValues(inputCategoryElms, true);
-
-    let isSame =
-      JSON.stringify(aInitialInputValues) ===
-      JSON.stringify(inputValues.filter(Boolean));
-    aButtonCancelElm.disabled = aIsUnderEdit ? true : isSame;
-
-    const getDuplicateValuesIndices = (
-      aInputValues: string[],
-      aIndex: number
-    ) => {
-      let result: number[] = [];
-      aInputValues.forEach((val, cnt) => {
-        if (val === aInputValues[aIndex] && aInputValues[aIndex]) {
-          result.push(cnt);
-        }
-      });
-      return result;
-    };
-
-    const getNextIndex = (
-      aInputValues: string[],
-      aDuplicateValuesIndices: number[],
-      aNextIndex: number
-    ) => {
-      if (!aInputValues[aNextIndex]) {
-        return ++aNextIndex;
-      }
-      for (
-        let cnt = 0, len = aDuplicateValuesIndices.length;
-        cnt < len;
-        ++cnt
-      ) {
-        if (aNextIndex === aDuplicateValuesIndices[cnt]) {
-          getNextIndex(aInputValues, aDuplicateValuesIndices, ++aNextIndex);
-        }
-      }
-      return aNextIndex;
-    };
-
-    let duplicateValuesIndices: number[] = [];
-    let nextIndex: number = getNextIndex(
-      inputValues,
-      duplicateValuesIndices,
-      0
-    );
-
-    const inputValuesLength = inputValues.length;
-    inputValues.forEach((_, cnt) => {
-      if (nextIndex < inputValuesLength) {
-        nextIndex = getNextIndex(inputValues, duplicateValuesIndices, cnt);
-        let tempIndices = getDuplicateValuesIndices(inputValues, cnt);
-        if (duplicateValuesIndices.length > 1 && tempIndices.length > 1) {
-          if (duplicateValuesIndices.every((i) => i !== tempIndices[0])) {
-            duplicateValuesIndices = duplicateValuesIndices.concat(tempIndices);
-          }
-        } else if (tempIndices.length > 1) {
-          duplicateValuesIndices = tempIndices;
-        }
-      }
-    });
-    duplicateValuesIndices.forEach((index) => {
-      inputCategoryElms[index].classList.add(
-        'border',
-        'border-danger',
-        'border-3'
-      );
-    });
-
-    if (aIsUnderEdit) {
-      aButtonSaveElm.disabled = true;
-    } else {
-      let inputValues: string[] = getCategoryInputValues(
-        inputCategoryElms,
-        false
-      );
-      let isSame =
-        JSON.stringify(aInitialInputValues) ===
-        JSON.stringify(inputValues.filter(Boolean));
-      aButtonSaveElm.disabled =
-        !duplicateValuesIndices.length && !isSame ? false : true;
-    }
-  });
-
   aButtonCancelElm?.addEventListener('click', function () {
-    inputValues = aInitialInputValues;
-
     if (aInputCategoryAreaElm !== null) {
       aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
     }
@@ -187,7 +197,6 @@ export function setValidation(
     editOrDeleteCategoryName(
       aInputCategoryAreaElm as HTMLElement,
       aInitialInputValues,
-      aQuizCategory,
       aButtonSaveElm as HTMLButtonElement,
       aButtonCancelElm as HTMLButtonElement,
       aButtonAddInputElm as HTMLButtonElement
@@ -234,7 +243,6 @@ const getButtonStatus = (
 export function editOrDeleteCategoryName(
   aInputCategoryAreaElm: HTMLElement,
   aInitialInputValues: string[],
-  aQuizCategory: Map<number, InputsCategory>,
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
   aButtonAddInputElm: HTMLButtonElement
@@ -251,6 +259,16 @@ export function editOrDeleteCategoryName(
 
   let originalButtonStatus: boolean[] = Array(false);
   let targetIndex = 0;
+
+  const listener = {
+    initialInputValues: aInitialInputValues,
+    buttonSaveElm: aButtonSaveElm,
+    buttonCancelElm: aButtonCancelElm,
+    isUnderEdit: isUnderEdit,
+    handleEvent: handleEventForsetInputValidationForCategory,
+  };
+
+  aInputCategoryAreaElm?.addEventListener('keyup', listener, false);
 
   editBtnElms.forEach((elm, index) => {
     elm.addEventListener('click', function () {
@@ -277,23 +295,24 @@ export function editOrDeleteCategoryName(
         });
         aButtonSaveElm.disabled = true;
         aButtonCancelElm.disabled = true;
-      } else {
-        setValidation(
-          aButtonSaveElm,
-          aInitialInputValues,
-          aQuizCategory,
-          aInputCategoryAreaElm,
-          isUnderEdit,
-          aButtonCancelElm,
-          aButtonAddInputElm
+        originalButtonStatus = getButtonStatus(
+          aButtonCancelElm!,
+          aButtonSaveElm!
         );
       }
 
-      let originalButtonStatus = getButtonStatus(
-        aButtonCancelElm!,
-        aButtonSaveElm!
-      );
-      return originalButtonStatus;
+      if (isUnderEdit) {
+        aInputCategoryAreaElm?.removeEventListener('keyup', listener, false);
+      } else {
+        aInputCategoryAreaElm?.addEventListener('keyup', listener, false);
+        setInputValidationForCategory(
+          aInitialInputValues,
+          aButtonCancelElm,
+          aButtonSaveElm,
+          isUnderEdit,
+          aInputCategoryAreaElm as HTMLInputElement
+        );
+      }
     });
   });
 

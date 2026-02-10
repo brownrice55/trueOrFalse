@@ -1,7 +1,7 @@
 import { Collapse } from 'bootstrap';
 import {
   saveCategoryData,
-  setValidation,
+  setButtonDisabledForCategory,
   getCategoryInputValues,
   editOrDeleteCategoryName,
   addCategoryInput,
@@ -117,7 +117,6 @@ export function setCategoryInputs(
   editOrDeleteCategoryName(
     inputCategoryAreaElm as HTMLElement,
     initialInputValues,
-    aQuizCategory,
     buttonSaveElm as HTMLButtonElement,
     buttonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement
@@ -125,12 +124,12 @@ export function setCategoryInputs(
 
   let isUnderEdit = false;
 
-  setValidation(
+  setButtonDisabledForCategory(
     buttonSaveElm as HTMLButtonElement,
-    initialInputValues,
-    aQuizCategory,
+    initialInputValues as string[],
+    aQuizCategory as Map<number, InputsCategory>,
     inputCategoryAreaElm as HTMLElement,
-    isUnderEdit,
+    isUnderEdit as boolean,
     buttonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement
   );
