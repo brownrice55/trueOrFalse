@@ -6,6 +6,7 @@ import {
   switchPage,
   closeGlobalMenu,
   setCategoryInputs,
+  setAddNew,
 } from './modules/display';
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
@@ -39,3 +40,5 @@ setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>
 );
+
+setAddNew(quizCategory as Map<number, InputsCategory>);

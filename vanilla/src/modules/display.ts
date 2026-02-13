@@ -6,6 +6,7 @@ import {
   editOrDeleteCategoryName,
   addCategoryInput,
 } from '../modules/categorySettings';
+import { setCategoryOptions, switchType } from '../modules/addNew';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -131,5 +132,17 @@ export function setCategoryInputs(
     isUnderEdit as boolean,
     buttonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement
+  );
+}
+
+export function setAddNew(aQuizCategory: Map<number, InputsCategory>) {
+  const addNewCategoryElm = document.querySelector('.js-addNewCategory');
+  setCategoryOptions(aQuizCategory, addNewCategoryElm as HTMLElement);
+
+  const addNewTypeSelectElm = document.querySelector('.js-addNewTypeSelect');
+  const addNewTypeDivElms = document.querySelectorAll('.js-addNewTypeDiv');
+  switchType(
+    addNewTypeSelectElm as HTMLElement,
+    addNewTypeDivElms as NodeListOf<HTMLElement>
   );
 }

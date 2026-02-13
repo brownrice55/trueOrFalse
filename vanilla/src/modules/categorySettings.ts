@@ -82,7 +82,6 @@ export function setInputValidationForCategory(
   aIsUnderEdit: boolean,
   aInputCategoryAreaElm: HTMLInputElement
 ) {
-  console.log('yyy');
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
   let inputValues: string[] = getCategoryInputValues(inputCategoryElms, true);

@@ -124,14 +124,19 @@
             <h2 class="lead">新規登録</h2>
             <div class="my-3">
               <label for="category" class="form-label">カテゴリー</label>
-              <select class="form-select" aria-label="category" id="category">
-                <option selected>選択してください</option>
-                <option value="add">カテゴリーを追加する</option>
-              </select>
+              <select
+                class="form-select js-addNewCategory"
+                aria-label="category"
+                id="category"
+              ></select>
             </div>
             <div class="my-3">
               <label for="type" class="form-label">クイズの種類</label>
-              <select class="form-select" aria-label="type" id="type">
+              <select
+                class="form-select js-addNewTypeSelect"
+                aria-label="type"
+                id="type"
+              >
                 <option value="trueOrFalse">まるばつクイズ</option>
                 <option value="selection">選択問題</option>
               </select>
@@ -140,7 +145,7 @@
               <label for="question" class="form-label">問題</label>
               <textarea class="form-control" id="question" rows="3"></textarea>
             </div>
-            <div class="js-addNew-type">
+            <div class="js-addNewTypeDiv">
               <div class="my-3">
                 <label class="form-label">答え</label>
                 <div>
@@ -168,7 +173,7 @@
                 </div>
               </div>
             </div>
-            <div class="js-addNew-type">
+            <div class="js-addNewTypeDiv">
               <div>
                 <div class="my-3">
                   <label for="numberOfOptions" class="form-label"
@@ -190,6 +195,9 @@
                     <option value="10">10</option>
                   </select>
                 </div>
+                <p>
+                  選択肢を入力して、正解の選択肢にチェックを入れてください。
+                </p>
                 <div class="my-3 js-displayOptionInputs">
                   <div class="input-group mb-3">
                     <div class="input-group-text">
@@ -229,6 +237,15 @@
                 <option value="medium">普通</option>
                 <option value="low">低い</option>
               </select>
+            </div>
+            <div class="text-center my-4">
+              <button
+                type="submit"
+                class="btn btn-primary px-4 py-2 js-buttonAddNew"
+                disabled
+              >
+                新規登録する
+              </button>
             </div>
           </div>
         </section>
