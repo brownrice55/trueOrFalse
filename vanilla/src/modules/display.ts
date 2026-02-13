@@ -64,8 +64,8 @@ export function getCategoryInputHTML(
     if (currentData?.isActive) {
       inputsData += `<span>問題に設定済みのカテゴリー名</span>`;
       inputsData += `<div class="position-absolute bottom-0 end-0">
-                      <button class="btn btn-primary me-1 js-categoryEditBtn">編集する</button>
-                      <button class="btn btn-primary js-categoryDeleteBtn">削除する</button>
+                      <button class="btn btn-primary me-1 js-categoryEditBtn" type="button">編集する</button>
+                      <button class="btn btn-primary js-categoryDeleteBtn" type="button">削除する</button>
                     </div>`;
       isDisabled = ' disabled';
     }
@@ -127,7 +127,6 @@ export function setCategoryInputs(
   setButtonDisabledForCategory(
     buttonSaveElm as HTMLButtonElement,
     initialInputValues as string[],
-    aQuizCategory as Map<number, InputsCategory>,
     inputCategoryAreaElm as HTMLElement,
     isUnderEdit as boolean,
     buttonCancelElm as HTMLButtonElement,

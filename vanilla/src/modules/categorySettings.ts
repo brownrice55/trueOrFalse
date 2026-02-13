@@ -1,11 +1,7 @@
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Listener } from '../types/listener.type';
-import {
-  setupDisplay,
-  setCategoryInputs,
-  getCategoryInputHTML,
-} from '../modules/display';
+import { setupDisplay, setCategoryInputs } from '../modules/display';
 
 export function saveCategoryData(
   aQuizData: Map<number, Inputs>,
@@ -86,6 +82,7 @@ export function setInputValidationForCategory(
   aIsUnderEdit: boolean,
   aInputCategoryAreaElm: HTMLInputElement
 ) {
+  console.log('yyy');
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
   let inputValues: string[] = getCategoryInputValues(inputCategoryElms, true);
@@ -183,23 +180,21 @@ const handleEventForsetInputValidationForCategory: Listener['handleEvent'] =
 export function setButtonDisabledForCategory(
   aButtonSaveElm: HTMLButtonElement,
   aInitialInputValues: string[],
-  aQuizCategory: Map<number, InputsCategory>,
   aInputCategoryAreaElm: HTMLElement,
   aIsUnderEdit: boolean,
   aButtonCancelElm: HTMLButtonElement,
   aButtonAddInputElm: HTMLButtonElement
 ) {
   aButtonCancelElm?.addEventListener('click', function () {
-    if (aInputCategoryAreaElm !== null) {
-      aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
-    }
+    const formElm = document.querySelector('form');
+    formElm?.reset();
 
-    editOrDeleteCategoryName(
-      aInputCategoryAreaElm as HTMLElement,
+    setInputValidationForCategory(
       aInitialInputValues,
-      aButtonSaveElm as HTMLButtonElement,
-      aButtonCancelElm as HTMLButtonElement,
-      aButtonAddInputElm as HTMLButtonElement
+      aButtonCancelElm,
+      aButtonSaveElm,
+      aIsUnderEdit,
+      aInputCategoryAreaElm as HTMLInputElement
     );
 
     aButtonSaveElm.disabled = true;
@@ -233,13 +228,6 @@ const getInputStatus = (
   });
 };
 
-const getButtonStatus = (
-  aButtonCancelElm: HTMLButtonElement,
-  aButtonSaveElm: HTMLButtonElement
-) => {
-  return [aButtonCancelElm.disabled, aButtonSaveElm.disabled];
-};
-
 export function editOrDeleteCategoryName(
   aInputCategoryAreaElm: HTMLElement,
   aInitialInputValues: string[],
@@ -257,7 +245,6 @@ export function editOrDeleteCategoryName(
   let targetInputElm: HTMLInputElement;
   let originalValue: string = '';
 
-  let originalButtonStatus: boolean[] = Array(false);
   let targetIndex = 0;
 
   const listener = {
@@ -295,10 +282,6 @@ export function editOrDeleteCategoryName(
         });
         aButtonSaveElm.disabled = true;
         aButtonCancelElm.disabled = true;
-        originalButtonStatus = getButtonStatus(
-          aButtonCancelElm!,
-          aButtonSaveElm!
-        );
       }
 
       if (isUnderEdit) {
@@ -327,11 +310,17 @@ export function editOrDeleteCategoryName(
         targetInputElm.disabled = true;
         targetInputElm.value = originalValue;
         getInputStatus(aInputCategoryAreaElm, targetInputElm, isUnderEdit);
+        aInputCategoryAreaElm?.addEventListener('keyup', listener, false);
+        setInputValidationForCategory(
+          aInitialInputValues,
+          aButtonCancelElm,
+          aButtonSaveElm,
+          isUnderEdit,
+          aInputCategoryAreaElm as HTMLInputElement
+        );
         if (aButtonAddInputElm) {
           aButtonAddInputElm.disabled = false;
         }
-        aButtonCancelElm.disabled = originalButtonStatus[0];
-        aButtonSaveElm.disabled = originalButtonStatus[1];
       } else if (!isUnderEdit) {
         console.log('display a delete panel');
       }
