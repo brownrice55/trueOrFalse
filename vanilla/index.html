@@ -143,7 +143,11 @@
             </div>
             <div class="my-3">
               <label for="question" class="form-label">問題</label>
-              <textarea class="form-control" id="question" rows="3"></textarea>
+              <textarea
+                class="form-control js-addNewTextArea"
+                id="question"
+                rows="3"
+              ></textarea>
             </div>
             <div class="js-addNewTypeDiv">
               <div class="my-3">
@@ -151,22 +155,22 @@
                 <div>
                   <div class="form-check form-check-inline">
                     <input
-                      class="form-check-input"
+                      class="form-check-input js-addNewAnswerRadio"
                       type="radio"
                       name="answer"
                       id="answer1"
-                      value="0"
+                      value="1"
                       checked
                     />
                     <label class="form-check-label" for="answer1">まる</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input
-                      class="form-check-input"
+                      class="form-check-input js-addNewAnswerRadio"
                       type="radio"
                       name="answer"
                       id="answer2"
-                      value="1"
+                      value="2"
                     />
                     <label class="form-check-label" for="answer2">ばつ</label>
                   </div>
@@ -180,7 +184,7 @@
                     >選択肢の数</label
                   >
                   <select
-                    class="form-select js-selectOptionNumber"
+                    class="form-select js-addNewOptionNumberSelect"
                     aria-label="numberOfOptions"
                     id="numberOfOptions"
                   >
@@ -198,26 +202,28 @@
                 <p>
                   選択肢を入力して、正解の選択肢にチェックを入れてください。
                 </p>
-                <div class="my-3 js-displayOptionInputs">
+                <div class="my-3 js-addNewOptionInputsDiv">
                   <div class="input-group mb-3">
                     <div class="input-group-text">
                       <input
+                        id="option1"
                         class="form-check-input mt-0"
                         type="checkbox"
                         value=""
                       />
                     </div>
-                    <input type="text" class="form-control" />
+                    <input id="option1-2" type="text" class="form-control" />
                   </div>
                   <div class="input-group mb-3">
                     <div class="input-group-text">
                       <input
+                        id="option2"
                         class="form-check-input mt-0"
                         type="checkbox"
                         value=""
                       />
                     </div>
-                    <input type="text" class="form-control" />
+                    <input id="option2-2" type="text" class="form-control" />
                   </div>
                 </div>
               </div>
@@ -225,13 +231,15 @@
             <div class="my-3">
               <label for="explanation" class="form-label">解説</label>
               <textarea
-                class="form-control"
+                class="form-control js-addNewTextArea"
                 id="explanation"
                 rows="3"
               ></textarea>
             </div>
             <div class="my-3">
-              <label for="priority" class="form-label">優先順位</label>
+              <label for="priority" class="form-label js-addNewPrioritySelect"
+                >優先順位</label
+              >
               <select class="form-select" aria-label="type" id="priority">
                 <option value="high">高い</option>
                 <option value="medium">普通</option>

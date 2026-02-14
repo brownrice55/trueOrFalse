@@ -2,9 +2,9 @@ export type Inputs = {
   category: string;
   type: string;
   question: string;
-  answer: string;
+  answer: number;
   numberOfOptions: number;
-  options: [number, string][];
+  options: [boolean, string][];
   explanation: string;
   priority: string;
 };

@@ -41,4 +41,7 @@ setCategoryInputs(
   quizData as Map<number, Inputs>
 );
 
-setAddNew(quizCategory as Map<number, InputsCategory>);
+setAddNew(
+  quizCategory as Map<number, InputsCategory>,
+  quizData as Map<number, Inputs>
+);

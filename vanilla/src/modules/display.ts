@@ -6,7 +6,12 @@ import {
   editOrDeleteCategoryName,
   addCategoryInput,
 } from '../modules/categorySettings';
-import { setCategoryOptions, switchType } from '../modules/addNew';
+import {
+  setCategoryOptions,
+  switchType,
+  setOptionInputs,
+  saveQuizData,
+} from '../modules/addNew';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -135,7 +140,10 @@ export function setCategoryInputs(
   );
 }
 
-export function setAddNew(aQuizCategory: Map<number, InputsCategory>) {
+export function setAddNew(
+  aQuizCategory: Map<number, InputsCategory>,
+  aQuizData: Map<number, Inputs>
+) {
   const addNewCategoryElm = document.querySelector('.js-addNewCategory');
   setCategoryOptions(aQuizCategory, addNewCategoryElm as HTMLElement);
 
@@ -144,5 +152,37 @@ export function setAddNew(aQuizCategory: Map<number, InputsCategory>) {
   switchType(
     addNewTypeSelectElm as HTMLElement,
     addNewTypeDivElms as NodeListOf<HTMLElement>
+  );
+
+  const buttonAddNewElm = document.querySelector('.js-buttonAddNew');
+  const addNewTextAreaElms = document.querySelectorAll('.js-addNewTextArea');
+  const addNewPrioritySelectElm = document.querySelector(
+    '.js-addNewPrioritySelect'
+  );
+  const addNewAnswerRadioElms = document.querySelectorAll(
+    '.js-addNewAnswerRadio'
+  );
+  const addNewOptionNumberSelectElm = document.querySelector(
+    '.js-addNewOptionNumberSelect'
+  );
+
+  const addNewOptionInputsDivElm = document.querySelector(
+    '.js-addNewOptionInputsDiv'
+  );
+
+  setOptionInputs(
+    addNewOptionNumberSelectElm as HTMLSelectElement,
+    addNewOptionInputsDivElm as HTMLElement
+  );
+
+  saveQuizData(
+    aQuizData,
+    buttonAddNewElm as HTMLButtonElement,
+    addNewCategoryElm as HTMLSelectElement,
+    addNewTypeSelectElm as HTMLSelectElement,
+    addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+    addNewPrioritySelectElm as HTMLSelectElement,
+    addNewAnswerRadioElms as NodeListOf<HTMLInputElement>,
+    addNewOptionNumberSelectElm as HTMLSelectElement
   );
 }
