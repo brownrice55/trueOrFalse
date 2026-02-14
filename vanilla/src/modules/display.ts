@@ -11,6 +11,7 @@ import {
   switchType,
   setOptionInputs,
   saveQuizData,
+  setValidation,
 } from '../modules/addNew';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -184,5 +185,11 @@ export function setAddNew(
     addNewPrioritySelectElm as HTMLSelectElement,
     addNewAnswerRadioElms as NodeListOf<HTMLInputElement>,
     addNewOptionNumberSelectElm as HTMLSelectElement
+  );
+
+  setValidation(
+    buttonAddNewElm as HTMLButtonElement,
+    addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+    addNewOptionInputsDivElm as HTMLElement
   );
 }
