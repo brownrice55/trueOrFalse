@@ -150,10 +150,6 @@ export function setAddNew(
 
   const addNewTypeSelectElm = document.querySelector('.js-addNewTypeSelect');
   const addNewTypeDivElms = document.querySelectorAll('.js-addNewTypeDiv');
-  switchType(
-    addNewTypeSelectElm as HTMLElement,
-    addNewTypeDivElms as NodeListOf<HTMLElement>
-  );
 
   const buttonAddNewElm = document.querySelector('.js-buttonAddNew');
   const addNewTextAreaElms = document.querySelectorAll('.js-addNewTextArea');
@@ -169,6 +165,14 @@ export function setAddNew(
 
   const addNewOptionInputsDivElm = document.querySelector(
     '.js-addNewOptionInputsDiv'
+  );
+
+  switchType(
+    addNewTypeSelectElm as HTMLElement,
+    addNewTypeDivElms as NodeListOf<HTMLElement>,
+    buttonAddNewElm as HTMLButtonElement,
+    addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+    addNewOptionInputsDivElm as HTMLElement
   );
 
   setOptionInputs(
@@ -188,6 +192,7 @@ export function setAddNew(
   );
 
   setValidation(
+    addNewTypeSelectElm as HTMLSelectElement,
     buttonAddNewElm as HTMLButtonElement,
     addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
     addNewOptionInputsDivElm as HTMLElement

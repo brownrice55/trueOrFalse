@@ -16,14 +16,48 @@ export function setCategoryOptions(
 
 export function switchType(
   aAddNewTypeSelectElm: HTMLElement,
-  aAddNewTypeDivElms: NodeListOf<HTMLElement>
+  aAddNewTypeDivElms: NodeListOf<HTMLElement>,
+  aButtonAddNewElm: HTMLButtonElement,
+  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
+  aAddNewOptionInputsDivElm: HTMLElement
 ) {
   aAddNewTypeSelectElm.addEventListener('change', function (e) {
     const type = (e.currentTarget as HTMLInputElement).value;
     const indices: number[] = type === 'trueOrFalse' ? [0, 1] : [1, 0];
     aAddNewTypeDivElms[indices[0]].classList.remove('d-none');
     aAddNewTypeDivElms[indices[1]].classList.add('d-none');
-    // ******** need form validation
+
+    let isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
+    setAlertForInputField(
+      aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+      isInputed
+    );
+    aButtonAddNewElm.disabled = isInputed ? false : true;
+
+    if (type === 'selection') {
+      const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+        '.js-addNewOptionsCheckbox'
+      );
+      const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+        '.js-addNewOptionsInputText'
+      );
+      let isChecked = [...checkboxElms].some(
+        (elm) => (elm as HTMLInputElement).checked
+      );
+      let isInputed2 = [...inputTextElms].every(
+        (elm) => (elm as HTMLInputElement).value
+      );
+      setAlertForInputField(
+        inputTextElms as NodeListOf<HTMLInputElement>,
+        isInputed2
+      );
+      setAlertForInputField(
+        checkboxElms as NodeListOf<HTMLInputElement>,
+        isChecked
+      );
+      aButtonAddNewElm.disabled =
+        isInputed && isChecked && isInputed2 ? false : true;
+    }
   });
 }
 
@@ -96,7 +130,20 @@ export function saveQuizData(
   });
 }
 
+const setAlertForInputField = (
+  aElms: NodeListOf<Element>,
+  aIsInputed: boolean
+) => {
+  aElms.forEach((elm2) => {
+    elm2.classList.remove('border', 'border-danger', 'border-3');
+    if (!(elm2 as HTMLInputElement).value && !aIsInputed) {
+      elm2.classList.add('border', 'border-danger', 'border-3');
+    }
+  });
+};
+
 const setDisabled = (
+  aAddNewTypeSelectElm: HTMLSelectElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
   aAddNewOptionInputsDivElm: HTMLElement,
   aButtonAddNewElm: HTMLButtonElement,
@@ -110,10 +157,6 @@ const setDisabled = (
     '.js-addNewOptionsInputText'
   );
 
-  let isInputed = false;
-  let isChecked = false;
-  let isInputed2 = false;
-
   const elms: NodeListOf<Element> =
     aElms === 'textarea'
       ? aAddNewTextAreaElms
@@ -121,56 +164,51 @@ const setDisabled = (
         ? checkboxElms
         : inputTextElms;
 
-  const setAlertForInputField = (
-    aElms: NodeListOf<Element>,
-    aIsInputed: boolean
-  ) => {
-    aElms.forEach((elm2) => {
-      elm2.classList.remove('border', 'border-danger', 'border-3');
-      if (!(elm2 as HTMLInputElement).value && !aIsInputed) {
-        elm2.classList.add('border', 'border-danger', 'border-3');
-      }
-    });
-  };
+  let isInputed = false;
+  let isChecked = false;
+  let isInputed2 = false;
+
   for (const elm of elms) {
     elm.addEventListener(aEvent, function () {
-      isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
-      isChecked = [...checkboxElms].some(
-        (elm) => (elm as HTMLInputElement).checked
-      );
-      isInputed2 = [...inputTextElms].every(
-        (elm) => (elm as HTMLInputElement).value
-      );
+      const type = aAddNewTypeSelectElm.value;
 
+      isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
       setAlertForInputField(
         aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
         isInputed
       );
-      setAlertForInputField(
-        inputTextElms as NodeListOf<HTMLInputElement>,
-        isInputed2
-      );
-      setAlertForInputField(
-        checkboxElms as NodeListOf<HTMLInputElement>,
-        isChecked
-      );
+      aButtonAddNewElm.disabled = isInputed ? false : true;
 
-      if (isChecked && isInputed2 && isInputed) {
-        aButtonAddNewElm.disabled = false;
-        return;
-      } else {
-        aButtonAddNewElm.disabled = true;
+      if (type === 'selection') {
+        isChecked = [...checkboxElms].some(
+          (elm) => (elm as HTMLInputElement).checked
+        );
+        isInputed2 = [...inputTextElms].every(
+          (elm) => (elm as HTMLInputElement).value
+        );
+        setAlertForInputField(
+          inputTextElms as NodeListOf<HTMLInputElement>,
+          isInputed2
+        );
+        setAlertForInputField(
+          checkboxElms as NodeListOf<HTMLInputElement>,
+          isChecked
+        );
+        aButtonAddNewElm.disabled =
+          isInputed && isChecked && isInputed2 ? false : true;
       }
     });
   }
 };
 
 export function setValidation(
+  aAddNewTypeSelectElm: HTMLSelectElement,
   aButtonAddNewElm: HTMLButtonElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
   aAddNewOptionInputsDivElm: HTMLElement
 ) {
   setDisabled(
+    aAddNewTypeSelectElm,
     aAddNewTextAreaElms,
     aAddNewOptionInputsDivElm,
     aButtonAddNewElm,
@@ -178,6 +216,7 @@ export function setValidation(
     'keyup'
   );
   setDisabled(
+    aAddNewTypeSelectElm,
     aAddNewTextAreaElms,
     aAddNewOptionInputsDivElm,
     aButtonAddNewElm,
@@ -185,6 +224,7 @@ export function setValidation(
     'click'
   );
   setDisabled(
+    aAddNewTypeSelectElm,
     aAddNewTextAreaElms,
     aAddNewOptionInputsDivElm,
     aButtonAddNewElm,
