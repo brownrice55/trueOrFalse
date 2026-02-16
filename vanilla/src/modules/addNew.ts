@@ -1,3 +1,5 @@
+import { switchPage } from './display';
+import { displayList } from './quizList';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 
@@ -110,6 +112,9 @@ export function saveQuizData(
       options: [[false, '']],
       explanation: '',
       priority: '',
+      notes: '',
+      numberOfCorrectAnswers: 0,
+      numberOfAnswers: 0,
     };
     newValue.category = aAddNewCategoryElm.value;
     newValue.type = aAddNewTypeSelectElm.value;
@@ -127,6 +132,12 @@ export function saveQuizData(
       : 1;
 
     aQuizData.set(newId, newValue);
+    localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+    switchPage(0);
+
+    const listDivElms = document.querySelectorAll('.js-listDiv');
+    const listUlElm = document.querySelector('.js-listUl');
+    displayList(aQuizData, listDivElms, listUlElm as HTMLElement);
   });
 }
 

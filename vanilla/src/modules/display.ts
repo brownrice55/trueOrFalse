@@ -1,4 +1,5 @@
 import { Collapse } from 'bootstrap';
+import { displayList } from './quizList';
 import {
   saveCategoryData,
   setButtonDisabledForCategory,
@@ -57,6 +58,16 @@ export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
 
   mediaQueryList.addEventListener('change', listener);
   hideMenus(mediaQueryList.matches);
+}
+
+export function setQuizList(aQuizData: Map<number, Inputs>) {
+  const listDivElms = document.querySelectorAll('.js-listDiv');
+  const listUlElm = document.querySelector('.js-listUl');
+  displayList(
+    aQuizData,
+    listDivElms as NodeListOf<Element>,
+    listUlElm as HTMLElement
+  );
 }
 
 export function getCategoryInputHTML(

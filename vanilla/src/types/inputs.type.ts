@@ -7,4 +7,7 @@ export type Inputs = {
   options: [boolean, string][];
   explanation: string;
   priority: string;
+  notes: string;
+  numberOfCorrectAnswers: number;
+  numberOfAnswers: number;
 };

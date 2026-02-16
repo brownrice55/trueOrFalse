@@ -7,6 +7,7 @@ import {
   closeGlobalMenu,
   setCategoryInputs,
   setAddNew,
+  setQuizList,
 } from './modules/display';
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
@@ -35,6 +36,8 @@ globalNavLiElms?.forEach((elm) => {
 if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
+
+setQuizList(quizData as Map<number, Inputs>);
 
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,

@@ -99,25 +99,79 @@
           <div class="js-quiz"></div>
         </section>
         <section class="js-section pt-3">
-          <div class="js-list">
+          <div class="js-listDiv">
             <h2 class="lead">クイズ一覧</h2>
-            <div class="my-3">
-              <button class="btn btn-primary btn-sm float-end">詳細</button>
-              問題の一文が入ります。<br />
-              <span>正解率：80%</span>
+            <ul class="js-listUl"></ul>
+          </div>
+          <div class="js-listDiv d-none">
+            <button class="js-buttonBackToList btn ps-0 mb-3" type="button">
+              クイズ一覧に戻る
+            </button>
+            <dl>
+              <dt>カテゴリー</dt>
+              <dd class="js-listDd"></dd>
+              <dt>クイズの種類</dt>
+              <dd class="js-listDd"></dd>
+              <dt>問題</dt>
+              <dd class="js-listDd"></dd>
+              <dt>答え</dt>
+              <dd class="js-listDd"></dd>
+              <dt>解説</dt>
+              <dd class="js-listDd"></dd>
+              <dt>優先順位</dt>
+              <dd class="js-listDd"></dd>
+              <dt>メモ</dt>
+              <dd class="js-listDd"></dd>
+              <dt>正解率</dt>
+              <dd class="js-listDd"></dd>
+            </dl>
+            <div class="d-flex flex-row mb-3">
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
             </div>
-            <div class="my-3">
-              <button class="btn btn-primary btn-sm float-end">詳細</button>
-              問題の一文が入ります。<br />
-              <span>正解率：80%</span>
+            <div class="d-flex flex-row mb-3">
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
+              <div class="p-2 border cursor-pointer js-listResult">正解</div>
             </div>
-            <div class="my-3">
-              <button class="btn btn-primary btn-sm float-end">詳細</button>
-              問題の一文が入ります。<br />
-              <span>正解率：80%</span>
+            <div class="text-center my-5">
+              <button
+                type="button"
+                class="btn btn-primary px-4 py-2 me-3 js-buttonDeleteDetail"
+              >
+                削除する
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary px-4 py-2 js-buttonEditDetail"
+              >
+                編集する
+              </button>
+            </div>
+            <div class="text-center my-5">
+              <button
+                type="button"
+                class="btn btn-primary px-4 py-2 js-buttonBackToList"
+              >
+                一覧に戻る
+              </button>
             </div>
           </div>
-          <div class="js-list"></div>
         </section>
         <section class="js-section pt-3">
           <div>
