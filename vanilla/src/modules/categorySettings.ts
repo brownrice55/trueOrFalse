@@ -18,7 +18,6 @@ export function saveCategoryData(
 
     let newMap = new Map<number, InputsCategory>();
     let empty = 0;
-    let cnt = 0;
     inputCategoryElms.forEach((elm) => {
       if (!elm.value) {
         ++empty;
@@ -30,8 +29,8 @@ export function saveCategoryData(
       if (elm.value) {
         values.categoryName = elm.value;
         values.isActive = elm?.dataset?.isActive?.toLowerCase() === 'true';
-        newMap.set(cnt, values);
-        ++cnt;
+        const key = parseInt(elm?.dataset?.index ?? '0');
+        newMap.set(key, values);
       }
     });
     if (empty === inputCategoryElms.length) {

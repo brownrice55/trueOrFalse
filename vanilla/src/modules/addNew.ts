@@ -11,7 +11,7 @@ export function setCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
   aAddNewCategoryElm: HTMLElement
 ) {
-  let optionHTML = `<option selected>指定しない</option>`;
+  let optionHTML = `<option value="unspecified" selected>指定しない</option>`;
   [...aQuizCategory].forEach(([idx, obj]) => {
     optionHTML += `<option value="${idx}">${obj.categoryName}</option>`;
   });
@@ -156,6 +156,7 @@ export function setOptionInputs(
 
 export function saveQuizData(
   aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
   aButtonAddNewElm: HTMLButtonElement,
   aAddNewCategoryElm: HTMLSelectElement,
   aAddNewTypeSelectElm: HTMLSelectElement,
@@ -163,7 +164,8 @@ export function saveQuizData(
   aAddNewPrioritySelectElm: HTMLSelectElement,
   aAddNewAnswerRadioElms: NodeListOf<HTMLInputElement>,
   aAddNewOptionNumberSelectElm: HTMLSelectElement,
-  aAddNewOptionInputsDivElm: HTMLElement
+  aAddNewOptionInputsDivElm: HTMLElement,
+  aAddNewTypeDivElms: NodeListOf<HTMLElement>
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -184,16 +186,19 @@ export function saveQuizData(
     newValue.question = aAddNewTextAreaElms[0].value;
     newValue.explanation = aAddNewTextAreaElms[1].value;
     newValue.priority = aAddNewPrioritySelectElm.value;
+
+    const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+      '.js-addNewOptionsCheckbox'
+    );
+    const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+      '.js-addNewOptionsInputText'
+    );
+
     if (newValue.type === 'trueOrFalse') {
       newValue.answer = aAddNewAnswerRadioElms[0].checked ? 1 : 2;
     } else {
       newValue.numberOfOptions = parseInt(aAddNewOptionNumberSelectElm.value);
-      const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
-        '.js-addNewOptionsCheckbox'
-      );
-      const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
-        '.js-addNewOptionsInputText'
-      );
+
       let array: [boolean, string][] = [];
       checkboxElms.forEach((elm, idx) => {
         array.push([
@@ -213,6 +218,40 @@ export function saveQuizData(
 
     aQuizData.set(newId, newValue);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
+    const key = parseInt(newValue.category);
+    if (!Number.isNaN(key)) {
+      const currentQuizCategoryVal = aQuizCategory.get(key);
+      if (currentQuizCategoryVal) {
+        currentQuizCategoryVal.isActive = true;
+      }
+    }
+
+    // reset start
+    aAddNewTextAreaElms.forEach((elm) => {
+      (elm as HTMLTextAreaElement).value = '';
+    });
+    inputTextElms.forEach((elm) => {
+      (elm as HTMLInputElement).value = '';
+    });
+    checkboxElms.forEach((elm) => {
+      (elm as HTMLInputElement).checked = false;
+    });
+
+    aAddNewCategoryElm.value = 'unspecified';
+    aAddNewAnswerRadioElms[0].checked = true;
+    aAddNewAnswerRadioElms[1].checked = false;
+    aAddNewOptionNumberSelectElm.value = '2';
+    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(2);
+    aAddNewPrioritySelectElm.value = 'high';
+
+    if (newValue.type === 'selection') {
+      aAddNewTypeSelectElm.value = 'trueOrFalse';
+      aAddNewTypeDivElms[0].classList.remove('d-none');
+      aAddNewTypeDivElms[1].classList.add('d-none');
+    }
+    // reset end
+
     switchPage(0);
 
     const listDivElms = document.querySelectorAll('.js-listDiv');

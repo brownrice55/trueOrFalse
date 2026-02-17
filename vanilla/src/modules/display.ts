@@ -196,6 +196,7 @@ export function setAddNew(
 
   saveQuizData(
     aQuizData,
+    aQuizCategory,
     buttonAddNewElm as HTMLButtonElement,
     addNewCategoryElm as HTMLSelectElement,
     addNewTypeSelectElm as HTMLSelectElement,
@@ -203,7 +204,8 @@ export function setAddNew(
     addNewPrioritySelectElm as HTMLSelectElement,
     addNewAnswerRadioElms as NodeListOf<HTMLInputElement>,
     addNewOptionNumberSelectElm as HTMLSelectElement,
-    addNewOptionInputsDivElm as HTMLElement
+    addNewOptionInputsDivElm as HTMLElement,
+    addNewTypeDivElms as NodeListOf<HTMLElement>
   );
 
   setValidation(
