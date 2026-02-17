@@ -202,7 +202,8 @@ export function setAddNew(
     addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
     addNewPrioritySelectElm as HTMLSelectElement,
     addNewAnswerRadioElms as NodeListOf<HTMLInputElement>,
-    addNewOptionNumberSelectElm as HTMLSelectElement
+    addNewOptionNumberSelectElm as HTMLSelectElement,
+    addNewOptionInputsDivElm as HTMLElement
   );
 
   setValidation(

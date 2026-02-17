@@ -26,7 +26,7 @@ const setValidationForDataEntry = (
   aButtonAddNewElm: HTMLButtonElement,
   aAddNewOptionInputsDivElm: HTMLElement
 ) => {
-  let isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
+  const isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
   setAlertForInputField(
     aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
     isInputed
@@ -40,10 +40,10 @@ const setValidationForDataEntry = (
     const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
       '.js-addNewOptionsInputText'
     );
-    let isChecked = [...checkboxElms].some(
+    const isChecked = [...checkboxElms].some(
       (elm) => (elm as HTMLInputElement).checked
     );
-    let isInputed2 = [...inputTextElms].every(
+    const isInputed2 = [...inputTextElms].every(
       (elm) => (elm as HTMLInputElement).value
     );
 
@@ -52,7 +52,7 @@ const setValidationForDataEntry = (
       isChecked
     );
 
-    let inputValues: string[] = getInputValues(
+    const inputValues: string[] = getInputValues(
       inputTextElms as NodeListOf<HTMLInputElement>,
       true
     );
@@ -162,7 +162,8 @@ export function saveQuizData(
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
   aAddNewPrioritySelectElm: HTMLSelectElement,
   aAddNewAnswerRadioElms: NodeListOf<HTMLInputElement>,
-  aAddNewOptionNumberSelectElm: HTMLSelectElement
+  aAddNewOptionNumberSelectElm: HTMLSelectElement,
+  aAddNewOptionInputsDivElm: HTMLElement
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -183,8 +184,25 @@ export function saveQuizData(
     newValue.question = aAddNewTextAreaElms[0].value;
     newValue.explanation = aAddNewTextAreaElms[1].value;
     newValue.priority = aAddNewPrioritySelectElm.value;
-    newValue.answer = aAddNewAnswerRadioElms[0].checked ? 1 : 2;
-    newValue.numberOfOptions = parseInt(aAddNewOptionNumberSelectElm.value);
+    if (newValue.type === 'trueOrFalse') {
+      newValue.answer = aAddNewAnswerRadioElms[0].checked ? 1 : 2;
+    } else {
+      newValue.numberOfOptions = parseInt(aAddNewOptionNumberSelectElm.value);
+      const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+        '.js-addNewOptionsCheckbox'
+      );
+      const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+        '.js-addNewOptionsInputText'
+      );
+      let array: [boolean, string][] = [];
+      checkboxElms.forEach((elm, idx) => {
+        array.push([
+          (elm as HTMLInputElement).checked,
+          (inputTextElms[idx] as HTMLInputElement).value,
+        ]);
+      });
+      newValue.options = array;
+    }
 
     const keysArray: number[] = aQuizData.size
       ? Array.from(aQuizData.keys())

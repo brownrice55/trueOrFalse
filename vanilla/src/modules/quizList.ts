@@ -18,15 +18,25 @@ const setEventForDisplayDetail = (
       const key = (e.currentTarget as HTMLButtonElement).dataset.key ?? '0';
       const currentVal = aQuizData.get(parseInt(key));
       const arrayTextQuestionAnswer = ['まる', 'ばつ'];
-
       if (currentVal) {
         listDdElms[0].innerHTML = currentVal.category;
         listDdElms[1].innerHTML = currentVal.type;
         listDdElms[2].innerHTML = currentVal.question;
+        let answerForSelection = '';
+        if (currentVal.type === 'selection') {
+          currentVal.options.forEach((arr) => {
+            if (arr[0]) {
+              if (answerForSelection) {
+                answerForSelection += '、';
+              }
+              answerForSelection += arr[1];
+            }
+          });
+        }
         listDdElms[3].innerHTML =
           currentVal.type === 'trueOrFalse'
             ? arrayTextQuestionAnswer[currentVal.answer]
-            : 'answers of selection';
+            : answerForSelection;
         listDdElms[4].innerHTML = currentVal.explanation;
         listDdElms[5].innerHTML = currentVal.priority;
         listDdElms[6].innerHTML = currentVal.notes;
