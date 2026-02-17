@@ -1,3 +1,4 @@
+import { setQuizList } from './display';
 import type { Inputs } from '../types/inputs.type';
 
 const setEventForDisplayDetail = (
@@ -8,6 +9,10 @@ const setEventForDisplayDetail = (
     '.js-listDetailButton'
   );
 
+  const buttonDeleteDetailElm = document.querySelector(
+    '.js-buttonDeleteDetail'
+  );
+
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
       aListDivElms[0].classList.add('d-none');
@@ -15,8 +20,10 @@ const setEventForDisplayDetail = (
 
       const listDdElms = document.querySelectorAll('.js-listDd');
 
-      const key = (e.currentTarget as HTMLButtonElement).dataset.key ?? '0';
-      const currentVal = aQuizData.get(parseInt(key));
+      const key = parseInt(
+        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0'
+      );
+      const currentVal = aQuizData.get(key);
       const arrayTextQuestionAnswer = ['まる', 'ばつ'];
       if (currentVal) {
         listDdElms[0].innerHTML = currentVal.category;
@@ -47,6 +54,15 @@ const setEventForDisplayDetail = (
               '%'
             : '0%';
       }
+
+      buttonDeleteDetailElm?.addEventListener('click', function () {
+        // ***** add modal to confirm to delete
+        aQuizData.delete(key);
+        localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+        aListDivElms[0].classList.remove('d-none');
+        aListDivElms[1].classList.add('d-none');
+        setQuizList(aQuizData);
+      });
     });
   });
 };
