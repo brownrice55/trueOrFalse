@@ -4,6 +4,7 @@ import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
+import { setCategoryInputs } from './display';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 
@@ -224,6 +225,11 @@ export function saveQuizData(
       const currentQuizCategoryVal = aQuizCategory.get(key);
       if (currentQuizCategoryVal) {
         currentQuizCategoryVal.isActive = true;
+        localStorage.setItem(
+          'quizCategory',
+          JSON.stringify([...aQuizCategory])
+        );
+        setCategoryInputs(aQuizCategory, aQuizData);
       }
     }
 
