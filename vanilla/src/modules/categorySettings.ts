@@ -1,7 +1,8 @@
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Listener } from '../types/listener.type';
-import { setupDisplay, setCategoryInputs } from '../modules/display';
+import { setupDisplay, setCategoryInputs } from './display';
+import { setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices } from './inputValidation';
 
 export function saveCategoryData(
   aQuizData: Map<number, Inputs>,
@@ -90,59 +91,12 @@ export function setInputValidationForCategory(
     JSON.stringify(aInitialInputValues) ===
     JSON.stringify(inputValues.filter(Boolean));
   aButtonCancelElm.disabled = aIsUnderEdit ? true : isSame;
-  const getDuplicateValuesIndices = (
-    aInputValues: string[],
-    aIndex: number
-  ) => {
-    let result: number[] = [];
-    aInputValues.forEach((val, cnt) => {
-      if (val === aInputValues[aIndex] && aInputValues[aIndex]) {
-        result.push(cnt);
-      }
-    });
-    return result;
-  };
 
-  const getNextIndex = (
-    aInputValues: string[],
-    aDuplicateValuesIndices: number[],
-    aNextIndex: number
-  ) => {
-    if (!aInputValues[aNextIndex]) {
-      return ++aNextIndex;
-    }
-    for (let cnt = 0, len = aDuplicateValuesIndices.length; cnt < len; ++cnt) {
-      if (aNextIndex === aDuplicateValuesIndices[cnt]) {
-        getNextIndex(aInputValues, aDuplicateValuesIndices, ++aNextIndex);
-      }
-    }
-    return aNextIndex;
-  };
-
-  let duplicateValuesIndices: number[] = [];
-  let nextIndex: number = getNextIndex(inputValues, duplicateValuesIndices, 0);
-
-  const inputValuesLength = inputValues.length;
-  inputValues.forEach((_, cnt) => {
-    if (nextIndex < inputValuesLength) {
-      nextIndex = getNextIndex(inputValues, duplicateValuesIndices, cnt);
-      let tempIndices = getDuplicateValuesIndices(inputValues, cnt);
-      if (duplicateValuesIndices.length > 1 && tempIndices.length > 1) {
-        if (duplicateValuesIndices.every((i) => i !== tempIndices[0])) {
-          duplicateValuesIndices = duplicateValuesIndices.concat(tempIndices);
-        }
-      } else if (tempIndices.length > 1) {
-        duplicateValuesIndices = tempIndices;
-      }
-    }
-  });
-  duplicateValuesIndices.forEach((index) => {
-    inputCategoryElms[index].classList.add(
-      'border',
-      'border-danger',
-      'border-3'
+  const duplicateValuesIndices =
+    setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices(
+      inputValues,
+      inputCategoryElms
     );
-  });
 
   if (aIsUnderEdit) {
     aButtonSaveElm.disabled = true;

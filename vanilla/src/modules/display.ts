@@ -6,14 +6,14 @@ import {
   getCategoryInputValues,
   editOrDeleteCategoryName,
   addCategoryInput,
-} from '../modules/categorySettings';
+} from './categorySettings';
 import {
   setCategoryOptions,
   switchType,
   setOptionInputs,
   saveQuizData,
   setValidation,
-} from '../modules/addNew';
+} from './addNew';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -188,7 +188,10 @@ export function setAddNew(
 
   setOptionInputs(
     addNewOptionNumberSelectElm as HTMLSelectElement,
-    addNewOptionInputsDivElm as HTMLElement
+    addNewOptionInputsDivElm as HTMLElement,
+    addNewTypeSelectElm as HTMLSelectElement,
+    addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+    buttonAddNewElm as HTMLButtonElement
   );
 
   saveQuizData(

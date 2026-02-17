@@ -1,5 +1,7 @@
 import { switchPage } from './display';
 import { displayList } from './quizList';
+import { setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices } from './inputValidation';
+import { getCategoryInputValues } from './categorySettings';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 
@@ -84,11 +86,39 @@ const getHTMLForOptionInputs = (aNumber: number) => {
 
 export function setOptionInputs(
   aAddNewOptionNumberSelectElm: HTMLSelectElement,
-  aAddNewOptionInputsDivElm: HTMLElement
+  aAddNewOptionInputsDivElm: HTMLElement,
+  aAddNewTypeSelectElm: HTMLSelectElement,
+  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
+  aButtonAddNewElm: HTMLButtonElement
 ) {
   aAddNewOptionNumberSelectElm.addEventListener('change', function (e) {
     const number = parseInt((e.currentTarget as HTMLSelectElement).value);
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(number);
+
+    setDisabled(
+      aAddNewTypeSelectElm,
+      aAddNewTextAreaElms,
+      aAddNewOptionInputsDivElm,
+      aButtonAddNewElm,
+      'textarea',
+      'keyup'
+    );
+    setDisabled(
+      aAddNewTypeSelectElm,
+      aAddNewTextAreaElms,
+      aAddNewOptionInputsDivElm,
+      aButtonAddNewElm,
+      'checkbox',
+      'click'
+    );
+    setDisabled(
+      aAddNewTypeSelectElm,
+      aAddNewTextAreaElms,
+      aAddNewOptionInputsDivElm,
+      aButtonAddNewElm,
+      'inputText',
+      'keyup'
+    );
   });
 }
 
@@ -182,7 +212,6 @@ const setDisabled = (
   for (const elm of elms) {
     elm.addEventListener(aEvent, function () {
       const type = aAddNewTypeSelectElm.value;
-
       isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
       setAlertForInputField(
         aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
@@ -205,8 +234,21 @@ const setDisabled = (
           checkboxElms as NodeListOf<HTMLInputElement>,
           isChecked
         );
+
+        let inputValues: string[] = getCategoryInputValues(
+          inputTextElms as NodeListOf<HTMLInputElement>,
+          true
+        );
+        const duplicateValuesIndices =
+          setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices(
+            inputValues,
+            inputTextElms as NodeListOf<HTMLInputElement>
+          );
+
         aButtonAddNewElm.disabled =
-          isInputed && isChecked && isInputed2 ? false : true;
+          isInputed && isChecked && isInputed2 && !duplicateValuesIndices.length
+            ? false
+            : true;
       }
     });
   }
