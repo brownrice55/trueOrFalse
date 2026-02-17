@@ -1,7 +1,9 @@
 import { switchPage } from './display';
 import { displayList } from './quizList';
-import { setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices } from './inputValidation';
-import { getCategoryInputValues } from './categorySettings';
+import {
+  getInputValues,
+  setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
+} from './inputValidation';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 
@@ -18,6 +20,61 @@ export function setCategoryOptions(
   aAddNewCategoryElm.innerHTML = optionHTML;
 }
 
+const setValidationForDataEntry = (
+  aType: string,
+  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
+  aButtonAddNewElm: HTMLButtonElement,
+  aAddNewOptionInputsDivElm: HTMLElement
+) => {
+  let isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
+  setAlertForInputField(
+    aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+    isInputed
+  );
+  aButtonAddNewElm.disabled = isInputed ? false : true;
+
+  if (aType === 'selection') {
+    const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+      '.js-addNewOptionsCheckbox'
+    );
+    const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+      '.js-addNewOptionsInputText'
+    );
+    let isChecked = [...checkboxElms].some(
+      (elm) => (elm as HTMLInputElement).checked
+    );
+    let isInputed2 = [...inputTextElms].every(
+      (elm) => (elm as HTMLInputElement).value
+    );
+
+    setAlertForInputField(
+      checkboxElms as NodeListOf<HTMLInputElement>,
+      isChecked
+    );
+
+    let inputValues: string[] = getInputValues(
+      inputTextElms as NodeListOf<HTMLInputElement>,
+      true
+    );
+    const duplicateValuesIndices =
+      setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices(
+        inputValues,
+        inputTextElms as NodeListOf<HTMLInputElement>
+      );
+    if (!duplicateValuesIndices.length) {
+      setAlertForInputField(
+        inputTextElms as NodeListOf<HTMLInputElement>,
+        isInputed2
+      );
+    }
+
+    aButtonAddNewElm.disabled =
+      isInputed && isChecked && isInputed2 && !duplicateValuesIndices.length
+        ? false
+        : true;
+  }
+};
+
 export function switchType(
   aAddNewTypeSelectElm: HTMLElement,
   aAddNewTypeDivElms: NodeListOf<HTMLElement>,
@@ -31,37 +88,12 @@ export function switchType(
     aAddNewTypeDivElms[indices[0]].classList.remove('d-none');
     aAddNewTypeDivElms[indices[1]].classList.add('d-none');
 
-    let isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
-    setAlertForInputField(
-      aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-      isInputed
+    setValidationForDataEntry(
+      type,
+      aAddNewTextAreaElms,
+      aButtonAddNewElm,
+      aAddNewOptionInputsDivElm
     );
-    aButtonAddNewElm.disabled = isInputed ? false : true;
-
-    if (type === 'selection') {
-      const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
-        '.js-addNewOptionsCheckbox'
-      );
-      const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
-        '.js-addNewOptionsInputText'
-      );
-      let isChecked = [...checkboxElms].some(
-        (elm) => (elm as HTMLInputElement).checked
-      );
-      let isInputed2 = [...inputTextElms].every(
-        (elm) => (elm as HTMLInputElement).value
-      );
-      setAlertForInputField(
-        inputTextElms as NodeListOf<HTMLInputElement>,
-        isInputed2
-      );
-      setAlertForInputField(
-        checkboxElms as NodeListOf<HTMLInputElement>,
-        isChecked
-      );
-      aButtonAddNewElm.disabled =
-        isInputed && isChecked && isInputed2 ? false : true;
-    }
   });
 }
 
@@ -205,51 +237,16 @@ const setDisabled = (
         ? checkboxElms
         : inputTextElms;
 
-  let isInputed = false;
-  let isChecked = false;
-  let isInputed2 = false;
-
   for (const elm of elms) {
     elm.addEventListener(aEvent, function () {
       const type = aAddNewTypeSelectElm.value;
-      isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
-      setAlertForInputField(
-        aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-        isInputed
+
+      setValidationForDataEntry(
+        type,
+        aAddNewTextAreaElms,
+        aButtonAddNewElm,
+        aAddNewOptionInputsDivElm
       );
-      aButtonAddNewElm.disabled = isInputed ? false : true;
-
-      if (type === 'selection') {
-        isChecked = [...checkboxElms].some(
-          (elm) => (elm as HTMLInputElement).checked
-        );
-        isInputed2 = [...inputTextElms].every(
-          (elm) => (elm as HTMLInputElement).value
-        );
-        setAlertForInputField(
-          inputTextElms as NodeListOf<HTMLInputElement>,
-          isInputed2
-        );
-        setAlertForInputField(
-          checkboxElms as NodeListOf<HTMLInputElement>,
-          isChecked
-        );
-
-        let inputValues: string[] = getCategoryInputValues(
-          inputTextElms as NodeListOf<HTMLInputElement>,
-          true
-        );
-        const duplicateValuesIndices =
-          setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices(
-            inputValues,
-            inputTextElms as NodeListOf<HTMLInputElement>
-          );
-
-        aButtonAddNewElm.disabled =
-          isInputed && isChecked && isInputed2 && !duplicateValuesIndices.length
-            ? false
-            : true;
-      }
     });
   }
 };

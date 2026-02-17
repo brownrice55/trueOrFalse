@@ -2,7 +2,10 @@ import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Listener } from '../types/listener.type';
 import { setupDisplay, setCategoryInputs } from './display';
-import { setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices } from './inputValidation';
+import {
+  getInputValues,
+  setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
+} from './inputValidation';
 
 export function saveCategoryData(
   aQuizData: Map<number, Inputs>,
@@ -62,20 +65,6 @@ export function addCategoryInput(
   });
 }
 
-export function getCategoryInputValues(
-  aInputCategoryElms: NodeListOf<HTMLInputElement>,
-  aIsReset: boolean
-) {
-  let inputValues: string[] = [];
-  aInputCategoryElms.forEach((elm) => {
-    if (aIsReset) {
-      elm.classList.remove('border', 'border-danger', 'border-3');
-    }
-    inputValues.push(elm.value);
-  });
-  return inputValues;
-}
-
 export function setInputValidationForCategory(
   aInitialInputValues: string[],
   aButtonCancelElm: HTMLButtonElement,
@@ -85,7 +74,7 @@ export function setInputValidationForCategory(
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
-  let inputValues: string[] = getCategoryInputValues(inputCategoryElms, true);
+  let inputValues: string[] = getInputValues(inputCategoryElms, true);
 
   let isSame =
     JSON.stringify(aInitialInputValues) ===
@@ -101,10 +90,7 @@ export function setInputValidationForCategory(
   if (aIsUnderEdit) {
     aButtonSaveElm.disabled = true;
   } else {
-    let inputValues: string[] = getCategoryInputValues(
-      inputCategoryElms,
-      false
-    );
+    let inputValues: string[] = getInputValues(inputCategoryElms, false);
     let isSame =
       JSON.stringify(aInitialInputValues) ===
       JSON.stringify(inputValues.filter(Boolean));

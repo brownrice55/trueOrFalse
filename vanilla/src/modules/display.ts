@@ -3,7 +3,6 @@ import { displayList } from './quizList';
 import {
   saveCategoryData,
   setButtonDisabledForCategory,
-  getCategoryInputValues,
   editOrDeleteCategoryName,
   addCategoryInput,
 } from './categorySettings';
@@ -14,6 +13,7 @@ import {
   saveQuizData,
   setValidation,
 } from './addNew';
+import { getInputValues } from './inputValidation';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -107,7 +107,7 @@ export function setCategoryInputs(
   const inputCategoryElms =
     inputCategoryAreaElm?.querySelectorAll<HTMLInputElement>('input');
 
-  const initialInputValues: string[] = getCategoryInputValues(
+  const initialInputValues: string[] = getInputValues(
     inputCategoryElms as NodeListOf<HTMLInputElement>,
     true
   );

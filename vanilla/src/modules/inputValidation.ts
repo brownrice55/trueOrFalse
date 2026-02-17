@@ -1,3 +1,17 @@
+export function getInputValues(
+  aInputCategoryElms: NodeListOf<HTMLInputElement>,
+  aIsReset: boolean
+) {
+  let inputValues: string[] = [];
+  aInputCategoryElms.forEach((elm) => {
+    if (aIsReset) {
+      elm.classList.remove('border', 'border-danger', 'border-3');
+    }
+    inputValues.push(elm.value);
+  });
+  return inputValues;
+}
+
 const getNextIndex = (
   aInputValues: string[],
   aDuplicateValuesIndices: number[],
