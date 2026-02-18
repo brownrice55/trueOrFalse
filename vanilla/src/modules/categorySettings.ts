@@ -284,14 +284,22 @@ export function editOrDeleteCategoryName(
         bsModal.show();
 
         buttonDeleteCategoryElm?.addEventListener('click', function () {
-          const key = parseInt(
-            (targetInputElm as HTMLInputElement).dataset.index ?? '1000'
+          const keyNumber = parseInt(
+            (targetInputElm as HTMLInputElement).dataset.index ?? '10000'
           );
-          aQuizCategory.delete(key);
+          aQuizCategory.delete(keyNumber);
           localStorage.setItem(
             'quizCategory',
             JSON.stringify([...aQuizCategory])
           );
+
+          [...aQuizData].forEach(([_, val]) => {
+            if (parseInt(val.category) === keyNumber) {
+              val.category = 'unspecified';
+            }
+          });
+          localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
           bsModal.hide();
 
           setCategoryInputs(

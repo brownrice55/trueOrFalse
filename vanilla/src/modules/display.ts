@@ -73,22 +73,31 @@ export function setQuizList(aQuizData: Map<number, Inputs>) {
 export function getCategoryInputHTML(
   aQuizCategory: Map<number, InputsCategory>
 ) {
-  const len = aQuizCategory.size ? aQuizCategory.size : 3;
   let inputsData = '';
-  for (let cnt = 0; cnt < len; ++cnt) {
-    const currentData = aQuizCategory.get(cnt);
-    let isDisabled = '';
-    inputsData += '<div class="my-3 position-relative">';
-    if (currentData?.isActive) {
-      inputsData += `<span>問題に設定済みのカテゴリー名</span>`;
-      inputsData += `<div class="position-absolute bottom-0 end-0">
+
+  if (aQuizCategory.size) {
+    [...aQuizCategory].forEach(([key, val]) => {
+      let isDisabled = '';
+      inputsData += '<div class="my-3 position-relative">';
+      if (val?.isActive) {
+        inputsData += `<span>問題に設定済みのカテゴリー名</span>`;
+        inputsData += `<div class="position-absolute bottom-0 end-0">
                       <button class="btn btn-primary me-1 js-categoryEditBtn" type="button">編集する</button>
                       <button class="btn btn-primary js-categoryDeleteBtn" type="button">削除する</button>
                     </div>`;
-      isDisabled = ' disabled';
-    }
-    inputsData += `<input type="text" class="form-control" id="input-${cnt}" value="${currentData?.categoryName || ''}" data-is-active="${currentData?.isActive || false}" data-index="${cnt}" ${isDisabled} />
+        isDisabled = ' disabled';
+      }
+      inputsData += `<input type="text" class="form-control" id="input-${key}" value="${val?.categoryName || ''}" data-is-active="${val?.isActive || false}" data-index="${key}" ${isDisabled} />
     </div>`;
+    });
+  } else {
+    Array(3)
+      .fill('')
+      .forEach((_, index) => {
+        inputsData += `<div class="my-3">
+        <input type="text" class="form-control" id="input-${index}" value="" data-is-active="false" data-index="${index}" />
+        </div>`;
+      });
   }
   return inputsData;
 }
