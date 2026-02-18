@@ -133,6 +133,8 @@ export function setCategoryInputs(
     document.querySelector<HTMLButtonElement>('.js-buttonCancel');
 
   editOrDeleteCategoryName(
+    aQuizCategory as Map<number, InputsCategory>,
+    aQuizData as Map<number, Inputs>,
     inputCategoryAreaElm as HTMLElement,
     initialInputValues,
     buttonSaveElm as HTMLButtonElement,

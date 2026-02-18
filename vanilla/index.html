@@ -152,7 +152,9 @@
             <div class="text-center my-5">
               <button
                 type="button"
-                class="btn btn-primary px-4 py-2 me-3 js-buttonDeleteDetail"
+                class="btn btn-primary px-4 py-2 me-3"
+                data-bs-toggle="modal"
+                data-bs-target="#modalForQuiz"
               >
                 削除する
               </button>
@@ -170,6 +172,49 @@
               >
                 一覧に戻る
               </button>
+            </div>
+            <div
+              class="modal fade"
+              id="modalForQuiz"
+              tabindex="-1"
+              aria-labelledby="modalForQuiz"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalForQuiz">
+                      クイズの削除確認
+                    </h1>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    「<span class="js-quizQuestionSpan"></span
+                    >」を削除しますか？
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      削除しない
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary js-buttonDeleteDetail"
+                      data-bs-dismiss="modal"
+                    >
+                      削除する
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -351,6 +396,48 @@
                 </button>
               </div>
             </form>
+            <div
+              class="modal fade js-modalForCategoryDiv"
+              id="modalForCategory"
+              tabindex="-1"
+              aria-labelledby="modalForQuiz"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalForCategory">
+                      カテゴリーの削除確認
+                    </h1>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    「<span class="js-quizCategorySpan"></span
+                    >」を削除して、問題に設定済みのカテゴリー名を「指定なし」に変更しますか？
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      削除しない
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary js-buttonDeleteCategory"
+                    >
+                      削除して問題に設定済みのカテゴリー名を<br />「指定なし」にする
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>

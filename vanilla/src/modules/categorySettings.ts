@@ -1,3 +1,4 @@
+import * as bootstrap from 'bootstrap';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Listener } from '../types/listener.type';
@@ -167,6 +168,8 @@ const getInputStatus = (
 };
 
 export function editOrDeleteCategoryName(
+  aQuizCategory: Map<number, InputsCategory>,
+  aQuizData: Map<number, Inputs>,
   aInputCategoryAreaElm: HTMLElement,
   aInitialInputValues: string[],
   aButtonSaveElm: HTMLButtonElement,
@@ -237,6 +240,9 @@ export function editOrDeleteCategoryName(
     });
   });
 
+  const buttonDeleteCategoryElm = document.querySelector(
+    '.js-buttonDeleteCategory'
+  );
   deleteBtnElms.forEach((elm, index) => {
     elm.addEventListener('click', function () {
       if (targetIndex === index && isUnderEdit) {
@@ -260,7 +266,39 @@ export function editOrDeleteCategoryName(
           aButtonAddInputElm.disabled = false;
         }
       } else if (!isUnderEdit) {
-        console.log('display a delete panel');
+        const targetInputElm = this?.parentNode?.nextSibling;
+        const quizCategorySpanElm = document.querySelector(
+          '.js-quizCategorySpan'
+        );
+        if (quizCategorySpanElm) {
+          quizCategorySpanElm.innerHTML = (
+            targetInputElm as HTMLInputElement
+          ).value;
+        }
+        const modalForCategoryDivElm = document.querySelector(
+          '.js-modalForCategoryDiv'
+        );
+        const bsModal = new bootstrap.Modal(
+          modalForCategoryDivElm as HTMLElement
+        );
+        bsModal.show();
+
+        buttonDeleteCategoryElm?.addEventListener('click', function () {
+          const key = parseInt(
+            (targetInputElm as HTMLInputElement).dataset.index ?? '1000'
+          );
+          aQuizCategory.delete(key);
+          localStorage.setItem(
+            'quizCategory',
+            JSON.stringify([...aQuizCategory])
+          );
+          bsModal.hide();
+
+          setCategoryInputs(
+            aQuizCategory as Map<number, InputsCategory>,
+            aQuizData as Map<number, Inputs>
+          );
+        });
       }
     });
   });

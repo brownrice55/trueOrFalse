@@ -13,6 +13,8 @@ const setEventForDisplayDetail = (
     '.js-buttonDeleteDetail'
   );
 
+  const quizQuestionSpanElm = document.querySelector('.js-quizQuestionSpan');
+
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
       aListDivElms[0].classList.add('d-none');
@@ -53,10 +55,12 @@ const setEventForDisplayDetail = (
                 100 +
               '%'
             : '0%';
+        if (quizQuestionSpanElm) {
+          quizQuestionSpanElm.textContent = currentVal.question;
+        }
       }
 
       buttonDeleteDetailElm?.addEventListener('click', function () {
-        // ***** add modal to confirm to delete
         aQuizData.delete(key);
         localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
         aListDivElms[0].classList.remove('d-none');
