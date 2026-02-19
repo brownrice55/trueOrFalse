@@ -72,6 +72,11 @@ export function setQuizList(
     listDivElms as NodeListOf<Element>,
     listUlElm as HTMLElement
   );
+
+  const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
+  buttonGoToAddNewElm?.addEventListener('click', function () {
+    switchPage(2);
+  });
 }
 
 export function getCategoryInputHTML(
@@ -229,4 +234,11 @@ export function setAddNew(
     addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
     addNewOptionInputsDivElm as HTMLElement
   );
+
+  const buttonBackToListFromAddNewElm = document.querySelector(
+    '.js-buttonBackToListFromAddNew'
+  );
+  buttonBackToListFromAddNewElm?.addEventListener('click', function () {
+    switchPage(1);
+  });
 }

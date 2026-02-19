@@ -1,3 +1,4 @@
+import * as bootstrap from 'bootstrap';
 import { switchPage } from './display';
 import { displayList } from './quizList';
 import {
@@ -258,8 +259,6 @@ export function saveQuizData(
     }
     // reset end
 
-    switchPage(0);
-
     const listDivElms = document.querySelectorAll('.js-listDiv');
     const listUlElm = document.querySelector('.js-listUl');
     displayList(
@@ -268,6 +267,38 @@ export function saveQuizData(
       listDivElms,
       listUlElm as HTMLElement
     );
+
+    // display the modal window to select what to do next
+    const modalForSelectionWhatToDoNextDivElm = document.querySelector(
+      '.js-modalForSelectionWhatToDoNextDiv'
+    );
+    const bsModal = new bootstrap.Modal(
+      modalForSelectionWhatToDoNextDivElm as HTMLElement
+    );
+
+    bsModal.show();
+
+    const numberOfQuestionsSpanElm =
+      modalForSelectionWhatToDoNextDivElm?.querySelector('span');
+    if (numberOfQuestionsSpanElm) {
+      numberOfQuestionsSpanElm.innerHTML = String(aQuizData.size);
+    }
+
+    const buttonsForSelectionWhatToDoNextElms =
+      modalForSelectionWhatToDoNextDivElm?.querySelectorAll('button');
+
+    const switchIndices = [1, 0];
+    if (buttonsForSelectionWhatToDoNextElms) {
+      for (let cnt = 0; cnt < 2; ++cnt) {
+        buttonsForSelectionWhatToDoNextElms[cnt + 2].addEventListener(
+          'click',
+          function () {
+            bsModal.hide();
+            switchPage(switchIndices[cnt]);
+          }
+        );
+      }
+    }
   });
 }
 
