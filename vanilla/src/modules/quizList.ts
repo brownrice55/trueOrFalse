@@ -1,5 +1,10 @@
 import { setQuizList, setCategoryInputs } from './display';
-import { getCategoryOptions } from './form';
+import {
+  getCategoryOptions,
+  getTypeOptions,
+  getTextArea,
+  getPriorityOptions,
+} from './form';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -18,6 +23,15 @@ const setEventForDisplayDetail = (
 
   const quizQuestionSpanElm = document.querySelector('.js-quizQuestionSpan');
 
+  const currentValKeys: (keyof Inputs)[] = [
+    'category',
+    'type',
+    'question',
+    'answer',
+    'explanation',
+    'priority',
+    'notes',
+  ];
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
       aListDivElms[0].classList.add('d-none');
@@ -29,12 +43,15 @@ const setEventForDisplayDetail = (
       const key = parseInt(
         (e.currentTarget as HTMLButtonElement).dataset.key ?? '0'
       );
-      const currentVal = aQuizData.get(key);
+      const currentVal: Inputs | undefined = aQuizData.get(key);
       const arrayTextQuestionAnswer = ['まる', 'ばつ'];
       if (currentVal) {
-        listDdElms[0].innerHTML = currentVal.category;
-        listDdElms[1].innerHTML = currentVal.type;
-        listDdElms[2].innerHTML = currentVal.question;
+        currentValKeys.forEach((val, idx) => {
+          if (idx !== 3) {
+            const currentValKey = val;
+            listDdElms[idx].innerHTML = String(currentVal[currentValKey]);
+          }
+        });
         let answerForSelection = '';
         if (currentVal.type === 'selection') {
           currentVal.options.forEach((arr) => {
@@ -50,9 +67,6 @@ const setEventForDisplayDetail = (
           currentVal.type === 'trueOrFalse'
             ? arrayTextQuestionAnswer[currentVal.answer]
             : answerForSelection;
-        listDdElms[4].innerHTML = currentVal.explanation;
-        listDdElms[5].innerHTML = currentVal.priority;
-        listDdElms[6].innerHTML = currentVal.notes;
         listDdElms[7].innerHTML =
           currentVal.numberOfAnswers && currentVal.numberOfCorrectAnswers
             ? (currentVal.numberOfCorrectAnswers / currentVal.numberOfAnswers) *
@@ -70,18 +84,21 @@ const setEventForDisplayDetail = (
           });
         };
 
-        const setInnerHTMLForEdit = (idx: number) => {
-          if (idx === 0) {
-            listDdElms[0].innerHTML = isUnderEdit
-              ? `<select
-                class="form-select"
-                aria-label="category"
-                id="detailEdit${idx}"
-              >` +
-                getCategoryOptions(aQuizCategory) +
-                '</select>'
-              : currentVal.category;
-          }
+        const formElements = [
+          `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, currentVal.category)}</select>`,
+          `<select class="form-select" aria-label="type" id="detailType" value="${currentVal.type}">${getTypeOptions(currentVal.type)}</select>`,
+          getTextArea(currentVal.question, 'detailQuestion'),
+          '',
+          getTextArea(currentVal.explanation, 'detailExplanation'),
+          `<select class="form-select" aria-label="priority" id="detailPriority" value="${currentVal.priority}">${getPriorityOptions(currentVal.priority)}</select>`,
+          getTextArea(currentVal.notes, 'detailNotes'),
+        ];
+
+        const setInnerHTMLForEdit = (aIdx: number, aCurrentVal: Inputs) => {
+          const currentValKey = currentValKeys[aIdx];
+          listDdElms[aIdx].innerHTML = isUnderEdit
+            ? formElements[aIdx]
+            : String(aCurrentVal[currentValKey]);
         };
         let isUnderEdit = false;
         let cancelBtnElm: HTMLButtonElement | null = null;
@@ -112,15 +129,24 @@ const setEventForDisplayDetail = (
                 this.remove();
                 cancelBtnElm = null;
                 isUnderEdit = false;
+                setDisabled(isUnderEdit);
                 elm.textContent = '編集する';
-                setInnerHTMLForEdit(idx);
+                if (idx === 3 || idx === 7) {
+                  console.log('later *****');
+                } else {
+                  setInnerHTMLForEdit(idx, currentVal);
+                }
               });
             } else {
               elm.textContent = '編集する';
               cancelBtnElm?.remove();
               cancelBtnElm = null;
             }
-            setInnerHTMLForEdit(idx);
+            if (idx === 3 || idx === 7) {
+              console.log('later *****');
+            } else {
+              setInnerHTMLForEdit(idx, currentVal);
+            }
           });
         });
         // edit end

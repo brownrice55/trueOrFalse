@@ -12,7 +12,7 @@ import {
   saveQuizData,
   setValidation,
 } from './addNew';
-import { getCategoryOptions } from './form';
+import { getCategoryOptions, getTypeOptions, getPriorityOptions } from './form';
 import { getInputValues } from './inputValidation';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -180,10 +180,15 @@ export function setAddNew(
     '.js-addNewCategorySelect'
   );
   if (addNewCategorySelectElm) {
-    addNewCategorySelectElm.innerHTML = getCategoryOptions(aQuizCategory);
+    addNewCategorySelectElm.innerHTML = getCategoryOptions(aQuizCategory, '');
   }
 
   const addNewTypeSelectElm = document.querySelector('.js-addNewTypeSelect');
+
+  if (addNewTypeSelectElm) {
+    addNewTypeSelectElm.innerHTML = getTypeOptions('trueOrFalse');
+  }
+
   const addNewTypeDivElms = document.querySelectorAll('.js-addNewTypeDiv');
 
   const buttonAddNewElm = document.querySelector('.js-buttonAddNew');
@@ -191,6 +196,9 @@ export function setAddNew(
   const addNewPrioritySelectElm = document.querySelector(
     '.js-addNewPrioritySelect'
   );
+  if (addNewPrioritySelectElm) {
+    addNewPrioritySelectElm.innerHTML = getPriorityOptions('high');
+  }
   const addNewAnswerRadioElms = document.querySelectorAll(
     '.js-addNewAnswerRadio'
   );
