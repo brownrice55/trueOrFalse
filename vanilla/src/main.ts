@@ -37,7 +37,10 @@ if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
 
-setQuizList(quizData as Map<number, Inputs>);
+setQuizList(
+  quizData as Map<number, Inputs>,
+  quizCategory as Map<number, InputsCategory>
+);
 
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,

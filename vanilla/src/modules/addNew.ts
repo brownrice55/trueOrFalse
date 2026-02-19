@@ -262,7 +262,12 @@ export function saveQuizData(
 
     const listDivElms = document.querySelectorAll('.js-listDiv');
     const listUlElm = document.querySelector('.js-listUl');
-    displayList(aQuizData, listDivElms, listUlElm as HTMLElement);
+    displayList(
+      aQuizData,
+      aQuizCategory,
+      listDivElms,
+      listUlElm as HTMLElement
+    );
   });
 }
 

@@ -60,11 +60,15 @@ export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
   hideMenus(mediaQueryList.matches);
 }
 
-export function setQuizList(aQuizData: Map<number, Inputs>) {
+export function setQuizList(
+  aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>
+) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
   displayList(
     aQuizData,
+    aQuizCategory,
     listDivElms as NodeListOf<Element>,
     listUlElm as HTMLElement
   );

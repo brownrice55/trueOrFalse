@@ -1,8 +1,10 @@
-import { setQuizList } from './display';
+import { setQuizList, setCategoryInputs } from './display';
 import type { Inputs } from '../types/inputs.type';
+import type { InputsCategory } from '../types/inputsCategory.type';
 
 const setEventForDisplayDetail = (
   aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<HTMLElement>
 ) => {
   const listDetailButtonElms = document.querySelectorAll(
@@ -63,9 +65,33 @@ const setEventForDisplayDetail = (
       buttonDeleteDetailElm?.addEventListener('click', function () {
         aQuizData.delete(key);
         localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
+        // reset isActive in the category data
+        let activeCategoryKeys: string[] = [];
+        aQuizData.forEach((val) => {
+          if (val.category !== 'unspecified') {
+            activeCategoryKeys.push(val.category);
+          }
+        });
+        const activeCategoryKeysSet = new Set(activeCategoryKeys);
+        aQuizCategory.forEach((val, key) => {
+          val.isActive = false;
+          activeCategoryKeysSet.forEach((val2) => {
+            if (key === parseInt(val2)) {
+              val.isActive = true;
+            }
+          });
+        });
+        localStorage.setItem(
+          'quizCategory',
+          JSON.stringify([...aQuizCategory])
+        );
+
+        setCategoryInputs(aQuizCategory, aQuizData);
+
         aListDivElms[0].classList.remove('d-none');
         aListDivElms[1].classList.add('d-none');
-        setQuizList(aQuizData);
+        setQuizList(aQuizData, aQuizCategory);
       });
     });
   });
@@ -85,6 +111,7 @@ const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
 
 export function displayList(
   aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<Element>,
   aListUlElm: HTMLElement
 ) {
@@ -97,6 +124,10 @@ export function displayList(
               </li>`;
   });
   aListUlElm.innerHTML = liHtml;
-  setEventForDisplayDetail(aQuizData, aListDivElms as NodeListOf<HTMLElement>);
+  setEventForDisplayDetail(
+    aQuizData,
+    aQuizCategory,
+    aListDivElms as NodeListOf<HTMLElement>
+  );
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
 }
