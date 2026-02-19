@@ -1,4 +1,5 @@
 import { setQuizList, setCategoryInputs } from './display';
+import { getCategoryOptions } from './form';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -23,6 +24,7 @@ const setEventForDisplayDetail = (
       aListDivElms[1].classList.remove('d-none');
 
       const listDdElms = document.querySelectorAll('.js-listDd');
+      const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 
       const key = parseInt(
         (e.currentTarget as HTMLButtonElement).dataset.key ?? '0'
@@ -60,6 +62,68 @@ const setEventForDisplayDetail = (
         if (quizQuestionSpanElm) {
           quizQuestionSpanElm.textContent = currentVal.question;
         }
+
+        // edit start
+        const setDisabled = (aIsUnderEdit: boolean) => {
+          listEditBtnElms.forEach((elm) => {
+            (elm as HTMLButtonElement).disabled = aIsUnderEdit ? true : false;
+          });
+        };
+
+        const setInnerHTMLForEdit = (idx: number) => {
+          if (idx === 0) {
+            listDdElms[0].innerHTML = isUnderEdit
+              ? `<select
+                class="form-select"
+                aria-label="category"
+                id="detailEdit${idx}"
+              >` +
+                getCategoryOptions(aQuizCategory) +
+                '</select>'
+              : currentVal.category;
+          }
+        };
+        let isUnderEdit = false;
+        let cancelBtnElm: HTMLButtonElement | null = null;
+        listEditBtnElms.forEach((elm, idx) => {
+          elm.addEventListener('click', function (e) {
+            isUnderEdit = !isUnderEdit;
+            setDisabled(isUnderEdit);
+
+            const targetBtnElm = e.currentTarget;
+            if (isUnderEdit) {
+              elm.textContent = '上書きする';
+
+              if (targetBtnElm) {
+                (targetBtnElm as HTMLButtonElement).disabled = false;
+              }
+
+              cancelBtnElm = document.createElement('button');
+              cancelBtnElm.textContent = 'キャンセル';
+              cancelBtnElm.classList.add(
+                'btn',
+                'btn-secondary',
+                'btn-sm',
+                'ms-2'
+              );
+
+              elm?.parentNode?.appendChild(cancelBtnElm);
+              cancelBtnElm.addEventListener('click', function () {
+                this.remove();
+                cancelBtnElm = null;
+                isUnderEdit = false;
+                elm.textContent = '編集する';
+                setInnerHTMLForEdit(idx);
+              });
+            } else {
+              elm.textContent = '編集する';
+              cancelBtnElm?.remove();
+              cancelBtnElm = null;
+            }
+            setInnerHTMLForEdit(idx);
+          });
+        });
+        // edit end
       }
 
       buttonDeleteDetailElm?.addEventListener('click', function () {

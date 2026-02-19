@@ -7,12 +7,12 @@ import {
   addCategoryInput,
 } from './categorySettings';
 import {
-  setCategoryOptions,
   switchType,
   setOptionInputs,
   saveQuizData,
   setValidation,
 } from './addNew';
+import { getCategoryOptions } from './form';
 import { getInputValues } from './inputValidation';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -176,8 +176,12 @@ export function setAddNew(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>
 ) {
-  const addNewCategoryElm = document.querySelector('.js-addNewCategory');
-  setCategoryOptions(aQuizCategory, addNewCategoryElm as HTMLElement);
+  const addNewCategorySelectElm = document.querySelector(
+    '.js-addNewCategorySelect'
+  );
+  if (addNewCategorySelectElm) {
+    addNewCategorySelectElm.innerHTML = getCategoryOptions(aQuizCategory);
+  }
 
   const addNewTypeSelectElm = document.querySelector('.js-addNewTypeSelect');
   const addNewTypeDivElms = document.querySelectorAll('.js-addNewTypeDiv');
@@ -218,7 +222,7 @@ export function setAddNew(
     aQuizData,
     aQuizCategory,
     buttonAddNewElm as HTMLButtonElement,
-    addNewCategoryElm as HTMLSelectElement,
+    addNewCategorySelectElm as HTMLSelectElement,
     addNewTypeSelectElm as HTMLSelectElement,
     addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
     addNewPrioritySelectElm as HTMLSelectElement,

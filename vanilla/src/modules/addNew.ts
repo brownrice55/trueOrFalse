@@ -9,19 +9,6 @@ import { setCategoryInputs } from './display';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 
-export function setCategoryOptions(
-  aQuizCategory: Map<number, InputsCategory>,
-  aAddNewCategoryElm: HTMLElement
-) {
-  let optionHTML = `<option value="unspecified" selected>指定しない</option>`;
-  [...aQuizCategory].forEach(([idx, obj]) => {
-    optionHTML += `<option value="${idx}">${obj.categoryName}</option>`;
-  });
-  optionHTML += `<option value="add">カテゴリーを追加する</option>`;
-
-  aAddNewCategoryElm.innerHTML = optionHTML;
-}
-
 const setValidationForDataEntry = (
   aType: string,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,

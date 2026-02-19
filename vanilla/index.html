@@ -114,19 +114,89 @@
               クイズ一覧に戻る
             </button>
             <dl>
-              <dt>カテゴリー</dt>
+              <dt>
+                <span>カテゴリー</span>
+                <div class="js-listDetailEditDiv float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
               <dd class="js-listDd"></dd>
-              <dt>クイズの種類</dt>
+              <dt>
+                <span>クイズの種類</span>
+                <div class="js-listDetailEditDiv float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
               <dd class="js-listDd"></dd>
-              <dt>問題</dt>
+              <dt>
+                <span>問題</span>
+                <div class="js-listDetailEditDiv float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
               <dd class="js-listDd"></dd>
-              <dt>答え</dt>
+              <dt>
+                <span>答え</span>
+                <div class="js-listDetailEditDiv float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
               <dd class="js-listDd"></dd>
-              <dt>解説</dt>
+              <dt>
+                <span>解説</span>
+                <div class="js-listDetailEditDiv float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
               <dd class="js-listDd"></dd>
-              <dt>優先順位</dt>
+              <dt>
+                <span>優先順位</span>
+                <div class="js-listDetailEditDiv float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
               <dd class="js-listDd"></dd>
-              <dt>メモ</dt>
+              <dt>
+                <span>メモ</span>
+                <div class="js-listDetailEditDiv float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
               <dd class="js-listDd"></dd>
               <dt>正解率</dt>
               <dd class="js-listDd"></dd>
@@ -164,14 +234,7 @@
               >
                 削除する
               </button>
-              <button
-                type="button"
-                class="btn btn-primary px-4 py-2 js-buttonEditDetail"
-              >
-                編集する
-              </button>
-            </div>
-            <div class="text-center my-5">
+
               <button
                 type="button"
                 class="btn btn-primary px-4 py-2 js-buttonBackToList"
@@ -235,7 +298,7 @@
             <div class="my-3">
               <label for="category" class="form-label">カテゴリー</label>
               <select
-                class="form-select js-addNewCategory"
+                class="form-select js-addNewCategorySelect"
                 aria-label="category"
                 id="category"
               ></select>
@@ -391,7 +454,7 @@
                     class="modal-title fs-5"
                     id="modalForSelectionWhatToDoNext"
                   >
-                    カテゴリーの削除確認
+                    新規登録完了
                   </h1>
                   <button
                     type="button"
@@ -401,7 +464,8 @@
                   ></button>
                 </div>
                 <div class="modal-body">
-                  現在<span></span>個の問題が登録されています。
+                  新規登録完了を完了しました。<br />現在<span
+                  ></span>個の問題が登録されています。
                 </div>
                 <div class="d-flex justify-content-between mx-2 mb-2">
                   <button
