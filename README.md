@@ -54,13 +54,17 @@
 
 | クイズ一覧                                                                                              | クイズ詳細（まるばつ）                                                                                  | クイズ詳細（選択問題）                                                                                  |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/c58f90f8-8682-4476-aa64-d9bbf31dd5d3" width="200"> | <img src="https://github.com/user-attachments/assets/b2f6f8c2-d204-4ca3-86f5-4e87e441ca72" width="200"> | <img src="https://github.com/user-attachments/assets/030d6494-488b-46f8-a606-08ca27c01f58" width="200"> |
+| <img src="https://github.com/user-attachments/assets/c58f90f8-8682-4476-aa64-d9bbf31dd5d3" width="200"> | <img src="https://github.com/user-attachments/assets/4dc012ea-c6bd-4b6d-a7fc-039caea1485a" width="200"> | <img src="https://github.com/user-attachments/assets/e55500d6-3110-4d46-a601-c7cca334b3fe" width="200"> |
+
+| クイズ詳細　編集（まるばつ）                                                                            | クイズ詳細　編集（選択問題）                                                                            |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="https://github.com/user-attachments/assets/e4cacf36-cf77-4288-9b6d-6043045195de" width="200"> | <img src="https://github.com/user-attachments/assets/6a61e041-cc6a-401f-921f-e682f171ea26" width="200"> |
 
 ### 参考
 
 <ul>
-<li></li>
-<li></li>
+<li>pankobo.me/blog/post/202202-js-deduplicate-array-set</li>
+<li>note.com/yamanoborer/n/n2e4cc40328b7</li>
 <li></li>
 <li></li>
 </ul>
