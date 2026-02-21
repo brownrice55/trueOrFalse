@@ -12,7 +12,11 @@ import {
   saveQuizData,
   setValidation,
 } from './addNew';
-import { getCategoryOptions, getTypeOptions, getPriorityOptions } from './form';
+import {
+  getCategoryOptions,
+  getTypeOptions,
+  getPriorityOptions,
+} from './common/form';
 import { getInputValues } from './inputValidation';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';

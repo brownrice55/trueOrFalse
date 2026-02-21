@@ -1,4 +1,4 @@
-import type { InputsCategory } from '../types/inputsCategory.type';
+import type { InputsCategory } from '../../types/inputsCategory.type';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
   aValue: string

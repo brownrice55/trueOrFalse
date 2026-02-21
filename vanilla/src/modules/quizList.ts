@@ -4,7 +4,8 @@ import {
   getTypeOptions,
   getTextArea,
   getPriorityOptions,
-} from './form';
+} from './common/form';
+import { arrayTextQuestionAnswer } from './common/array';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -31,30 +32,133 @@ const setEventForDisplayDetail = (
     'explanation',
     'priority',
     'notes',
+    'numberOfCorrectAnswers',
   ];
-  listDetailButtonElms.forEach((elm) => {
-    elm.addEventListener('click', function (e) {
-      aListDivElms[0].classList.add('d-none');
-      aListDivElms[1].classList.remove('d-none');
 
-      const listDdElms = document.querySelectorAll('.js-listDd');
-      const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+  const listDdElms = document.querySelectorAll('.js-listDd');
+  const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 
-      const key = parseInt(
-        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0'
+  const setInnerHTMLForEdit = (
+    aIdx: number,
+    aCurrentVal: Inputs,
+    aIsUnderEdit: boolean
+  ) => {
+    const formElements = [
+      `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category)}</select>`,
+      `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
+      getTextArea(aCurrentVal.question, 'detailQuestion'),
+      '',
+      getTextArea(aCurrentVal.explanation, 'detailExplanation'),
+      `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
+      getTextArea(aCurrentVal.notes, 'detailNotes'),
+    ];
+
+    const currentValKey = currentValKeys[aIdx];
+    listDdElms[aIdx].innerHTML = aIsUnderEdit
+      ? formElements[aIdx]
+      : String(aCurrentVal[currentValKey]);
+  };
+
+  const setInnerHTMLForEditIrregular = (
+    aIdx: number,
+    aCurrentVal: Inputs,
+    aIsUnderEdit: boolean
+  ) => {
+    type FormElementsIrregularIndex3Type = {
+      trueOrFalse: string;
+      selection: string;
+    };
+    if (aIsUnderEdit && aIdx === 3) {
+      const formElementsIrregularIndex3: FormElementsIrregularIndex3Type = {
+        trueOrFalse: `<div class="form-check form-check-inline my-3">
+          <input
+            class="form-check-input js-addNewAnswerRadio"
+            type="radio"
+            name="answer"
+            id="answer1"
+            value="1"
+            checked
+          />
+          <label class="form-check-label" for="answer1">まる</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input js-addNewAnswerRadio"
+            type="radio"
+            name="answer"
+            id="answer2"
+            value="2"
+          />
+          <label class="form-check-label" for="answer2">ばつ</label>
+        </div>`,
+        selection: `<div class="my-3">
+            <label for="numberOfOptions" class="form-label"
+              >選択肢の数</label
+            >
+            <select
+              class="form-select js-addNewOptionNumberSelect"
+              aria-label="numberOfOptions"
+              id="numberOfOptions"
+            >
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <p>
+            選択肢を入力して、正解の選択肢にチェックを入れてください。
+          </p>
+          <div class="my-3 js-addNewOptionInputsDiv">
+            <div class="input-group mb-3">
+              <div class="input-group-text">
+                <input
+                  id="option1"
+                  class="js-addNewOptionsCheckbox form-check-input mt-0"
+                  type="checkbox"
+                  value=""
+                />
+              </div>
+              <input
+                id="option1-2"
+                type="text"
+                class="js-addNewOptionsInputText form-control"
+              />
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-text">
+                <input
+                  id="option2"
+                  class="js-addNewOptionsCheckbox form-check-input mt-0"
+                  type="checkbox"
+                  value=""
+                />
+              </div>
+              <input
+                id="option2-2"
+                type="text"
+                class="js-addNewOptionsInputText form-control"
+              />
+            </div>
+          </div>
+        </div>`,
+      };
+
+      listDdElms[3].innerHTML = String(
+        formElementsIrregularIndex3[
+          aCurrentVal.type as keyof FormElementsIrregularIndex3Type
+        ]
       );
-      const currentVal: Inputs | undefined = aQuizData.get(key);
-      const arrayTextQuestionAnswer = ['まる', 'ばつ'];
-      if (currentVal) {
-        currentValKeys.forEach((val, idx) => {
-          if (idx !== 3) {
-            const currentValKey = val;
-            listDdElms[idx].innerHTML = String(currentVal[currentValKey]);
-          }
-        });
+    } else {
+      if (aIdx === 3) {
         let answerForSelection = '';
-        if (currentVal.type === 'selection') {
-          currentVal.options.forEach((arr) => {
+        if (aCurrentVal.type === 'selection') {
+          aCurrentVal.options.forEach((arr) => {
             if (arr[0]) {
               if (answerForSelection) {
                 answerForSelection += '、';
@@ -63,45 +167,56 @@ const setEventForDisplayDetail = (
             }
           });
         }
+
         listDdElms[3].innerHTML =
-          currentVal.type === 'trueOrFalse'
-            ? arrayTextQuestionAnswer[currentVal.answer]
+          aCurrentVal.type === 'trueOrFalse'
+            ? arrayTextQuestionAnswer[aCurrentVal.answer]
             : answerForSelection;
+      } else {
         listDdElms[7].innerHTML =
-          currentVal.numberOfAnswers && currentVal.numberOfCorrectAnswers
-            ? (currentVal.numberOfCorrectAnswers / currentVal.numberOfAnswers) *
+          aCurrentVal.numberOfAnswers && aCurrentVal.numberOfCorrectAnswers
+            ? (aCurrentVal.numberOfCorrectAnswers /
+                aCurrentVal.numberOfAnswers) *
                 100 +
               '%'
             : '0%';
+      }
+    }
+  };
+
+  listDetailButtonElms.forEach((elm) => {
+    elm.addEventListener('click', function (e) {
+      aListDivElms[0].classList.add('d-none');
+      aListDivElms[1].classList.remove('d-none');
+
+      const key = parseInt(
+        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0'
+      );
+      const currentVal: Inputs | undefined = aQuizData.get(key);
+
+      if (currentVal) {
+        currentValKeys.forEach((val, idx) => {
+          if (idx === 3 || idx === 7) {
+            setInnerHTMLForEditIrregular(idx, currentVal, false);
+          } else {
+            const currentValKey = val;
+            listDdElms[idx].innerHTML = String(currentVal[currentValKey]);
+          }
+        });
+
         if (quizQuestionSpanElm) {
           quizQuestionSpanElm.textContent = currentVal.question;
         }
 
-        // edit start
+        let isUnderEdit = false;
+        let cancelBtnElm: HTMLButtonElement | null = null;
+
         const setDisabled = (aIsUnderEdit: boolean) => {
           listEditBtnElms.forEach((elm) => {
             (elm as HTMLButtonElement).disabled = aIsUnderEdit ? true : false;
           });
         };
 
-        const formElements = [
-          `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, currentVal.category)}</select>`,
-          `<select class="form-select" aria-label="type" id="detailType" value="${currentVal.type}">${getTypeOptions(currentVal.type)}</select>`,
-          getTextArea(currentVal.question, 'detailQuestion'),
-          '',
-          getTextArea(currentVal.explanation, 'detailExplanation'),
-          `<select class="form-select" aria-label="priority" id="detailPriority" value="${currentVal.priority}">${getPriorityOptions(currentVal.priority)}</select>`,
-          getTextArea(currentVal.notes, 'detailNotes'),
-        ];
-
-        const setInnerHTMLForEdit = (aIdx: number, aCurrentVal: Inputs) => {
-          const currentValKey = currentValKeys[aIdx];
-          listDdElms[aIdx].innerHTML = isUnderEdit
-            ? formElements[aIdx]
-            : String(aCurrentVal[currentValKey]);
-        };
-        let isUnderEdit = false;
-        let cancelBtnElm: HTMLButtonElement | null = null;
         listEditBtnElms.forEach((elm, idx) => {
           elm.addEventListener('click', function (e) {
             isUnderEdit = !isUnderEdit;
@@ -113,6 +228,15 @@ const setEventForDisplayDetail = (
 
               if (targetBtnElm) {
                 (targetBtnElm as HTMLButtonElement).disabled = false;
+              }
+
+              const cancelBtnElms = document.querySelectorAll('.btn-secondary');
+              if (cancelBtnElms) {
+                cancelBtnElms.forEach((elm) => {
+                  if (elm) {
+                    elm.remove();
+                  }
+                });
               }
 
               cancelBtnElm = document.createElement('button');
@@ -132,9 +256,9 @@ const setEventForDisplayDetail = (
                 setDisabled(isUnderEdit);
                 elm.textContent = '編集する';
                 if (idx === 3 || idx === 7) {
-                  console.log('later *****');
+                  setInnerHTMLForEditIrregular(idx, currentVal, isUnderEdit);
                 } else {
-                  setInnerHTMLForEdit(idx, currentVal);
+                  setInnerHTMLForEdit(idx, currentVal, isUnderEdit);
                 }
               });
             } else {
@@ -143,46 +267,45 @@ const setEventForDisplayDetail = (
               cancelBtnElm = null;
             }
             if (idx === 3 || idx === 7) {
-              console.log('later *****');
+              setInnerHTMLForEditIrregular(idx, currentVal, isUnderEdit);
             } else {
-              setInnerHTMLForEdit(idx, currentVal);
+              setInnerHTMLForEdit(idx, currentVal, isUnderEdit);
             }
           });
         });
-        // edit end
+
+        buttonDeleteDetailElm?.addEventListener('click', function () {
+          aQuizData.delete(key);
+          localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
+          // reset isActive in the category data
+          let activeCategoryKeys: string[] = [];
+          aQuizData.forEach((val) => {
+            if (val.category !== 'unspecified') {
+              activeCategoryKeys.push(val.category);
+            }
+          });
+          const activeCategoryKeysSet = new Set(activeCategoryKeys);
+          aQuizCategory.forEach((val, key) => {
+            val.isActive = false;
+            activeCategoryKeysSet.forEach((val2) => {
+              if (key === parseInt(val2)) {
+                val.isActive = true;
+              }
+            });
+          });
+          localStorage.setItem(
+            'quizCategory',
+            JSON.stringify([...aQuizCategory])
+          );
+
+          setCategoryInputs(aQuizCategory, aQuizData);
+
+          aListDivElms[0].classList.remove('d-none');
+          aListDivElms[1].classList.add('d-none');
+          setQuizList(aQuizData, aQuizCategory);
+        });
       }
-
-      buttonDeleteDetailElm?.addEventListener('click', function () {
-        aQuizData.delete(key);
-        localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-
-        // reset isActive in the category data
-        let activeCategoryKeys: string[] = [];
-        aQuizData.forEach((val) => {
-          if (val.category !== 'unspecified') {
-            activeCategoryKeys.push(val.category);
-          }
-        });
-        const activeCategoryKeysSet = new Set(activeCategoryKeys);
-        aQuizCategory.forEach((val, key) => {
-          val.isActive = false;
-          activeCategoryKeysSet.forEach((val2) => {
-            if (key === parseInt(val2)) {
-              val.isActive = true;
-            }
-          });
-        });
-        localStorage.setItem(
-          'quizCategory',
-          JSON.stringify([...aQuizCategory])
-        );
-
-        setCategoryInputs(aQuizCategory, aQuizData);
-
-        aListDivElms[0].classList.remove('d-none');
-        aListDivElms[1].classList.add('d-none');
-        setQuizList(aQuizData, aQuizCategory);
-      });
     });
   });
 };
@@ -191,6 +314,7 @@ const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
   const buttonBackToListElms = document.querySelectorAll(
     '.js-buttonBackToList'
   );
+
   buttonBackToListElms.forEach((elm) => {
     elm.addEventListener('click', function () {
       aListDivElms[0].classList.remove('d-none');
