@@ -5,9 +5,17 @@ import {
   getTextArea,
   getPriorityOptions,
 } from './common/form';
-import { arrayTextQuestionAnswer } from './common/array';
+import {
+  labelForQuestionAnswer,
+  labelForType,
+  labelForPriority,
+} from './common/labels';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
+import type {
+  labelForTypeType,
+  labelForPriorityType,
+} from '../types/labels.type';
 
 const setEventForDisplayDetail = (
   aQuizData: Map<number, Inputs>,
@@ -54,9 +62,16 @@ const setEventForDisplayDetail = (
     ];
 
     const currentValKey = currentValKeys[aIdx];
-    listDdElms[aIdx].innerHTML = aIsUnderEdit
-      ? formElements[aIdx]
-      : String(aCurrentVal[currentValKey]);
+
+    if (aIsUnderEdit) {
+      listDdElms[aIdx].innerHTML = formElements[aIdx];
+    } else {
+      if (aIdx === 0 || aIdx === 1 || aIdx === 5) {
+        setLablesForIrregular(aIdx, aCurrentVal, currentValKey);
+      } else {
+        listDdElms[aIdx].innerHTML = String(aCurrentVal[currentValKey]);
+      }
+    }
   };
 
   const setInnerHTMLForEditIrregular = (
@@ -170,7 +185,7 @@ const setEventForDisplayDetail = (
 
         listDdElms[3].innerHTML =
           aCurrentVal.type === 'trueOrFalse'
-            ? arrayTextQuestionAnswer[aCurrentVal.answer]
+            ? labelForQuestionAnswer[aCurrentVal.answer]
             : answerForSelection;
       } else {
         listDdElms[7].innerHTML =
@@ -181,6 +196,37 @@ const setEventForDisplayDetail = (
               '%'
             : '0%';
       }
+    }
+  };
+
+  const setLablesForIrregular = (
+    aIdx: number,
+    aCurrentVal: Inputs,
+    aCurrentValKey: keyof Inputs
+  ) => {
+    if (aIdx === 0) {
+      // category
+      const key = aCurrentVal[aCurrentValKey];
+      if (typeof key === 'string' && typeof parseInt(key) === 'number') {
+        const currentCategory = aQuizCategory.get(parseInt(key, 10));
+        if (currentCategory) {
+          listDdElms[0].innerHTML = String(currentCategory.categoryName);
+        }
+      } else {
+        listDdElms[0].innerHTML = '指定なし';
+      }
+    } else if (aIdx === 1) {
+      // type
+      listDdElms[1].innerHTML = String(
+        labelForType[aCurrentVal[aCurrentValKey] as keyof labelForTypeType]
+      );
+    } else if (aIdx === 5) {
+      // question
+      listDdElms[5].innerHTML = String(
+        labelForPriority[
+          String(aCurrentVal[aCurrentValKey]) as keyof labelForPriorityType
+        ]
+      );
     }
   };
 
@@ -200,7 +246,11 @@ const setEventForDisplayDetail = (
             setInnerHTMLForEditIrregular(idx, currentVal, false);
           } else {
             const currentValKey = val;
-            listDdElms[idx].innerHTML = String(currentVal[currentValKey]);
+            if (idx === 0 || idx === 1 || idx === 5) {
+              setLablesForIrregular(idx, currentVal, currentValKey);
+            } else {
+              listDdElms[idx].innerHTML = String(currentVal[currentValKey]);
+            }
           }
         });
 
