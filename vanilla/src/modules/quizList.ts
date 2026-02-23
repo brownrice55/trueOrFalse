@@ -230,6 +230,30 @@ const setEventForDisplayDetail = (
     }
   };
 
+  const saveEachItem = <K extends keyof Inputs>(
+    aIdx: number,
+    aCurrentVal: Inputs,
+    aCurrentValKey: K
+  ): Inputs => {
+    const key = aCurrentValKey;
+    if (!aIdx || aIdx === 1 || aIdx === 5) {
+      const selectElm = listDdElms[aIdx].querySelector(
+        'select'
+      ) as HTMLSelectElement | null;
+      if (selectElm && typeof aCurrentVal[key] === 'string') {
+        (aCurrentVal as any)[key] = (selectElm as HTMLSelectElement).value;
+      }
+    } else if (aIdx === 2 || aIdx === 4 || aIdx === 6) {
+      const textareaElm = listDdElms[aIdx].querySelector(
+        'textarea'
+      ) as HTMLTextAreaElement | null;
+      if (textareaElm && typeof aCurrentVal[key] === 'string') {
+        (aCurrentVal as any)[key] = textareaElm.value;
+      }
+    }
+    return aCurrentVal;
+  };
+
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
       aListDivElms[0].classList.add('d-none');
@@ -238,18 +262,20 @@ const setEventForDisplayDetail = (
       const key = parseInt(
         (e.currentTarget as HTMLButtonElement).dataset.key ?? '0'
       );
-      const currentVal: Inputs | undefined = aQuizData.get(key);
+      let currentVal: Inputs | undefined = aQuizData.get(key);
 
       if (currentVal) {
         currentValKeys.forEach((val, idx) => {
           if (idx === 3 || idx === 7) {
-            setInnerHTMLForEditIrregular(idx, currentVal, false);
+            setInnerHTMLForEditIrregular(idx, currentVal as Inputs, false);
           } else {
             const currentValKey = val;
             if (idx === 0 || idx === 1 || idx === 5) {
-              setLablesForIrregular(idx, currentVal, currentValKey);
+              setLablesForIrregular(idx, currentVal as Inputs, currentValKey);
             } else {
-              listDdElms[idx].innerHTML = String(currentVal[currentValKey]);
+              listDdElms[idx].innerHTML = String(
+                (currentVal as Inputs)[currentValKey]
+              );
             }
           }
         });
@@ -306,20 +332,36 @@ const setEventForDisplayDetail = (
                 setDisabled(isUnderEdit);
                 elm.textContent = '編集する';
                 if (idx === 3 || idx === 7) {
-                  setInnerHTMLForEditIrregular(idx, currentVal, isUnderEdit);
+                  setInnerHTMLForEditIrregular(
+                    idx,
+                    currentVal as Inputs,
+                    isUnderEdit
+                  );
                 } else {
-                  setInnerHTMLForEdit(idx, currentVal, isUnderEdit);
+                  setInnerHTMLForEdit(idx, currentVal as Inputs, isUnderEdit);
                 }
               });
             } else {
+              currentVal = saveEachItem(
+                idx,
+                currentVal as Inputs,
+                currentValKeys[idx]
+              );
+              aQuizData.set(key, currentVal);
+              localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
               elm.textContent = '編集する';
               cancelBtnElm?.remove();
               cancelBtnElm = null;
             }
             if (idx === 3 || idx === 7) {
-              setInnerHTMLForEditIrregular(idx, currentVal, isUnderEdit);
+              setInnerHTMLForEditIrregular(
+                idx,
+                currentVal as Inputs,
+                isUnderEdit
+              );
             } else {
-              setInnerHTMLForEdit(idx, currentVal, isUnderEdit);
+              setInnerHTMLForEdit(idx, currentVal as Inputs, isUnderEdit);
             }
           });
         });
