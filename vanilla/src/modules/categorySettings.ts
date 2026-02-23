@@ -54,13 +54,21 @@ export function saveCategoryData(
 
 export function addCategoryInput(
   aInputCategoryAreaElm: HTMLElement,
-  aButtonAddInputElm: HTMLButtonElement
+  aButtonAddInputElm: HTMLButtonElement,
+  aQuizCategory: Map<number, InputsCategory>
 ) {
   aButtonAddInputElm?.addEventListener('click', function () {
+    const keysArray: number[] = aQuizCategory.size
+      ? Array.from(aQuizCategory.keys())
+      : [];
+    const newId: number = aQuizCategory.size
+      ? keysArray[keysArray.length - 1] + 1
+      : 1;
+
     const div = document.createElement('div');
     div.classList.add('my-3');
 
-    div.innerHTML = `<input type="text" class="form-control" value="" data-isActive="false" />`;
+    div.innerHTML = `<input type="text" class="form-control" value="" data-isActive="false" data-index="${newId}" />`;
     aInputCategoryAreaElm?.appendChild(div);
   });
 }

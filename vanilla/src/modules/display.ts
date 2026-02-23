@@ -148,7 +148,8 @@ export function setCategoryInputs(
 
   addCategoryInput(
     inputCategoryAreaElm as HTMLElement,
-    buttonAddInputElm as HTMLButtonElement
+    buttonAddInputElm as HTMLButtonElement,
+    aQuizCategory
   );
 
   const buttonCancelElm =

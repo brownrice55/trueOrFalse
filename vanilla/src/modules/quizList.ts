@@ -1,4 +1,4 @@
-import { setQuizList, setCategoryInputs } from './display';
+import { setQuizList, setCategoryInputs, switchPage } from './display';
 import {
   getCategoryOptions,
   getTypeOptions,
@@ -66,6 +66,15 @@ const setEventForDisplayDetail = (
 
     if (aIsUnderEdit) {
       listDdElms[aIdx].innerHTML = formElements[aIdx];
+      if (!aIdx) {
+        const categorySelectElm = listDdElms[0].querySelector('select');
+        categorySelectElm?.addEventListener('change', function (e) {
+          const targetValue = (e.currentTarget as HTMLSelectElement).value;
+          if (targetValue === 'add') {
+            switchPage(3);
+          }
+        });
+      }
     } else {
       if (aIdx === 0 || aIdx === 1 || aIdx === 5) {
         setLablesForIrregular(aIdx, aCurrentVal, currentValKey);
@@ -202,13 +211,13 @@ const setEventForDisplayDetail = (
     if (aIdx === 0) {
       // category
       const key = aCurrentVal[aCurrentValKey];
-      if (typeof key === 'string' && typeof parseInt(key) === 'number') {
+      if (aCurrentVal[aCurrentValKey] === 'unspecified') {
+        listDdElms[0].innerHTML = '指定しない';
+      } else if (typeof key === 'string' && typeof parseInt(key) === 'number') {
         const currentCategory = aQuizCategory.get(parseInt(key, 10));
         if (currentCategory) {
           listDdElms[0].innerHTML = String(currentCategory.categoryName);
         }
-      } else {
-        listDdElms[0].innerHTML = '指定なし';
       }
     } else if (aIdx === 1) {
       // type
@@ -247,6 +256,29 @@ const setEventForDisplayDetail = (
       }
     }
     return aCurrentVal;
+  };
+
+  const resetIsActiveInTheCategoryData = (
+    aQuizData: Map<number, Inputs>,
+    aQuizCategory: Map<number, InputsCategory>
+  ) => {
+    let activeCategoryKeys: string[] = [];
+    aQuizData.forEach((val: Inputs) => {
+      if (val.category !== 'unspecified') {
+        activeCategoryKeys.push(val.category);
+      }
+    });
+    const activeCategoryKeysSet = new Set(activeCategoryKeys);
+    aQuizCategory.forEach((val, key) => {
+      val.isActive = false;
+      activeCategoryKeysSet.forEach((val2) => {
+        if (key === parseInt(val2)) {
+          val.isActive = true;
+        }
+      });
+    });
+    localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
+    setCategoryInputs(aQuizCategory, aQuizData);
   };
 
   listDetailButtonElms.forEach((elm) => {
@@ -344,6 +376,9 @@ const setEventForDisplayDetail = (
               );
               aQuizData.set(key, currentVal);
               localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+              if (!idx) {
+                resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
+              }
               if (idx === 2) {
                 setQuizList(aQuizData, aQuizCategory);
               }
@@ -368,28 +403,7 @@ const setEventForDisplayDetail = (
           aQuizData.delete(key);
           localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
-          // reset isActive in the category data
-          let activeCategoryKeys: string[] = [];
-          aQuizData.forEach((val) => {
-            if (val.category !== 'unspecified') {
-              activeCategoryKeys.push(val.category);
-            }
-          });
-          const activeCategoryKeysSet = new Set(activeCategoryKeys);
-          aQuizCategory.forEach((val, key) => {
-            val.isActive = false;
-            activeCategoryKeysSet.forEach((val2) => {
-              if (key === parseInt(val2)) {
-                val.isActive = true;
-              }
-            });
-          });
-          localStorage.setItem(
-            'quizCategory',
-            JSON.stringify([...aQuizCategory])
-          );
-
-          setCategoryInputs(aQuizCategory, aQuizData);
+          resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
 
           aListDivElms[0].classList.remove('d-none');
           aListDivElms[1].classList.add('d-none');
