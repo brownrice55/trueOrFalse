@@ -10,6 +10,7 @@ import {
   labelForType,
   labelForPriority,
 } from './common/labels';
+import { getAccuracyRate } from './common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type {
@@ -188,13 +189,7 @@ const setEventForDisplayDetail = (
             ? labelForQuestionAnswer[aCurrentVal.answer]
             : answerForSelection;
       } else {
-        listDdElms[7].innerHTML =
-          aCurrentVal.numberOfAnswers && aCurrentVal.numberOfCorrectAnswers
-            ? (aCurrentVal.numberOfCorrectAnswers /
-                aCurrentVal.numberOfAnswers) *
-                100 +
-              '%'
-            : '0%';
+        listDdElms[7].innerHTML = String(getAccuracyRate(aCurrentVal));
       }
     }
   };
@@ -349,6 +344,9 @@ const setEventForDisplayDetail = (
               );
               aQuizData.set(key, currentVal);
               localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+              if (idx === 2) {
+                setQuizList(aQuizData, aQuizCategory);
+              }
 
               elm.textContent = '編集する';
               cancelBtnElm?.remove();
@@ -426,7 +424,7 @@ export function displayList(
     liHtml += `<li class="my-3">
                 <button class="btn btn-primary btn-sm float-end js-listDetailButton" type="button" data-key="${idx}">詳細</button>
                 ${val.question}<br />
-                <span>正解率：80%</span>
+                <span>正解率：${getAccuracyRate(val)}%</span>
               </li>`;
   });
   aListUlElm.innerHTML = liHtml;
