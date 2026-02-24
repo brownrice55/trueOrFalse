@@ -1,3 +1,4 @@
+import * as bootstrap from 'bootstrap';
 import { Collapse } from 'bootstrap';
 import { displayList } from './quizList';
 import {
@@ -23,10 +24,59 @@ import type { InputsCategory } from '../types/inputsCategory.type';
 
 const funcForDisplay = (aIndex: number) => {
   const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
-  sectionElms.forEach((elm) => {
-    elm.classList.add('d-none');
-  });
-  sectionElms[aIndex].classList.remove('d-none');
+
+  const hasDnoneArray = Array.from(sectionElms).map((elm) =>
+    elm.classList.contains('d-none')
+  );
+  const displayPage = (aIndex: number) => {
+    sectionElms.forEach((elm) => {
+      elm.classList.add('d-none');
+    });
+    sectionElms[aIndex].classList.remove('d-none');
+  };
+  let isContinued = true;
+  if (!hasDnoneArray[1]) {
+    //when leaving quizlist
+    // reset quizlist
+    // setQuizList(aQuizData, aQuizCategory);
+    displayPage(aIndex);
+  } else if (!hasDnoneArray[3]) {
+    //when leaving the category settings
+    const buttonCancelElm: HTMLButtonElement | null =
+      document.querySelector('.js-buttonCancel');
+    if (buttonCancelElm && !buttonCancelElm.disabled) {
+      const modalForPageTransitionDivElm = document.querySelector(
+        '.js-modalForPageTransitionDiv'
+      );
+      const bsModal = new bootstrap.Modal(
+        modalForPageTransitionDivElm as HTMLElement
+      );
+      bsModal.show();
+      isContinued = false;
+
+      const buttonPageTransitionElm = document.querySelector(
+        '.js-buttonPageTransition'
+      );
+      const formElm = document.querySelector('form');
+      if (buttonPageTransitionElm) {
+        buttonPageTransitionElm.addEventListener('click', function () {
+          formElm?.reset();
+          const buttonElms: NodeListOf<HTMLButtonElement> | undefined =
+            buttonCancelElm?.parentNode?.querySelectorAll('button');
+          if (buttonElms) {
+            buttonElms.forEach((elm) => {
+              elm.disabled = true;
+            });
+          }
+          bsModal.hide();
+          displayPage(aIndex);
+        });
+      }
+    }
+  }
+  if (isContinued) {
+    displayPage(aIndex);
+  }
 };
 
 export function setupDisplay(
