@@ -1,11 +1,10 @@
-import * as bootstrap from 'bootstrap';
-import { switchPage } from './display';
 import { displayList } from './quizList';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
 import { setCategoryInputs } from './display';
+import { displayModalToSelectWhatToDoNext } from './common/modal.ts';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 
@@ -244,6 +243,8 @@ export function saveQuizData(
       aAddNewTypeDivElms[0].classList.remove('d-none');
       aAddNewTypeDivElms[1].classList.add('d-none');
     }
+
+    this.disabled = true;
     // reset end
 
     const listDivElms = document.querySelectorAll('.js-listDiv');
@@ -255,37 +256,7 @@ export function saveQuizData(
       listUlElm as HTMLElement
     );
 
-    // display the modal window to select what to do next
-    const modalForSelectionWhatToDoNextDivElm = document.querySelector(
-      '.js-modalForSelectionWhatToDoNextDiv'
-    );
-    const bsModal = new bootstrap.Modal(
-      modalForSelectionWhatToDoNextDivElm as HTMLElement
-    );
-
-    bsModal.show();
-
-    const numberOfQuestionsSpanElm =
-      modalForSelectionWhatToDoNextDivElm?.querySelector('span');
-    if (numberOfQuestionsSpanElm) {
-      numberOfQuestionsSpanElm.innerHTML = String(aQuizData.size);
-    }
-
-    const buttonsForSelectionWhatToDoNextElms =
-      modalForSelectionWhatToDoNextDivElm?.querySelectorAll('button');
-
-    const switchIndices = [1, 0];
-    if (buttonsForSelectionWhatToDoNextElms) {
-      for (let cnt = 0; cnt < 2; ++cnt) {
-        buttonsForSelectionWhatToDoNextElms[cnt + 2].addEventListener(
-          'click',
-          function () {
-            bsModal.hide();
-            switchPage(switchIndices[cnt], false);
-          }
-        );
-      }
-    }
+    displayModalToSelectWhatToDoNext('新規登録', aQuizData.size, '問題');
   });
 }
 

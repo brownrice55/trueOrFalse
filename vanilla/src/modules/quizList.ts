@@ -72,6 +72,11 @@ const setEventForDisplayDetail = (
           const targetValue = (e.currentTarget as HTMLSelectElement).value;
           if (targetValue === 'add') {
             switchPage(3, false);
+            const buttonSaveElm =
+              document.querySelector<HTMLButtonElement>('.js-buttonSave');
+            if (buttonSaveElm) {
+              buttonSaveElm.classList.add('js-quizDataIsUnderEdit');
+            }
           }
         });
       }

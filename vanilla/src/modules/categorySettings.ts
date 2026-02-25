@@ -2,55 +2,58 @@ import * as bootstrap from 'bootstrap';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Listener } from '../types/listener.type';
-import { setupDisplay, setCategoryInputs } from './display';
+import { setCategoryInputs } from './display';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
+import { displayModalToSelectWhatToDoNext } from './common/modal.ts';
 
 export function saveCategoryData(
-  aQuizData: Map<number, Inputs>,
   aButtonSaveElm: HTMLButtonElement,
   aInputCategoryAreaElm: HTMLElement
 ) {
-  aButtonSaveElm?.addEventListener('click', function () {
-    const inputCategoryElms =
-      aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
+  const inputCategoryElms =
+    aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
 
-    let newMap = new Map<number, InputsCategory>();
-    let empty = 0;
-    inputCategoryElms.forEach((elm) => {
-      if (!elm.value) {
-        ++empty;
-      }
-      let values: InputsCategory = {
-        categoryName: '',
-        isActive: false,
-      };
-      if (elm.value) {
-        values.categoryName = elm.value;
-        values.isActive = elm?.dataset?.isActive?.toLowerCase() === 'true';
-        const key = parseInt(elm?.dataset?.index ?? '0');
-        newMap.set(key, values);
-      }
-    });
-    if (empty === inputCategoryElms.length) {
-      return;
+  let newMap = new Map<number, InputsCategory>();
+  let empty = 0;
+  inputCategoryElms.forEach((elm) => {
+    if (!elm.value) {
+      ++empty;
     }
-
-    localStorage.setItem('quizCategory', JSON.stringify([...newMap]));
-
-    setCategoryInputs(
-      newMap as Map<number, InputsCategory>,
-      aQuizData as Map<number, Inputs>
-    );
-
-    setupDisplay(
-      newMap as Map<number, InputsCategory>,
-      aQuizData as Map<number, Inputs>,
-      false
-    );
+    let values: InputsCategory = {
+      categoryName: '',
+      isActive: false,
+    };
+    if (elm.value) {
+      values.categoryName = elm.value;
+      values.isActive = elm?.dataset?.isActive?.toLowerCase() === 'true';
+      const key = parseInt(elm?.dataset?.index ?? '0');
+      newMap.set(key, values);
+    }
   });
+  if (empty === inputCategoryElms.length) {
+    return;
+  }
+
+  localStorage.setItem('quizCategory', JSON.stringify([...newMap]));
+
+  const buttonSaveAndCancelElms =
+    aButtonSaveElm?.parentNode?.querySelectorAll('button');
+  buttonSaveAndCancelElms?.forEach((elm) => {
+    elm.disabled = true;
+  });
+
+  if (aButtonSaveElm.classList.contains('js-quizDataIsUnderEdit')) {
+    //display modal for selecting wheter to go back to quiz detail page
+  } else {
+    displayModalToSelectWhatToDoNext(
+      'カテゴリー設定の保存',
+      newMap.size,
+      'カテゴリー'
+    );
+  }
 }
 
 export function addCategoryInput(

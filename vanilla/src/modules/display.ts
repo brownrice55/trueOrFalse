@@ -1,4 +1,3 @@
-import * as bootstrap from 'bootstrap';
 import { Collapse } from 'bootstrap';
 import { displayList } from './quizList';
 import {
@@ -13,14 +12,25 @@ import {
   saveQuizData,
   setValidation,
 } from './addNew';
+import { getInputValues } from './inputValidation';
 import {
   getCategoryOptions,
   getTypeOptions,
   getPriorityOptions,
 } from './common/form';
-import { getInputValues } from './inputValidation';
+import { displayModalForPageTransition } from './common/modal';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
+
+export function displayPage(
+  aIndex: number,
+  aSectionElms: NodeListOf<HTMLElement>
+) {
+  aSectionElms.forEach((elm) => {
+    elm.classList.add('d-none');
+  });
+  aSectionElms[aIndex].classList.remove('d-none');
+}
 
 const funcForDisplay = (aIndex: number, aIsModalNeeded: boolean) => {
   const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
@@ -28,55 +38,21 @@ const funcForDisplay = (aIndex: number, aIsModalNeeded: boolean) => {
   const hasDnoneArray = Array.from(sectionElms).map((elm) =>
     elm.classList.contains('d-none')
   );
-  const displayPage = (aIndex: number) => {
-    sectionElms.forEach((elm) => {
-      elm.classList.add('d-none');
-    });
-    sectionElms[aIndex].classList.remove('d-none');
-  };
+
   let isContinued = true;
   if (!hasDnoneArray[1]) {
     //when leaving quizlist
     // reset quizlist
     // setQuizList(aQuizData, aQuizCategory);
-    displayPage(aIndex);
+    displayPage(aIndex, sectionElms);
   } else if (!hasDnoneArray[3] && aIsModalNeeded) {
     //when leaving the category settings
-    const buttonCancelElm: HTMLButtonElement | null =
-      document.querySelector('.js-buttonCancel');
 
-    if (buttonCancelElm && !buttonCancelElm.disabled) {
-      const modalForPageTransitionDivElm = document.querySelector(
-        '.js-modalForPageTransitionDiv'
-      );
-      const bsModal = new bootstrap.Modal(
-        modalForPageTransitionDivElm as HTMLElement
-      );
-      bsModal.show();
-      isContinued = false;
-
-      const buttonPageTransitionElm = document.querySelector(
-        '.js-buttonPageTransition'
-      );
-      const formElm = document.querySelector('form');
-      if (buttonPageTransitionElm) {
-        buttonPageTransitionElm.addEventListener('click', function () {
-          formElm?.reset();
-          const buttonElms: NodeListOf<HTMLButtonElement> | undefined =
-            buttonCancelElm?.parentNode?.querySelectorAll('button');
-          if (buttonElms) {
-            buttonElms.forEach((elm) => {
-              elm.disabled = true;
-            });
-          }
-          bsModal.hide();
-          displayPage(aIndex);
-        });
-      }
-    }
+    isContinued = false;
+    displayModalForPageTransition(aIndex, sectionElms);
   }
   if (isContinued) {
-    displayPage(aIndex);
+    displayPage(aIndex, sectionElms);
   }
 };
 
@@ -95,7 +71,6 @@ export function switchPage(aIndex: number, aIsModalNeeded: boolean) {
 
 export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
   const bsCollapse = new Collapse(aGlobalNavElm, { toggle: false });
-
   const mediaQueryList = window.matchMedia('(max-width: 992px)');
   const hideMenus = (matches: boolean) => {
     if (matches) {
@@ -192,11 +167,13 @@ export function setCategoryInputs(
   const buttonAddInputElm =
     document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
 
-  saveCategoryData(
-    aQuizData as Map<number, Inputs>,
-    buttonSaveElm as HTMLButtonElement,
-    inputCategoryAreaElm as HTMLElement
-  );
+  buttonSaveElm?.addEventListener('click', function (e) {
+    e.preventDefault();
+    saveCategoryData(
+      buttonSaveElm as HTMLButtonElement,
+      inputCategoryAreaElm as HTMLElement
+    );
+  });
 
   addCategoryInput(
     inputCategoryAreaElm as HTMLElement,
