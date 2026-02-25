@@ -22,7 +22,7 @@ import { getInputValues } from './inputValidation';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
-const funcForDisplay = (aIndex: number) => {
+const funcForDisplay = (aIndex: number, aIsModalNeeded: boolean) => {
   const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
 
   const hasDnoneArray = Array.from(sectionElms).map((elm) =>
@@ -40,10 +40,11 @@ const funcForDisplay = (aIndex: number) => {
     // reset quizlist
     // setQuizList(aQuizData, aQuizCategory);
     displayPage(aIndex);
-  } else if (!hasDnoneArray[3]) {
+  } else if (!hasDnoneArray[3] && aIsModalNeeded) {
     //when leaving the category settings
     const buttonCancelElm: HTMLButtonElement | null =
       document.querySelector('.js-buttonCancel');
+
     if (buttonCancelElm && !buttonCancelElm.disabled) {
       const modalForPageTransitionDivElm = document.querySelector(
         '.js-modalForPageTransitionDiv'
@@ -81,14 +82,15 @@ const funcForDisplay = (aIndex: number) => {
 
 export function setupDisplay(
   aQuizCategory: Map<number, InputsCategory>,
-  aQuizData: Map<number, Inputs>
+  aQuizData: Map<number, Inputs>,
+  aIsModalNeeded: boolean
 ) {
   const pageIndex = !aQuizCategory.size ? 3 : !aQuizData.size ? 2 : 0;
-  funcForDisplay(pageIndex);
+  funcForDisplay(pageIndex, aIsModalNeeded);
 }
 
-export function switchPage(aIndex: number) {
-  funcForDisplay(aIndex);
+export function switchPage(aIndex: number, aIsModalNeeded: boolean) {
+  funcForDisplay(aIndex, aIsModalNeeded);
 }
 
 export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
@@ -129,7 +131,7 @@ export function setQuizList(
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
   buttonGoToAddNewElm?.addEventListener('click', function () {
-    switchPage(2);
+    switchPage(2, false);
   });
 }
 
@@ -306,6 +308,6 @@ export function setAddNew(
     '.js-buttonBackToListFromAddNew'
   );
   buttonBackToListFromAddNewElm?.addEventListener('click', function () {
-    switchPage(1);
+    switchPage(1, false);
   });
 }

@@ -22,14 +22,15 @@ const globalNavLiElms = globalNavElm?.querySelectorAll<HTMLLIElement>('li');
 
 setupDisplay(
   quizCategory as Map<number, InputsCategory>,
-  quizData as Map<number, Inputs>
+  quizData as Map<number, Inputs>,
+  true
 );
 
 globalNavLiElms?.forEach((elm) => {
   elm.addEventListener('click', function (e: MouseEvent) {
     const target = e.currentTarget as HTMLElement;
     const listIndex = Number(target.dataset.index);
-    switchPage(listIndex);
+    switchPage(listIndex, true);
   });
 });
 

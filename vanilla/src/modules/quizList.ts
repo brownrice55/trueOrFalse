@@ -71,7 +71,7 @@ const setEventForDisplayDetail = (
         categorySelectElm?.addEventListener('change', function (e) {
           const targetValue = (e.currentTarget as HTMLSelectElement).value;
           if (targetValue === 'add') {
-            switchPage(3);
+            switchPage(3, false);
           }
         });
       }

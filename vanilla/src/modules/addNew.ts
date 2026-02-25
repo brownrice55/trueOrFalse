@@ -281,7 +281,7 @@ export function saveQuizData(
           'click',
           function () {
             bsModal.hide();
-            switchPage(switchIndices[cnt]);
+            switchPage(switchIndices[cnt], false);
           }
         );
       }

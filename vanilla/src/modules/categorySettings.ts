@@ -40,14 +40,15 @@ export function saveCategoryData(
 
     localStorage.setItem('quizCategory', JSON.stringify([...newMap]));
 
-    setupDisplay(
+    setCategoryInputs(
       newMap as Map<number, InputsCategory>,
       aQuizData as Map<number, Inputs>
     );
 
-    setCategoryInputs(
+    setupDisplay(
       newMap as Map<number, InputsCategory>,
-      aQuizData as Map<number, Inputs>
+      aQuizData as Map<number, Inputs>,
+      false
     );
   });
 }
