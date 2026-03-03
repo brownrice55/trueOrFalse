@@ -76,6 +76,9 @@ const setEventForDisplayDetail = (
               document.querySelector<HTMLButtonElement>('.js-buttonSave');
             if (buttonSaveElm) {
               buttonSaveElm.classList.add('js-quizDataIsUnderEdit');
+              buttonSaveElm.dataset.key = (
+                listDdElms[0]?.parentNode?.parentNode as HTMLElement
+              )?.dataset?.key;
             }
           }
         });
@@ -297,6 +300,7 @@ const setEventForDisplayDetail = (
       let currentVal: Inputs | undefined = aQuizData.get(key);
 
       if (currentVal) {
+        aListDivElms[1].dataset.key = String(key);
         currentValKeys.forEach((val, idx) => {
           if (idx === 3 || idx === 7) {
             setInnerHTMLForEditIrregular(idx, currentVal as Inputs, false);

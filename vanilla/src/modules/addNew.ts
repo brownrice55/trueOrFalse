@@ -4,7 +4,7 @@ import {
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
 import { setCategoryInputs } from './display';
-import { displayModalToSelectWhatToDoNext } from './common/modal.ts';
+import { displayModalToSelectWhatToDoNextAfterSavingData } from './common/modal.ts';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 
@@ -256,7 +256,12 @@ export function saveQuizData(
       listUlElm as HTMLElement
     );
 
-    displayModalToSelectWhatToDoNext('新規登録', aQuizData.size, '問題');
+    displayModalToSelectWhatToDoNextAfterSavingData(
+      'whatToDoNext',
+      '新規登録',
+      aQuizData.size,
+      '問題'
+    );
   });
 }
 

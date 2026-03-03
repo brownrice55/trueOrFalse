@@ -7,7 +7,10 @@ import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
-import { displayModalToSelectWhatToDoNext } from './common/modal.ts';
+import {
+  displayModalToSelectWhatToDoNextAfterSavingData,
+  displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData,
+} from './common/modal.ts';
 
 export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,
@@ -46,9 +49,14 @@ export function saveCategoryData(
   });
 
   if (aButtonSaveElm.classList.contains('js-quizDataIsUnderEdit')) {
-    //display modal for selecting wheter to go back to quiz detail page
+    displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
+      aButtonSaveElm,
+      'カテゴリー設定を保存しました。<br />編集中のクイズ詳細ページに戻りますか？',
+      '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。'
+    );
   } else {
-    displayModalToSelectWhatToDoNext(
+    displayModalToSelectWhatToDoNextAfterSavingData(
+      'whatToDoNext',
       'カテゴリー設定の保存',
       newMap.size,
       'カテゴリー'
