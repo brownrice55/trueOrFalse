@@ -95,7 +95,8 @@ export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
 export function setQuizList(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
@@ -104,7 +105,8 @@ export function setQuizList(
     aQuizCategory,
     listDivElms as NodeListOf<Element>,
     listUlElm as HTMLElement,
-    aModalForDeleteElms
+    aModalForDeleteElms,
+    aButtonCancelElm
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
@@ -148,7 +150,8 @@ export function getCategoryInputHTML(
 export function setCategoryInputs(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -185,16 +188,13 @@ export function setCategoryInputs(
     aQuizCategory
   );
 
-  const buttonCancelElm =
-    document.querySelector<HTMLButtonElement>('.js-buttonCancel');
-
   editOrDeleteCategoryName(
     aQuizCategory as Map<number, InputsCategory>,
     aQuizData as Map<number, Inputs>,
     inputCategoryAreaElm as HTMLElement,
     initialInputValues,
     buttonSaveElm as HTMLButtonElement,
-    buttonCancelElm as HTMLButtonElement,
+    aButtonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement,
     aModalForDeleteElms
   );
@@ -206,7 +206,7 @@ export function setCategoryInputs(
     initialInputValues as string[],
     inputCategoryAreaElm as HTMLElement,
     isUnderEdit as boolean,
-    buttonCancelElm as HTMLButtonElement,
+    aButtonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement
   );
 }
@@ -214,7 +214,8 @@ export function setCategoryInputs(
 export function setAddNew(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -278,7 +279,8 @@ export function setAddNew(
     addNewOptionNumberSelectElm as HTMLSelectElement,
     addNewOptionInputsDivElm as HTMLElement,
     addNewTypeDivElms as NodeListOf<HTMLElement>,
-    aModalForDeleteElms
+    aModalForDeleteElms,
+    aButtonCancelElm
   );
 
   setValidation(

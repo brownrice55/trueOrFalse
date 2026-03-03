@@ -25,7 +25,8 @@ const setEventForDisplayDetail = (
   aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aListDdElms: NodeListOf<HTMLElement>
+  aListDdElms: NodeListOf<HTMLElement>,
+  aButtonCancelElm: HTMLButtonElement
 ) => {
   const listDetailButtonElms = document.querySelectorAll(
     '.js-listDetailButton'
@@ -359,11 +360,17 @@ const setEventForDisplayDetail = (
                 resetIsActiveInTheCategoryData(
                   aQuizData,
                   aQuizCategory,
-                  aModalForDeleteElms
+                  aModalForDeleteElms,
+                  aButtonCancelElm
                 );
               }
               if (idx === 2) {
-                setQuizList(aQuizData, aQuizCategory, aModalForDeleteElms);
+                setQuizList(
+                  aQuizData,
+                  aQuizCategory,
+                  aModalForDeleteElms,
+                  aButtonCancelElm
+                );
               }
 
               elm.textContent = '編集する';
@@ -404,7 +411,8 @@ const setEventForDeleteQuiz = (
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aListDivElms: NodeListOf<HTMLElement>,
-  aListDdElms: NodeListOf<HTMLElement>
+  aListDdElms: NodeListOf<HTMLElement>,
+  aButtonCancelElm: HTMLButtonElement
 ) => {
   const buttonDeleteQuizElm = document.querySelector('.js-buttonDeleteQuiz');
 
@@ -415,7 +423,8 @@ const setEventForDeleteQuiz = (
       null,
       aModalForDeleteElms,
       aListDivElms,
-      aListDdElms
+      aListDdElms,
+      aButtonCancelElm
     );
   });
 };
@@ -425,7 +434,8 @@ export function displayList(
   aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<Element>,
   aListUlElm: HTMLElement,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -443,7 +453,8 @@ export function displayList(
     aQuizCategory,
     aListDivElms as NodeListOf<HTMLElement>,
     aModalForDeleteElms,
-    listDdElms as NodeListOf<HTMLElement>
+    listDdElms as NodeListOf<HTMLElement>,
+    aButtonCancelElm
   );
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
 
@@ -452,14 +463,16 @@ export function displayList(
     aQuizCategory,
     aModalForDeleteElms as modalForDeleteElmsType,
     aListDivElms as NodeListOf<HTMLElement>,
-    listDdElms as NodeListOf<HTMLElement>
+    listDdElms as NodeListOf<HTMLElement>,
+    aButtonCancelElm as HTMLButtonElement
   );
 }
 
 export function resetIsActiveInTheCategoryData(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -477,5 +490,10 @@ export function resetIsActiveInTheCategoryData(
     });
   });
   localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
-  setCategoryInputs(aQuizCategory, aQuizData, aModalForDeleteElms);
+  setCategoryInputs(
+    aQuizCategory,
+    aQuizData,
+    aModalForDeleteElms,
+    aButtonCancelElm
+  );
 }

@@ -291,6 +291,7 @@ export function editOrDeleteCategoryName(
           targetInputElm as HTMLInputElement,
           aModalForDeleteElms,
           null,
+          null,
           null
         );
       }

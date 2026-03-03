@@ -24,14 +24,18 @@ const globalNavLiElms = globalNavElm?.querySelectorAll<HTMLLIElement>('li');
 setupDisplay(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  true
+  false
 );
+
+const buttonCancelElm =
+  document.querySelector<HTMLButtonElement>('.js-buttonCancel');
 
 globalNavLiElms?.forEach((elm) => {
   elm.addEventListener('click', function (e: MouseEvent) {
     const target = e.currentTarget as HTMLElement;
     const listIndex = Number(target.dataset.index);
-    switchPage(listIndex, true);
+    const isModalNeeded: boolean = !buttonCancelElm?.disabled;
+    switchPage(listIndex, isModalNeeded);
   });
 });
 
@@ -54,17 +58,20 @@ const modalForDeleteElms: modalForDeleteElmsType = {
 setQuizList(
   quizData as Map<number, Inputs>,
   quizCategory as Map<number, InputsCategory>,
-  modalForDeleteElms as modalForDeleteElmsType
+  modalForDeleteElms as modalForDeleteElmsType,
+  buttonCancelElm as HTMLButtonElement
 );
 
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  modalForDeleteElms
+  modalForDeleteElms,
+  buttonCancelElm as HTMLButtonElement
 );
 
 setAddNew(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  modalForDeleteElms
+  modalForDeleteElms,
+  buttonCancelElm as HTMLButtonElement
 );

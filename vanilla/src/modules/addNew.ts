@@ -155,7 +155,8 @@ export function saveQuizData(
   aAddNewOptionNumberSelectElm: HTMLSelectElement,
   aAddNewOptionInputsDivElm: HTMLElement,
   aAddNewTypeDivElms: NodeListOf<HTMLElement>,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -218,7 +219,12 @@ export function saveQuizData(
           'quizCategory',
           JSON.stringify([...aQuizCategory])
         );
-        setCategoryInputs(aQuizCategory, aQuizData, aModalForDeleteElms);
+        setCategoryInputs(
+          aQuizCategory,
+          aQuizData,
+          aModalForDeleteElms,
+          aButtonCancelElm
+        );
       }
     }
 
@@ -256,7 +262,8 @@ export function saveQuizData(
       aQuizCategory,
       listDivElms,
       listUlElm as HTMLElement,
-      aModalForDeleteElms
+      aModalForDeleteElms,
+      aButtonCancelElm
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(

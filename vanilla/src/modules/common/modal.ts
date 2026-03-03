@@ -165,7 +165,8 @@ export function displayModalForDelete(
   aTargetInputElm: HTMLInputElement | null,
   aModalForDeleteElms: modalForDeleteElmsType,
   aListDivElms: NodeListOf<HTMLElement> | null,
-  aListDdElms: NodeListOf<HTMLElement> | null
+  aListDdElms: NodeListOf<HTMLElement> | null,
+  aButtonCancelElm: HTMLButtonElement | null
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const modalTextDivElm = aModalForDeleteElms.textDiv;
@@ -209,7 +210,8 @@ export function displayModalForDelete(
       setCategoryInputs(
         aQuizCategory as Map<number, InputsCategory>,
         aQuizData as Map<number, Inputs>,
-        aModalForDeleteElms as modalForDeleteElmsType
+        aModalForDeleteElms as modalForDeleteElmsType,
+        aButtonCancelElm as HTMLButtonElement
       );
     } else {
       if (aListDivElms) {
@@ -220,12 +222,18 @@ export function displayModalForDelete(
         resetIsActiveInTheCategoryData(
           aQuizData,
           aQuizCategory,
-          aModalForDeleteElms
+          aModalForDeleteElms,
+          aButtonCancelElm as HTMLButtonElement
         );
 
         aListDivElms[0].classList.remove('d-none');
         aListDivElms[1].classList.add('d-none');
-        setQuizList(aQuizData, aQuizCategory, aModalForDeleteElms);
+        setQuizList(
+          aQuizData,
+          aQuizCategory,
+          aModalForDeleteElms,
+          aButtonCancelElm as HTMLButtonElement
+        );
       }
     }
     bsModal.hide();
