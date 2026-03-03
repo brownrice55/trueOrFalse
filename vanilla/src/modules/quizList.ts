@@ -13,6 +13,7 @@ import {
 import { getAccuracyRate } from './common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
+import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
 import type {
   labelForTypeType,
   labelForPriorityType,
@@ -21,7 +22,8 @@ import type {
 const setEventForDisplayDetail = (
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aListDivElms: NodeListOf<HTMLElement>
+  aListDivElms: NodeListOf<HTMLElement>,
+  aModalForDeleteElms: modalForDeleteElmsType
 ) => {
   const listDetailButtonElms = document.querySelectorAll(
     '.js-listDetailButton'
@@ -286,7 +288,7 @@ const setEventForDisplayDetail = (
       });
     });
     localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
-    setCategoryInputs(aQuizCategory, aQuizData);
+    setCategoryInputs(aQuizCategory, aQuizData, aModalForDeleteElms);
   };
 
   listDetailButtonElms.forEach((elm) => {
@@ -389,7 +391,7 @@ const setEventForDisplayDetail = (
                 resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
               }
               if (idx === 2) {
-                setQuizList(aQuizData, aQuizCategory);
+                setQuizList(aQuizData, aQuizCategory, aModalForDeleteElms);
               }
 
               elm.textContent = '編集する';
@@ -416,7 +418,7 @@ const setEventForDisplayDetail = (
 
           aListDivElms[0].classList.remove('d-none');
           aListDivElms[1].classList.add('d-none');
-          setQuizList(aQuizData, aQuizCategory);
+          setQuizList(aQuizData, aQuizCategory, aModalForDeleteElms);
         });
       }
     });
@@ -440,7 +442,8 @@ export function displayList(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<Element>,
-  aListUlElm: HTMLElement
+  aListUlElm: HTMLElement,
+  aModalForDeleteElms: modalForDeleteElmsType
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -454,7 +457,8 @@ export function displayList(
   setEventForDisplayDetail(
     aQuizData,
     aQuizCategory,
-    aListDivElms as NodeListOf<HTMLElement>
+    aListDivElms as NodeListOf<HTMLElement>,
+    aModalForDeleteElms
   );
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
 }

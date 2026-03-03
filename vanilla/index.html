@@ -464,18 +464,16 @@
               </div>
             </form>
             <div
-              class="modal fade js-modalForCategoryDiv"
-              id="modalForCategory"
+              class="modal fade js-modalForDeleteDiv"
+              id="modalForDelete"
               tabindex="-1"
-              aria-labelledby="modalForQuiz"
+              aria-labelledby="modalForDelete"
               aria-hidden="true"
             >
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalForCategory">
-                      カテゴリーの削除確認
-                    </h1>
+                    <h1 class="modal-title fs-5 js-titleH1"></h1>
                     <button
                       type="button"
                       class="btn-close"
@@ -483,10 +481,7 @@
                       aria-label="Close"
                     ></button>
                   </div>
-                  <div class="modal-body">
-                    「<span class="js-quizCategorySpan"></span
-                    >」を削除して、問題に設定済みのカテゴリー名を「指定なし」に変更しますか？
-                  </div>
+                  <div class="modal-body js-textDiv"></div>
                   <div class="modal-footer">
                     <button
                       type="button"
@@ -497,10 +492,8 @@
                     </button>
                     <button
                       type="button"
-                      class="btn btn-primary js-buttonDeleteCategory"
-                    >
-                      削除して問題に設定済みのカテゴリー名を<br />「指定なし」にする
-                    </button>
+                      class="btn btn-primary js-deleteButton"
+                    ></button>
                   </div>
                 </div>
               </div>

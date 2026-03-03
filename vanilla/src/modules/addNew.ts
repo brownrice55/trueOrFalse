@@ -7,6 +7,7 @@ import { setCategoryInputs } from './display';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from './common/modal.ts';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
+import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
 
 const setValidationForDataEntry = (
   aType: string,
@@ -153,7 +154,8 @@ export function saveQuizData(
   aAddNewAnswerRadioElms: NodeListOf<HTMLInputElement>,
   aAddNewOptionNumberSelectElm: HTMLSelectElement,
   aAddNewOptionInputsDivElm: HTMLElement,
-  aAddNewTypeDivElms: NodeListOf<HTMLElement>
+  aAddNewTypeDivElms: NodeListOf<HTMLElement>,
+  aModalForDeleteElms: modalForDeleteElmsType
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -216,7 +218,7 @@ export function saveQuizData(
           'quizCategory',
           JSON.stringify([...aQuizCategory])
         );
-        setCategoryInputs(aQuizCategory, aQuizData);
+        setCategoryInputs(aQuizCategory, aQuizData, aModalForDeleteElms);
       }
     }
 
@@ -253,7 +255,8 @@ export function saveQuizData(
       aQuizData,
       aQuizCategory,
       listDivElms,
-      listUlElm as HTMLElement
+      listUlElm as HTMLElement,
+      aModalForDeleteElms
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(

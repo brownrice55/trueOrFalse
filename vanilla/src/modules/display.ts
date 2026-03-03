@@ -21,6 +21,7 @@ import {
 import { displayModalForPageTransition } from './common/modal';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
+import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
 
 export function displayPage(
   aIndex: number,
@@ -93,7 +94,8 @@ export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
 
 export function setQuizList(
   aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>
+  aQuizCategory: Map<number, InputsCategory>,
+  aModalForDeleteElms: modalForDeleteElmsType
 ) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
@@ -101,7 +103,8 @@ export function setQuizList(
     aQuizData,
     aQuizCategory,
     listDivElms as NodeListOf<Element>,
-    listUlElm as HTMLElement
+    listUlElm as HTMLElement,
+    aModalForDeleteElms
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
@@ -144,7 +147,8 @@ export function getCategoryInputHTML(
 
 export function setCategoryInputs(
   aQuizCategory: Map<number, InputsCategory>,
-  aQuizData: Map<number, Inputs>
+  aQuizData: Map<number, Inputs>,
+  aModalForDeleteElms: modalForDeleteElmsType
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -191,7 +195,8 @@ export function setCategoryInputs(
     initialInputValues,
     buttonSaveElm as HTMLButtonElement,
     buttonCancelElm as HTMLButtonElement,
-    buttonAddInputElm as HTMLButtonElement
+    buttonAddInputElm as HTMLButtonElement,
+    aModalForDeleteElms
   );
 
   let isUnderEdit = false;
@@ -208,7 +213,8 @@ export function setCategoryInputs(
 
 export function setAddNew(
   aQuizCategory: Map<number, InputsCategory>,
-  aQuizData: Map<number, Inputs>
+  aQuizData: Map<number, Inputs>,
+  aModalForDeleteElms: modalForDeleteElmsType
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -271,7 +277,8 @@ export function setAddNew(
     addNewAnswerRadioElms as NodeListOf<HTMLInputElement>,
     addNewOptionNumberSelectElm as HTMLSelectElement,
     addNewOptionInputsDivElm as HTMLElement,
-    addNewTypeDivElms as NodeListOf<HTMLElement>
+    addNewTypeDivElms as NodeListOf<HTMLElement>,
+    aModalForDeleteElms
   );
 
   setValidation(

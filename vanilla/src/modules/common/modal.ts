@@ -1,5 +1,8 @@
 import * as bootstrap from 'bootstrap';
-import { switchPage, displayPage } from '../display';
+import { switchPage, displayPage, setCategoryInputs } from '../display';
+import type { Inputs } from '../../types/inputs.type';
+import type { InputsCategory } from '../../types/inputsCategory.type';
+import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
 
 export function displayModalToSelectWhatToDoNextAfterSavingData(
   aType: string,
@@ -148,4 +151,52 @@ export function displayModalForPageTransition(
       });
     }
   }
+}
+
+export function displayModalForDelete(
+  aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
+  aTargetInputElm: HTMLInputElement,
+  aModalForDeleteElms: modalForDeleteElmsType
+) {
+  const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
+  const modalTextDivElm = aModalForDeleteElms.textDiv;
+  const modalTitleH1Elm = aModalForDeleteElms.titleH1;
+  const deleteButtonElm = aModalForDeleteElms.deleteButton;
+
+  if (modalTextDivElm) {
+    modalTextDivElm.innerHTML = `「${(aTargetInputElm as HTMLInputElement).value}」を削除して、問題に設定済みのカテゴリー名を「指定なし」に変更しますか？`;
+  }
+  if (modalTitleH1Elm) {
+    modalTitleH1Elm.innerHTML = 'カテゴリーの削除確認';
+  }
+  if (deleteButtonElm) {
+    deleteButtonElm.innerHTML = `削除して問題に設定済みのカテゴリー名を<br />「指定なし」にする`;
+  }
+
+  const bsModal = new bootstrap.Modal(modalForDeleteDivElm as HTMLElement);
+  bsModal.show();
+
+  deleteButtonElm?.addEventListener('click', function () {
+    const keyNumber = parseInt(
+      (aTargetInputElm as HTMLInputElement).dataset.index ?? '10000'
+    );
+    aQuizCategory.delete(keyNumber);
+    localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
+
+    [...aQuizData].forEach(([_, val]) => {
+      if (parseInt(val.category) === keyNumber) {
+        val.category = 'unspecified';
+      }
+    });
+    localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
+    bsModal.hide();
+
+    setCategoryInputs(
+      aQuizCategory as Map<number, InputsCategory>,
+      aQuizData as Map<number, Inputs>,
+      aModalForDeleteElms as modalForDeleteElmsType
+    );
+  });
 }

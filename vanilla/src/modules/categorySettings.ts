@@ -1,8 +1,4 @@
-import * as bootstrap from 'bootstrap';
-import type { Inputs } from '../types/inputs.type';
-import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Listener } from '../types/listener.type';
-import { setCategoryInputs } from './display';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
@@ -10,7 +6,11 @@ import {
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData,
+  displayModalForDelete,
 } from './common/modal.ts';
+import type { Inputs } from '../types/inputs.type';
+import type { InputsCategory } from '../types/inputsCategory.type';
+import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
 
 export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,
@@ -194,7 +194,8 @@ export function editOrDeleteCategoryName(
   aInitialInputValues: string[],
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
-  aButtonAddInputElm: HTMLButtonElement
+  aButtonAddInputElm: HTMLButtonElement,
+  aModalForDeleteElms: modalForDeleteElmsType
 ) {
   const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
     '.js-categoryEditBtn'
@@ -260,9 +261,6 @@ export function editOrDeleteCategoryName(
     });
   });
 
-  const buttonDeleteCategoryElm = document.querySelector(
-    '.js-buttonDeleteCategory'
-  );
   deleteBtnElms.forEach((elm, index) => {
     elm.addEventListener('click', function () {
       if (targetIndex === index && isUnderEdit) {
@@ -287,46 +285,12 @@ export function editOrDeleteCategoryName(
         }
       } else if (!isUnderEdit) {
         const targetInputElm = this?.parentNode?.nextSibling;
-        const quizCategorySpanElm = document.querySelector(
-          '.js-quizCategorySpan'
+        displayModalForDelete(
+          aQuizData,
+          aQuizCategory,
+          targetInputElm as HTMLInputElement,
+          aModalForDeleteElms
         );
-        if (quizCategorySpanElm) {
-          quizCategorySpanElm.innerHTML = (
-            targetInputElm as HTMLInputElement
-          ).value;
-        }
-        const modalForCategoryDivElm = document.querySelector(
-          '.js-modalForCategoryDiv'
-        );
-        const bsModal = new bootstrap.Modal(
-          modalForCategoryDivElm as HTMLElement
-        );
-        bsModal.show();
-
-        buttonDeleteCategoryElm?.addEventListener('click', function () {
-          const keyNumber = parseInt(
-            (targetInputElm as HTMLInputElement).dataset.index ?? '10000'
-          );
-          aQuizCategory.delete(keyNumber);
-          localStorage.setItem(
-            'quizCategory',
-            JSON.stringify([...aQuizCategory])
-          );
-
-          [...aQuizData].forEach(([_, val]) => {
-            if (parseInt(val.category) === keyNumber) {
-              val.category = 'unspecified';
-            }
-          });
-          localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-
-          bsModal.hide();
-
-          setCategoryInputs(
-            aQuizCategory as Map<number, InputsCategory>,
-            aQuizData as Map<number, Inputs>
-          );
-        });
       }
     });
   });
