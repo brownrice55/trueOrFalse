@@ -289,7 +289,9 @@ export function editOrDeleteCategoryName(
           aQuizData,
           aQuizCategory,
           targetInputElm as HTMLInputElement,
-          aModalForDeleteElms
+          aModalForDeleteElms,
+          null,
+          null
         );
       }
     });

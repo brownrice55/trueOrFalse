@@ -10,6 +10,7 @@ import {
   labelForType,
   labelForPriority,
 } from './common/labels';
+import { displayModalForDelete } from './common/modal';
 import { getAccuracyRate } from './common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -23,17 +24,12 @@ const setEventForDisplayDetail = (
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<HTMLElement>,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aListDdElms: NodeListOf<HTMLElement>
 ) => {
   const listDetailButtonElms = document.querySelectorAll(
     '.js-listDetailButton'
   );
-
-  const buttonDeleteDetailElm = document.querySelector(
-    '.js-buttonDeleteDetail'
-  );
-
-  const quizQuestionSpanElm = document.querySelector('.js-quizQuestionSpan');
 
   const currentValKeys: (keyof Inputs)[] = [
     'category',
@@ -46,7 +42,6 @@ const setEventForDisplayDetail = (
     'numberOfCorrectAnswers',
   ];
 
-  const listDdElms = document.querySelectorAll('.js-listDd');
   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 
   const setInnerHTMLForEdit = (
@@ -67,9 +62,9 @@ const setEventForDisplayDetail = (
     const currentValKey = currentValKeys[aIdx];
 
     if (aIsUnderEdit) {
-      listDdElms[aIdx].innerHTML = formElements[aIdx];
+      aListDdElms[aIdx].innerHTML = formElements[aIdx];
       if (!aIdx) {
-        const categorySelectElm = listDdElms[0].querySelector('select');
+        const categorySelectElm = aListDdElms[0].querySelector('select');
         categorySelectElm?.addEventListener('change', function (e) {
           const targetValue = (e.currentTarget as HTMLSelectElement).value;
           if (targetValue === 'add') {
@@ -79,7 +74,7 @@ const setEventForDisplayDetail = (
             if (buttonSaveElm) {
               buttonSaveElm.classList.add('js-quizDataIsUnderEdit');
               buttonSaveElm.dataset.key = (
-                listDdElms[0]?.parentNode?.parentNode as HTMLElement
+                aListDdElms[0]?.parentNode?.parentNode as HTMLElement
               )?.dataset?.key;
             }
           }
@@ -89,7 +84,7 @@ const setEventForDisplayDetail = (
       if (aIdx === 0 || aIdx === 1 || aIdx === 5) {
         setLablesForIrregular(aIdx, aCurrentVal, currentValKey);
       } else {
-        listDdElms[aIdx].innerHTML = String(aCurrentVal[currentValKey]);
+        aListDdElms[aIdx].innerHTML = String(aCurrentVal[currentValKey]);
       }
     }
   };
@@ -184,7 +179,7 @@ const setEventForDisplayDetail = (
         </div>`,
       };
 
-      listDdElms[3].innerHTML = String(
+      aListDdElms[3].innerHTML = String(
         formElementsIrregularIndex3[
           aCurrentVal.type as keyof FormElementsIrregularIndex3Type
         ]
@@ -203,12 +198,12 @@ const setEventForDisplayDetail = (
           });
         }
 
-        listDdElms[3].innerHTML =
+        aListDdElms[3].innerHTML =
           aCurrentVal.type === 'trueOrFalse'
             ? labelForQuestionAnswer[aCurrentVal.answer]
             : answerForSelection;
       } else {
-        listDdElms[7].innerHTML = String(getAccuracyRate(aCurrentVal));
+        aListDdElms[7].innerHTML = String(getAccuracyRate(aCurrentVal));
       }
     }
   };
@@ -222,21 +217,21 @@ const setEventForDisplayDetail = (
       // category
       const key = aCurrentVal[aCurrentValKey];
       if (aCurrentVal[aCurrentValKey] === 'unspecified') {
-        listDdElms[0].innerHTML = '指定しない';
+        aListDdElms[0].innerHTML = '指定しない';
       } else if (typeof key === 'string' && typeof parseInt(key) === 'number') {
         const currentCategory = aQuizCategory.get(parseInt(key, 10));
         if (currentCategory) {
-          listDdElms[0].innerHTML = String(currentCategory.categoryName);
+          aListDdElms[0].innerHTML = String(currentCategory.categoryName);
         }
       }
     } else if (aIdx === 1) {
       // type
-      listDdElms[1].innerHTML = String(
+      aListDdElms[1].innerHTML = String(
         labelForType[aCurrentVal[aCurrentValKey] as keyof labelForTypeType]
       );
     } else if (aIdx === 5) {
       // question
-      listDdElms[5].innerHTML = String(
+      aListDdElms[5].innerHTML = String(
         labelForPriority[
           String(aCurrentVal[aCurrentValKey]) as keyof labelForPriorityType
         ]
@@ -251,14 +246,14 @@ const setEventForDisplayDetail = (
   ): Inputs => {
     const key = aCurrentValKey;
     if (!aIdx || aIdx === 1 || aIdx === 5) {
-      const selectElm = listDdElms[aIdx].querySelector(
+      const selectElm = aListDdElms[aIdx].querySelector(
         'select'
       ) as HTMLSelectElement | null;
       if (selectElm && typeof aCurrentVal[key] === 'string') {
         (aCurrentVal as any)[key] = (selectElm as HTMLSelectElement).value;
       }
     } else if (aIdx === 2 || aIdx === 4 || aIdx === 6) {
-      const textareaElm = listDdElms[aIdx].querySelector(
+      const textareaElm = aListDdElms[aIdx].querySelector(
         'textarea'
       ) as HTMLTextAreaElement | null;
       if (textareaElm && typeof aCurrentVal[key] === 'string') {
@@ -266,29 +261,6 @@ const setEventForDisplayDetail = (
       }
     }
     return aCurrentVal;
-  };
-
-  const resetIsActiveInTheCategoryData = (
-    aQuizData: Map<number, Inputs>,
-    aQuizCategory: Map<number, InputsCategory>
-  ) => {
-    let activeCategoryKeys: string[] = [];
-    aQuizData.forEach((val: Inputs) => {
-      if (val.category !== 'unspecified') {
-        activeCategoryKeys.push(val.category);
-      }
-    });
-    const activeCategoryKeysSet = new Set(activeCategoryKeys);
-    aQuizCategory.forEach((val, key) => {
-      val.isActive = false;
-      activeCategoryKeysSet.forEach((val2) => {
-        if (key === parseInt(val2)) {
-          val.isActive = true;
-        }
-      });
-    });
-    localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
-    setCategoryInputs(aQuizCategory, aQuizData, aModalForDeleteElms);
   };
 
   listDetailButtonElms.forEach((elm) => {
@@ -311,16 +283,12 @@ const setEventForDisplayDetail = (
             if (idx === 0 || idx === 1 || idx === 5) {
               setLablesForIrregular(idx, currentVal as Inputs, currentValKey);
             } else {
-              listDdElms[idx].innerHTML = String(
+              aListDdElms[idx].innerHTML = String(
                 (currentVal as Inputs)[currentValKey]
               );
             }
           }
         });
-
-        if (quizQuestionSpanElm) {
-          quizQuestionSpanElm.textContent = currentVal.question;
-        }
 
         let isUnderEdit = false;
         let cancelBtnElm: HTMLButtonElement | null = null;
@@ -388,7 +356,11 @@ const setEventForDisplayDetail = (
               aQuizData.set(key, currentVal);
               localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
               if (!idx) {
-                resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
+                resetIsActiveInTheCategoryData(
+                  aQuizData,
+                  aQuizCategory,
+                  aModalForDeleteElms
+                );
               }
               if (idx === 2) {
                 setQuizList(aQuizData, aQuizCategory, aModalForDeleteElms);
@@ -409,17 +381,6 @@ const setEventForDisplayDetail = (
             }
           });
         });
-
-        buttonDeleteDetailElm?.addEventListener('click', function () {
-          aQuizData.delete(key);
-          localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-
-          resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
-
-          aListDivElms[0].classList.remove('d-none');
-          aListDivElms[1].classList.add('d-none');
-          setQuizList(aQuizData, aQuizCategory, aModalForDeleteElms);
-        });
       }
     });
   });
@@ -435,6 +396,27 @@ const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
       aListDivElms[0].classList.remove('d-none');
       aListDivElms[1].classList.add('d-none');
     });
+  });
+};
+
+const setEventForDeleteQuiz = (
+  aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListDdElms: NodeListOf<HTMLElement>
+) => {
+  const buttonDeleteQuizElm = document.querySelector('.js-buttonDeleteQuiz');
+
+  buttonDeleteQuizElm?.addEventListener('click', function () {
+    displayModalForDelete(
+      aQuizData,
+      aQuizCategory,
+      null,
+      aModalForDeleteElms,
+      aListDivElms,
+      aListDdElms
+    );
   });
 };
 
@@ -454,11 +436,46 @@ export function displayList(
               </li>`;
   });
   aListUlElm.innerHTML = liHtml;
+  const listDdElms = document.querySelectorAll('.js-listDd');
+
   setEventForDisplayDetail(
     aQuizData,
     aQuizCategory,
     aListDivElms as NodeListOf<HTMLElement>,
-    aModalForDeleteElms
+    aModalForDeleteElms,
+    listDdElms as NodeListOf<HTMLElement>
   );
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
+
+  setEventForDeleteQuiz(
+    aQuizData,
+    aQuizCategory,
+    aModalForDeleteElms as modalForDeleteElmsType,
+    aListDivElms as NodeListOf<HTMLElement>,
+    listDdElms as NodeListOf<HTMLElement>
+  );
+}
+
+export function resetIsActiveInTheCategoryData(
+  aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
+  aModalForDeleteElms: modalForDeleteElmsType
+) {
+  let activeCategoryKeys: string[] = [];
+  aQuizData.forEach((val: Inputs) => {
+    if (val.category !== 'unspecified') {
+      activeCategoryKeys.push(val.category);
+    }
+  });
+  const activeCategoryKeysSet = new Set(activeCategoryKeys);
+  aQuizCategory.forEach((val, key) => {
+    val.isActive = false;
+    activeCategoryKeysSet.forEach((val2) => {
+      if (key === parseInt(val2)) {
+        val.isActive = true;
+      }
+    });
+  });
+  localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
+  setCategoryInputs(aQuizCategory, aQuizData, aModalForDeleteElms);
 }

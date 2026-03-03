@@ -228,9 +228,7 @@
             <div class="text-center my-5">
               <button
                 type="button"
-                class="btn btn-primary px-4 py-2 me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#modalForQuiz"
+                class="btn btn-primary px-4 py-2 me-3 js-buttonDeleteQuiz"
               >
                 削除する
               </button>
@@ -241,49 +239,6 @@
               >
                 一覧に戻る
               </button>
-            </div>
-            <div
-              class="modal fade"
-              id="modalForQuiz"
-              tabindex="-1"
-              aria-labelledby="modalForQuiz"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalForQuiz">
-                      クイズの削除確認
-                    </h1>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body">
-                    「<span class="js-quizQuestionSpan"></span
-                    >」を削除しますか？
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      削除しない
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary js-buttonDeleteDetail"
-                      data-bs-dismiss="modal"
-                    >
-                      削除する
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -464,41 +419,6 @@
               </div>
             </form>
             <div
-              class="modal fade js-modalForDeleteDiv"
-              id="modalForDelete"
-              tabindex="-1"
-              aria-labelledby="modalForDelete"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5 js-titleH1"></h1>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body js-textDiv"></div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      削除しない
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary js-deleteButton"
-                    ></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
               class="modal fade js-modalForPageTransitionDiv"
               id="modalForPageTransition"
               tabindex="-1"
@@ -536,6 +456,8 @@
             </div>
           </div>
         </section>
+
+        <!-- modal start -->
         <div
           class="modal fade js-modalForSelectionWhatToDoNextDiv"
           id="modalForSelectionWhatToDoNext"
@@ -603,6 +525,44 @@
             </div>
           </div>
         </div>
+        <!-- modal end -->
+        <!-- modal start -->
+        <div
+          class="modal fade js-modalForDeleteDiv"
+          id="modalForDelete"
+          tabindex="-1"
+          aria-labelledby="modalForDelete"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5 js-titleH1"></h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body js-textDiv"></div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  削除しない
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary js-deleteButton"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- modal end -->
       </main>
     </div>
     <script type="module" src="/src/main.ts"></script>

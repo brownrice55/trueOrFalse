@@ -1,5 +1,11 @@
 import * as bootstrap from 'bootstrap';
-import { switchPage, displayPage, setCategoryInputs } from '../display';
+import {
+  switchPage,
+  displayPage,
+  setCategoryInputs,
+  setQuizList,
+} from '../display';
+import { resetIsActiveInTheCategoryData } from '../quizList';
 import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
@@ -156,8 +162,10 @@ export function displayModalForPageTransition(
 export function displayModalForDelete(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aTargetInputElm: HTMLInputElement,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aTargetInputElm: HTMLInputElement | null,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aListDivElms: NodeListOf<HTMLElement> | null,
+  aListDdElms: NodeListOf<HTMLElement> | null
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const modalTextDivElm = aModalForDeleteElms.textDiv;
@@ -165,38 +173,61 @@ export function displayModalForDelete(
   const deleteButtonElm = aModalForDeleteElms.deleteButton;
 
   if (modalTextDivElm) {
-    modalTextDivElm.innerHTML = `「${(aTargetInputElm as HTMLInputElement).value}」を削除して、問題に設定済みのカテゴリー名を「指定なし」に変更しますか？`;
+    modalTextDivElm.innerHTML = aTargetInputElm
+      ? `「${(aTargetInputElm as HTMLInputElement).value}」を削除して、問題に設定済みのカテゴリー名を「指定なし」に変更しますか？`
+      : `「${aListDdElms && aListDdElms[2].textContent}」を削除しますか？`;
   }
   if (modalTitleH1Elm) {
-    modalTitleH1Elm.innerHTML = 'カテゴリーの削除確認';
+    modalTitleH1Elm.innerHTML = aTargetInputElm
+      ? 'カテゴリーの削除確認'
+      : 'クイズの削除確認';
   }
   if (deleteButtonElm) {
-    deleteButtonElm.innerHTML = `削除して問題に設定済みのカテゴリー名を<br />「指定なし」にする`;
+    deleteButtonElm.innerHTML = aTargetInputElm
+      ? `削除して問題に設定済みのカテゴリー名を<br />「指定なし」にする`
+      : `削除する`;
   }
 
   const bsModal = new bootstrap.Modal(modalForDeleteDivElm as HTMLElement);
   bsModal.show();
 
   deleteButtonElm?.addEventListener('click', function () {
-    const keyNumber = parseInt(
-      (aTargetInputElm as HTMLInputElement).dataset.index ?? '10000'
-    );
-    aQuizCategory.delete(keyNumber);
-    localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
+    if (aTargetInputElm) {
+      const keyNumber = parseInt(
+        (aTargetInputElm as HTMLInputElement).dataset.index ?? '10000'
+      );
+      aQuizCategory.delete(keyNumber);
+      localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
 
-    [...aQuizData].forEach(([_, val]) => {
-      if (parseInt(val.category) === keyNumber) {
-        val.category = 'unspecified';
+      [...aQuizData].forEach(([_, val]) => {
+        if (parseInt(val.category) === keyNumber) {
+          val.category = 'unspecified';
+        }
+      });
+      localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
+      setCategoryInputs(
+        aQuizCategory as Map<number, InputsCategory>,
+        aQuizData as Map<number, Inputs>,
+        aModalForDeleteElms as modalForDeleteElmsType
+      );
+    } else {
+      if (aListDivElms) {
+        const key: number = parseInt(aListDivElms[1].dataset.key ?? '10000');
+        aQuizData.delete(key);
+        localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
+        resetIsActiveInTheCategoryData(
+          aQuizData,
+          aQuizCategory,
+          aModalForDeleteElms
+        );
+
+        aListDivElms[0].classList.remove('d-none');
+        aListDivElms[1].classList.add('d-none');
+        setQuizList(aQuizData, aQuizCategory, aModalForDeleteElms);
       }
-    });
-    localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-
+    }
     bsModal.hide();
-
-    setCategoryInputs(
-      aQuizCategory as Map<number, InputsCategory>,
-      aQuizData as Map<number, Inputs>,
-      aModalForDeleteElms as modalForDeleteElmsType
-    );
   });
 }
