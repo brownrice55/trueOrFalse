@@ -135,11 +135,21 @@ export function displayModalForPageTransition(
       '移動しない',
       '変更内容をキャンセルしてページを移動する',
     ],
+    [
+      '編集途中のクイズ詳細の変更内容をキャンセルの上、',
+      'キャンセルせずに<br />クイズ詳細に戻る',
+      '変更内容をキャンセルして<br />ページを移動する',
+    ],
+    [
+      '編集途中のカテゴリー設定とクイズ詳細の変更内容を全てキャンセルの上、',
+      '移動しない',
+      '変更内容を全てキャンセルして<br />ページを移動する',
+    ],
   ];
   const modalForPageTransitionElms = aModalForPageTransitionElms;
   const buttonCancelElm: HTMLButtonElement | null =
     document.querySelector('.js-buttonCancel');
-  if (buttonCancelElm && !buttonCancelElm.disabled) {
+  if (buttonCancelElm) {
     const modalForPageTransitionDivElm = document.querySelector(
       '.js-modalForPageTransitionDiv'
     );
@@ -147,7 +157,6 @@ export function displayModalForPageTransition(
       modalForPageTransitionDivElm as HTMLElement
     );
     bsModal.show();
-
     const textDivElm = modalForPageTransitionElms.textDiv;
     if (textDivElm) {
       textDivElm.innerHTML = `${textArray[aPatternIndex][0]}「${globalMenuName[aIndex]}」に移動しますか？`;
@@ -164,10 +173,8 @@ export function displayModalForPageTransition(
 
     const categoryButtonElms =
       aButtonCancelElm?.parentNode?.querySelectorAll('button');
-    console.log({ buttonElms });
     buttonElms?.forEach((elm: HTMLButtonElement, idx: number) => {
       elm.addEventListener('click', function () {
-        console.log(idx);
         if (!idx || idx === 1) {
           // console.log('close modal')
         } else {

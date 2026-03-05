@@ -36,7 +36,7 @@ export function displayPage(
 
 export function switchPage(
   aIndex: number,
-  aIsModalNeeded: boolean,
+  aIsCategorySettingsUnderEdit: boolean,
   aModalForPageTransitionElms: Partial<modalForPageTransitionElmsType>,
   aButtonCancelElm: HTMLButtonElement | null
 ) {
@@ -52,16 +52,31 @@ export function switchPage(
     // reset quizlist
     // setQuizList(aQuizData, aQuizCategory);
     displayPage(aIndex, sectionElms);
-  } else if (!hasDnoneArray[3] && aIsModalNeeded) {
+  } else if (!hasDnoneArray[3]) {
     //when leaving the category settings
-
     isContinued = false;
-    displayModalForPageTransition(
-      aIndex,
-      aButtonCancelElm as HTMLButtonElement,
-      0,
-      aModalForPageTransitionElms as modalForPageTransitionElmsType
+    const buttons = (
+      aButtonCancelElm?.parentNode as HTMLElement
+    ).querySelectorAll('button');
+    const isQuestionUnderEdit = buttons[1].classList.contains(
+      'js-quizDataIsUnderEdit'
     );
+    if (aIsCategorySettingsUnderEdit) {
+      const pageTransitionIndex = isQuestionUnderEdit ? 2 : 0;
+      displayModalForPageTransition(
+        aIndex,
+        aButtonCancelElm as HTMLButtonElement,
+        pageTransitionIndex,
+        aModalForPageTransitionElms as modalForPageTransitionElmsType
+      );
+    } else if (isQuestionUnderEdit) {
+      displayModalForPageTransition(
+        aIndex,
+        aButtonCancelElm as HTMLButtonElement,
+        1,
+        aModalForPageTransitionElms as modalForPageTransitionElmsType
+      );
+    }
   }
   if (isContinued) {
     displayPage(aIndex, sectionElms);
@@ -71,14 +86,14 @@ export function switchPage(
 export function setupDisplay(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>,
-  aIsModalNeeded: boolean,
+  aIsCategorySettingsUnderEdit: boolean,
   aModalForPageTransitionElms: modalForPageTransitionElmsType,
   aButtonCancelElm: HTMLButtonElement
 ) {
   const pageIndex = !aQuizCategory.size ? 3 : !aQuizData.size ? 2 : 0;
   switchPage(
     pageIndex,
-    aIsModalNeeded,
+    aIsCategorySettingsUnderEdit,
     aModalForPageTransitionElms as modalForPageTransitionElmsType,
     aButtonCancelElm
   );
