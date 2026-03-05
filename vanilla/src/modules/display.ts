@@ -22,6 +22,7 @@ import { displayModalForPageTransition } from './common/modal';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
+import type { modalForPageTransitionElmsType } from '../types/modalForPageTransitionElms.type';
 
 export function displayPage(
   aIndex: number,
@@ -33,7 +34,12 @@ export function displayPage(
   aSectionElms[aIndex].classList.remove('d-none');
 }
 
-const funcForDisplay = (aIndex: number, aIsModalNeeded: boolean) => {
+const funcForDisplay = (
+  aIndex: number,
+  aIsModalNeeded: boolean,
+  aModalForPageTransitionElms: modalForPageTransitionElmsType,
+  aButtonCancelElm: HTMLButtonElement
+) => {
   const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
 
   const hasDnoneArray = Array.from(sectionElms).map((elm) =>
@@ -50,7 +56,12 @@ const funcForDisplay = (aIndex: number, aIsModalNeeded: boolean) => {
     //when leaving the category settings
 
     isContinued = false;
-    displayModalForPageTransition(aIndex, sectionElms);
+    displayModalForPageTransition(
+      aIndex,
+      aButtonCancelElm,
+      0,
+      aModalForPageTransitionElms
+    );
   }
   if (isContinued) {
     displayPage(aIndex, sectionElms);
@@ -60,14 +71,31 @@ const funcForDisplay = (aIndex: number, aIsModalNeeded: boolean) => {
 export function setupDisplay(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>,
-  aIsModalNeeded: boolean
+  aIsModalNeeded: boolean,
+  aModalForPageTransitionElms: modalForPageTransitionElmsType,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   const pageIndex = !aQuizCategory.size ? 3 : !aQuizData.size ? 2 : 0;
-  funcForDisplay(pageIndex, aIsModalNeeded);
+  funcForDisplay(
+    pageIndex,
+    aIsModalNeeded,
+    aModalForPageTransitionElms as modalForPageTransitionElmsType,
+    aButtonCancelElm
+  );
 }
 
-export function switchPage(aIndex: number, aIsModalNeeded: boolean) {
-  funcForDisplay(aIndex, aIsModalNeeded);
+export function switchPage(
+  aIndex: number,
+  aIsModalNeeded: boolean,
+  aModalForPageTransitionElms: Partial<modalForPageTransitionElmsType>,
+  aButtonCancelElm: HTMLButtonElement | null
+) {
+  funcForDisplay(
+    aIndex,
+    aIsModalNeeded,
+    aModalForPageTransitionElms as modalForPageTransitionElmsType,
+    aButtonCancelElm as HTMLButtonElement
+  );
 }
 
 export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
@@ -111,7 +139,7 @@ export function setQuizList(
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
   buttonGoToAddNewElm?.addEventListener('click', function () {
-    switchPage(2, false);
+    switchPage(2, false, {}, null);
   });
 }
 
@@ -294,6 +322,6 @@ export function setAddNew(
     '.js-buttonBackToListFromAddNew'
   );
   buttonBackToListFromAddNewElm?.addEventListener('click', function () {
-    switchPage(1, false);
+    switchPage(1, false, {}, null);
   });
 }

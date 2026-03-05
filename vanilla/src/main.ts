@@ -12,6 +12,7 @@ import {
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
 import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';
+import type { modalForPageTransitionElmsType } from './types/modalForPageTransitionElms.type';
 
 document.body.classList.add('loaded');
 
@@ -21,39 +22,71 @@ const quizData = getDataFromLocalStorage('quizData');
 const globalNavElm = document.querySelector<HTMLElement>('.js-globalNav');
 const globalNavLiElms = globalNavElm?.querySelectorAll<HTMLLIElement>('li');
 
+const getElmsForModal = (aType: string, aContainerDivElm: HTMLElement) => {
+  if (aContainerDivElm) {
+    if (aType === 'delete') {
+      return {
+        containerDiv: aContainerDivElm as HTMLElement,
+        textDiv: aContainerDivElm.querySelector('.js-textDiv') as HTMLElement,
+        titleH1: aContainerDivElm.querySelector('.js-titleH1') as HTMLElement,
+        deleteButton: aContainerDivElm.querySelector(
+          '.js-deleteButton'
+        ) as HTMLButtonElement,
+      };
+    } else {
+      return {
+        containerDiv: aContainerDivElm as HTMLElement,
+        textDiv: aContainerDivElm.querySelector('.js-textDiv') as HTMLElement,
+        buttonAreaDiv: aContainerDivElm.querySelector(
+          '.js-pageTransitionButtonAreaDiv'
+        ) as HTMLButtonElement,
+      };
+    }
+  }
+};
+const modalForDeleteDivElm = document.querySelector('.js-modalForDeleteDiv');
+
+const modalForDeleteElms = getElmsForModal(
+  'delete',
+  modalForDeleteDivElm as HTMLElement
+);
+
+const modalForPageTransitionDivElm = document.querySelector(
+  '.js-modalForPageTransitionDiv'
+);
+
+const modalForPageTransitionElms = getElmsForModal(
+  'pageTransition',
+  modalForPageTransitionDivElm as HTMLElement
+);
+const buttonCancelElm =
+  document.querySelector<HTMLButtonElement>('.js-buttonCancel');
+
 setupDisplay(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  false
+  false,
+  modalForPageTransitionElms as modalForPageTransitionElmsType,
+  buttonCancelElm as HTMLButtonElement
 );
-
-const buttonCancelElm =
-  document.querySelector<HTMLButtonElement>('.js-buttonCancel');
 
 globalNavLiElms?.forEach((elm) => {
   elm.addEventListener('click', function (e: MouseEvent) {
     const target = e.currentTarget as HTMLElement;
     const listIndex = Number(target.dataset.index);
     const isModalNeeded: boolean = !buttonCancelElm?.disabled;
-    switchPage(listIndex, isModalNeeded);
+    switchPage(
+      listIndex,
+      isModalNeeded,
+      modalForPageTransitionElms as modalForPageTransitionElmsType,
+      buttonCancelElm
+    );
   });
 });
 
 if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
-
-const modalForDeleteDivElm = document.querySelector('.js-modalForDeleteDiv');
-const modalTextDivElm = modalForDeleteDivElm?.querySelector('.js-textDiv');
-const modalTitleH1Elm = modalForDeleteDivElm?.querySelector('.js-titleH1');
-const deleteButtonElm = modalForDeleteDivElm?.querySelector('.js-deleteButton');
-
-const modalForDeleteElms: modalForDeleteElmsType = {
-  containerDiv: modalForDeleteDivElm as HTMLElement,
-  textDiv: modalTextDivElm as HTMLElement,
-  titleH1: modalTitleH1Elm as HTMLElement,
-  deleteButton: deleteButtonElm as HTMLButtonElement,
-};
 
 setQuizList(
   quizData as Map<number, Inputs>,
@@ -65,13 +98,13 @@ setQuizList(
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  modalForDeleteElms,
+  modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement
 );
 
 setAddNew(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  modalForDeleteElms,
+  modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement
 );

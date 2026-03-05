@@ -69,7 +69,7 @@ const setEventForDisplayDetail = (
         categorySelectElm?.addEventListener('change', function (e) {
           const targetValue = (e.currentTarget as HTMLSelectElement).value;
           if (targetValue === 'add') {
-            switchPage(3, false);
+            switchPage(3, false, {}, null);
             const buttonSaveElm =
               document.querySelector<HTMLButtonElement>('.js-buttonSave');
             if (buttonSaveElm) {

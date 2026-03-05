@@ -1,14 +1,10 @@
 import * as bootstrap from 'bootstrap';
-import {
-  switchPage,
-  displayPage,
-  setCategoryInputs,
-  setQuizList,
-} from '../display';
+import { switchPage, setCategoryInputs, setQuizList } from '../display';
 import { resetIsActiveInTheCategoryData } from '../quizList';
 import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
+import type { modalForPageTransitionElmsType } from '../../types/modalForPageTransitionElms.type';
 
 export function displayModalToSelectWhatToDoNextAfterSavingData(
   aType: string,
@@ -61,7 +57,7 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
           'click',
           function () {
             bsModal.hide();
-            switchPage(switchIndices[cnt], false);
+            switchPage(switchIndices[cnt], false, {}, null);
           }
         );
       }
@@ -84,13 +80,12 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
 
   bsModal.show();
 
-  const textElms = modalForPageTransitionDivElm?.querySelector(
-    '.js-modalForPageTransitionTextDiv'
-  );
+  const textDivElms =
+    modalForPageTransitionDivElm?.querySelector('.js-textDiv');
 
-  if (Array.isArray(textElms)) {
+  if (Array.isArray(textDivElms)) {
     const testArray: string[] = [aText, aText2];
-    textElms.forEach((elm: HTMLElement, idx: number) => {
+    textDivElms.forEach((elm: HTMLElement, idx: number) => {
       elm.innerHTML = String(testArray[idx]);
     });
   }
@@ -98,7 +93,6 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   const pageTransitionButtonAreaDivElm = document.querySelector(
     '.js-pageTransitionButtonAreaDiv'
   );
-
   const buttonPageTransitionElms =
     pageTransitionButtonAreaDivElm?.querySelectorAll('button');
   if (buttonPageTransitionElms) {
@@ -116,7 +110,7 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
       if (!idx) {
         // reset
       } else {
-        switchPage(1, false);
+        switchPage(1, false, {}, null);
       }
       bsModal.hide();
     });
@@ -125,8 +119,24 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
 
 export function displayModalForPageTransition(
   aIndex: number,
-  aSectionElms: NodeListOf<HTMLElement>
+  aButtonCancelElm: HTMLButtonElement,
+  aPatternIndex: number,
+  aModalForPageTransitionElms: modalForPageTransitionElmsType
 ) {
+  const globalMenuName = [
+    'クイズスタート',
+    'クイズ一覧',
+    '新規登録',
+    'カテゴリー設定',
+  ];
+  const textArray = [
+    [
+      '変更内容を全てキャンセルの上、',
+      '移動しない',
+      '変更内容をキャンセルしてページを移動する',
+    ],
+  ];
+  const modalForPageTransitionElms = aModalForPageTransitionElms;
   const buttonCancelElm: HTMLButtonElement | null =
     document.querySelector('.js-buttonCancel');
   if (buttonCancelElm && !buttonCancelElm.disabled) {
@@ -138,24 +148,39 @@ export function displayModalForPageTransition(
     );
     bsModal.show();
 
-    const buttonPageTransitionElm = document.querySelector(
-      '.js-buttonPageTransition'
-    );
-    const formElm = document.querySelector('form');
-    if (buttonPageTransitionElm) {
-      buttonPageTransitionElm.addEventListener('click', function () {
-        formElm?.reset();
-        const buttonElms: NodeListOf<HTMLButtonElement> | undefined =
-          buttonCancelElm?.parentNode?.querySelectorAll('button');
-        if (buttonElms) {
-          buttonElms.forEach((elm) => {
+    const textDivElm = modalForPageTransitionElms.textDiv;
+    if (textDivElm) {
+      textDivElm.innerHTML = `${textArray[aPatternIndex][0]}「${globalMenuName[aIndex]}」に移動しますか？`;
+    }
+    const pageTransitionButtonAreaDivElm =
+      modalForPageTransitionElms.containerDiv;
+    const buttonElms =
+      pageTransitionButtonAreaDivElm?.querySelectorAll('button');
+    buttonElms?.forEach((elm, idx) => {
+      if (idx) {
+        elm.innerHTML = textArray[aPatternIndex][idx];
+      }
+    });
+
+    const categoryButtonElms =
+      aButtonCancelElm?.parentNode?.querySelectorAll('button');
+    console.log({ buttonElms });
+    buttonElms?.forEach((elm: HTMLButtonElement, idx: number) => {
+      elm.addEventListener('click', function () {
+        console.log(idx);
+        if (!idx || idx === 1) {
+          // console.log('close modal')
+        } else {
+          const formElm = document.querySelector('form');
+          formElm?.reset();
+          categoryButtonElms?.forEach((elm: HTMLButtonElement) => {
             elm.disabled = true;
           });
+          switchPage(aIndex, false, aModalForPageTransitionElms, null);
         }
         bsModal.hide();
-        displayPage(aIndex, aSectionElms);
       });
-    }
+    });
   }
 }
 
