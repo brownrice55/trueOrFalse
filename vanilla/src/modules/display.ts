@@ -61,21 +61,28 @@ export function switchPage(
     const isQuestionUnderEdit = buttons[1].classList.contains(
       'js-quizDataIsUnderEdit'
     );
+    const pageTransitionIndex = isQuestionUnderEdit ? 2 : 0;
     if (aIsCategorySettingsUnderEdit) {
-      const pageTransitionIndex = isQuestionUnderEdit ? 2 : 0;
-      displayModalForPageTransition(
-        aIndex,
-        aButtonCancelElm as HTMLButtonElement,
-        pageTransitionIndex,
-        aModalForPageTransitionElms as modalForPageTransitionElmsType
-      );
+      if (
+        (!pageTransitionIndex && aIndex !== 3) ||
+        (pageTransitionIndex === 2 && aIndex !== 3)
+      ) {
+        displayModalForPageTransition(
+          aIndex,
+          aButtonCancelElm as HTMLButtonElement,
+          pageTransitionIndex,
+          aModalForPageTransitionElms as modalForPageTransitionElmsType
+        );
+      }
     } else if (isQuestionUnderEdit) {
-      displayModalForPageTransition(
-        aIndex,
-        aButtonCancelElm as HTMLButtonElement,
-        1,
-        aModalForPageTransitionElms as modalForPageTransitionElmsType
-      );
+      if (aIndex !== 1 && aIndex !== 3) {
+        displayModalForPageTransition(
+          aIndex,
+          aButtonCancelElm as HTMLButtonElement,
+          1,
+          aModalForPageTransitionElms as modalForPageTransitionElmsType
+        );
+      }
     }
   }
   if (isContinued) {

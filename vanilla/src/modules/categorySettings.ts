@@ -136,6 +136,16 @@ const handleEventForsetInputValidationForCategory: Listener['handleEvent'] =
     );
   };
 
+export function resetCategoryForm(
+  aButtonCancelElm: HTMLButtonElement,
+  aButtonSaveElm: HTMLButtonElement
+) {
+  const formElm = document.querySelector('form');
+  formElm?.reset();
+  aButtonCancelElm.disabled = true;
+  aButtonSaveElm.disabled = true;
+}
+
 export function setButtonDisabledForCategory(
   aButtonSaveElm: HTMLButtonElement,
   aInitialInputValues: string[],
@@ -145,9 +155,7 @@ export function setButtonDisabledForCategory(
   aButtonAddInputElm: HTMLButtonElement
 ) {
   aButtonCancelElm?.addEventListener('click', function () {
-    const formElm = document.querySelector('form');
-    formElm?.reset();
-
+    resetCategoryForm(aButtonCancelElm, aButtonSaveElm);
     setInputValidationForCategory(
       aInitialInputValues,
       aButtonCancelElm,
@@ -155,9 +163,6 @@ export function setButtonDisabledForCategory(
       aIsUnderEdit,
       aInputCategoryAreaElm as HTMLInputElement
     );
-
-    aButtonSaveElm.disabled = true;
-    this.disabled = true;
   });
 
   if (aButtonAddInputElm) {

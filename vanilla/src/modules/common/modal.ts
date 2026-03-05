@@ -1,6 +1,12 @@
 import * as bootstrap from 'bootstrap';
-import { switchPage, setCategoryInputs, setQuizList } from '../display';
+import {
+  switchPage,
+  setCategoryInputs,
+  setQuizList,
+  displayPage,
+} from '../display';
 import { resetIsActiveInTheCategoryData } from '../quizList';
+import { resetCategoryForm } from '../categorySettings';
 import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
@@ -146,6 +152,18 @@ export function displayModalForPageTransition(
       '変更内容を全てキャンセルして<br />ページを移動する',
     ],
   ];
+
+  const resetAndDisplayPage = (
+    aCategoryButtonElms: NodeListOf<HTMLButtonElement>,
+    aIndex: number
+  ) => {
+    if (aCategoryButtonElms) {
+      resetCategoryForm(aCategoryButtonElms[0], aCategoryButtonElms[1]);
+    }
+    const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
+    displayPage(aIndex, sectionElms);
+  };
+
   const modalForPageTransitionElms = aModalForPageTransitionElms;
   const buttonCancelElm: HTMLButtonElement | null =
     document.querySelector('.js-buttonCancel');
@@ -171,20 +189,35 @@ export function displayModalForPageTransition(
       }
     });
 
-    const categoryButtonElms =
+    const categoryButtonElms: NodeListOf<HTMLButtonElement> | undefined =
       aButtonCancelElm?.parentNode?.querySelectorAll('button');
     buttonElms?.forEach((elm: HTMLButtonElement, idx: number) => {
       elm.addEventListener('click', function () {
-        if (!idx || idx === 1) {
-          // console.log('close modal')
-        } else {
-          const formElm = document.querySelector('form');
-          formElm?.reset();
-          categoryButtonElms?.forEach((elm: HTMLButtonElement) => {
-            elm.disabled = true;
-          });
-          switchPage(aIndex, false, aModalForPageTransitionElms, null);
+        if (!aPatternIndex) {
+          if (idx === 2) {
+            resetAndDisplayPage(
+              categoryButtonElms as NodeListOf<HTMLButtonElement>,
+              aIndex
+            );
+          }
+        } else if (aPatternIndex === 1) {
+          if (idx === 1) {
+          } else if (idx === 2) {
+            resetAndDisplayPage(
+              categoryButtonElms as NodeListOf<HTMLButtonElement>,
+              aIndex
+            );
+          }
+        } else if (aPatternIndex === 2) {
+          if (idx === 2) {
+            // *** reset - display quiz list again
+            resetAndDisplayPage(
+              categoryButtonElms as NodeListOf<HTMLButtonElement>,
+              aIndex
+            );
+          }
         }
+
         bsModal.hide();
       });
     });
