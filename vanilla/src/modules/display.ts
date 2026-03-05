@@ -34,12 +34,12 @@ export function displayPage(
   aSectionElms[aIndex].classList.remove('d-none');
 }
 
-const funcForDisplay = (
+export function switchPage(
   aIndex: number,
   aIsModalNeeded: boolean,
-  aModalForPageTransitionElms: modalForPageTransitionElmsType,
-  aButtonCancelElm: HTMLButtonElement
-) => {
+  aModalForPageTransitionElms: Partial<modalForPageTransitionElmsType>,
+  aButtonCancelElm: HTMLButtonElement | null
+) {
   const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
 
   const hasDnoneArray = Array.from(sectionElms).map((elm) =>
@@ -58,15 +58,15 @@ const funcForDisplay = (
     isContinued = false;
     displayModalForPageTransition(
       aIndex,
-      aButtonCancelElm,
+      aButtonCancelElm as HTMLButtonElement,
       0,
-      aModalForPageTransitionElms
+      aModalForPageTransitionElms as modalForPageTransitionElmsType
     );
   }
   if (isContinued) {
     displayPage(aIndex, sectionElms);
   }
-};
+}
 
 export function setupDisplay(
   aQuizCategory: Map<number, InputsCategory>,
@@ -76,25 +76,11 @@ export function setupDisplay(
   aButtonCancelElm: HTMLButtonElement
 ) {
   const pageIndex = !aQuizCategory.size ? 3 : !aQuizData.size ? 2 : 0;
-  funcForDisplay(
+  switchPage(
     pageIndex,
     aIsModalNeeded,
     aModalForPageTransitionElms as modalForPageTransitionElmsType,
     aButtonCancelElm
-  );
-}
-
-export function switchPage(
-  aIndex: number,
-  aIsModalNeeded: boolean,
-  aModalForPageTransitionElms: Partial<modalForPageTransitionElmsType>,
-  aButtonCancelElm: HTMLButtonElement | null
-) {
-  funcForDisplay(
-    aIndex,
-    aIsModalNeeded,
-    aModalForPageTransitionElms as modalForPageTransitionElmsType,
-    aButtonCancelElm as HTMLButtonElement
   );
 }
 
