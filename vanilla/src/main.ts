@@ -62,12 +62,15 @@ const modalForPageTransitionElms = getElmsForModal(
 const buttonCancelElm =
   document.querySelector<HTMLButtonElement>('.js-buttonCancel');
 
+const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
+
 setupDisplay(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
   false,
   modalForPageTransitionElms as modalForPageTransitionElmsType,
-  buttonCancelElm as HTMLButtonElement
+  buttonCancelElm as HTMLButtonElement,
+  sectionElms
 );
 
 globalNavLiElms?.forEach((elm) => {
@@ -79,7 +82,8 @@ globalNavLiElms?.forEach((elm) => {
       listIndex,
       isModalNeeded,
       modalForPageTransitionElms as modalForPageTransitionElmsType,
-      buttonCancelElm
+      buttonCancelElm,
+      sectionElms
     );
   });
 });
@@ -92,19 +96,22 @@ setQuizList(
   quizData as Map<number, Inputs>,
   quizCategory as Map<number, InputsCategory>,
   modalForDeleteElms as modalForDeleteElmsType,
-  buttonCancelElm as HTMLButtonElement
+  buttonCancelElm as HTMLButtonElement,
+  sectionElms
 );
 
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
   modalForDeleteElms as modalForDeleteElmsType,
-  buttonCancelElm as HTMLButtonElement
+  buttonCancelElm as HTMLButtonElement,
+  sectionElms
 );
 
 setAddNew(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
   modalForDeleteElms as modalForDeleteElmsType,
-  buttonCancelElm as HTMLButtonElement
+  buttonCancelElm as HTMLButtonElement,
+  sectionElms
 );

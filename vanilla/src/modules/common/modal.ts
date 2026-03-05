@@ -16,7 +16,8 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
   aType: string,
   aTitle: string,
   aNum: number,
-  aPage: string
+  aPage: string,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const modalForSelectionWhatToDoNextDivElm = document.querySelector(
     '.js-modalForSelectionWhatToDoNextDiv'
@@ -63,7 +64,7 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
           'click',
           function () {
             bsModal.hide();
-            switchPage(switchIndices[cnt], false, {}, null);
+            switchPage(switchIndices[cnt], false, {}, null, aSectionElms);
           }
         );
       }
@@ -75,7 +76,8 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
 export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   aButtonSaveElm: HTMLButtonElement,
   aText: string,
-  aText2: string
+  aText2: string,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const modalForPageTransitionDivElm = document.querySelector(
     '.js-modalForPageTransitionDiv'
@@ -116,7 +118,7 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
       if (!idx) {
         // reset
       } else {
-        switchPage(1, false, {}, null);
+        switchPage(1, false, {}, null, aSectionElms);
       }
       bsModal.hide();
     });
@@ -127,7 +129,8 @@ export function displayModalForPageTransition(
   aIndex: number,
   aButtonCancelElm: HTMLButtonElement,
   aPatternIndex: number,
-  aModalForPageTransitionElms: modalForPageTransitionElmsType
+  aModalForPageTransitionElms: modalForPageTransitionElmsType,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const globalMenuName = [
     'クイズスタート',
@@ -155,13 +158,13 @@ export function displayModalForPageTransition(
 
   const resetAndDisplayPage = (
     aCategoryButtonElms: NodeListOf<HTMLButtonElement>,
-    aIndex: number
+    aIndex: number,
+    aSectionElms: NodeListOf<HTMLElement>
   ) => {
     if (aCategoryButtonElms) {
       resetCategoryForm(aCategoryButtonElms[0], aCategoryButtonElms[1]);
     }
-    const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
-    displayPage(aIndex, sectionElms);
+    displayPage(aIndex, aSectionElms);
   };
 
   const modalForPageTransitionElms = aModalForPageTransitionElms;
@@ -197,7 +200,8 @@ export function displayModalForPageTransition(
           if (idx === 2) {
             resetAndDisplayPage(
               categoryButtonElms as NodeListOf<HTMLButtonElement>,
-              aIndex
+              aIndex,
+              aSectionElms
             );
           }
         } else if (aPatternIndex === 1) {
@@ -205,7 +209,8 @@ export function displayModalForPageTransition(
           } else if (idx === 2) {
             resetAndDisplayPage(
               categoryButtonElms as NodeListOf<HTMLButtonElement>,
-              aIndex
+              aIndex,
+              aSectionElms
             );
           }
         } else if (aPatternIndex === 2) {
@@ -213,7 +218,8 @@ export function displayModalForPageTransition(
             // *** reset - display quiz list again
             resetAndDisplayPage(
               categoryButtonElms as NodeListOf<HTMLButtonElement>,
-              aIndex
+              aIndex,
+              aSectionElms
             );
           }
         }
@@ -231,7 +237,8 @@ export function displayModalForDelete(
   aModalForDeleteElms: modalForDeleteElmsType,
   aListDivElms: NodeListOf<HTMLElement> | null,
   aListDdElms: NodeListOf<HTMLElement> | null,
-  aButtonCancelElm: HTMLButtonElement | null
+  aButtonCancelElm: HTMLButtonElement | null,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const modalTextDivElm = aModalForDeleteElms.textDiv;
@@ -276,7 +283,8 @@ export function displayModalForDelete(
         aQuizCategory as Map<number, InputsCategory>,
         aQuizData as Map<number, Inputs>,
         aModalForDeleteElms as modalForDeleteElmsType,
-        aButtonCancelElm as HTMLButtonElement
+        aButtonCancelElm as HTMLButtonElement,
+        aSectionElms
       );
     } else {
       if (aListDivElms) {
@@ -288,7 +296,8 @@ export function displayModalForDelete(
           aQuizData,
           aQuizCategory,
           aModalForDeleteElms,
-          aButtonCancelElm as HTMLButtonElement
+          aButtonCancelElm as HTMLButtonElement,
+          aSectionElms
         );
 
         aListDivElms[0].classList.remove('d-none');
@@ -297,7 +306,8 @@ export function displayModalForDelete(
           aQuizData,
           aQuizCategory,
           aModalForDeleteElms,
-          aButtonCancelElm as HTMLButtonElement
+          aButtonCancelElm as HTMLButtonElement,
+          aSectionElms
         );
       }
     }

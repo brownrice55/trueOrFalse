@@ -156,7 +156,8 @@ export function saveQuizData(
   aAddNewOptionInputsDivElm: HTMLElement,
   aAddNewTypeDivElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -223,7 +224,8 @@ export function saveQuizData(
           aQuizCategory,
           aQuizData,
           aModalForDeleteElms,
-          aButtonCancelElm
+          aButtonCancelElm,
+          aSectionElms
         );
       }
     }
@@ -263,14 +265,16 @@ export function saveQuizData(
       listDivElms,
       listUlElm as HTMLElement,
       aModalForDeleteElms,
-      aButtonCancelElm
+      aButtonCancelElm,
+      aSectionElms
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(
       'whatToDoNext',
       '新規登録',
       aQuizData.size,
-      '問題'
+      '問題',
+      aSectionElms
     );
   });
 }

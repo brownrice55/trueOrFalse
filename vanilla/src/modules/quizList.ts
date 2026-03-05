@@ -26,7 +26,8 @@ const setEventForDisplayDetail = (
   aListDivElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aListDdElms: NodeListOf<HTMLElement>,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) => {
   const listDetailButtonElms = document.querySelectorAll(
     '.js-listDetailButton'
@@ -69,7 +70,7 @@ const setEventForDisplayDetail = (
         categorySelectElm?.addEventListener('change', function (e) {
           const targetValue = (e.currentTarget as HTMLSelectElement).value;
           if (targetValue === 'add') {
-            switchPage(3, false, {}, null);
+            switchPage(3, false, {}, null, aSectionElms);
             const buttonSaveElm =
               document.querySelector<HTMLButtonElement>('.js-buttonSave');
             if (buttonSaveElm) {
@@ -361,7 +362,8 @@ const setEventForDisplayDetail = (
                   aQuizData,
                   aQuizCategory,
                   aModalForDeleteElms,
-                  aButtonCancelElm
+                  aButtonCancelElm,
+                  aSectionElms
                 );
               }
               if (idx === 2) {
@@ -369,7 +371,8 @@ const setEventForDisplayDetail = (
                   aQuizData,
                   aQuizCategory,
                   aModalForDeleteElms,
-                  aButtonCancelElm
+                  aButtonCancelElm,
+                  aSectionElms
                 );
               }
 
@@ -412,7 +415,8 @@ const setEventForDeleteQuiz = (
   aModalForDeleteElms: modalForDeleteElmsType,
   aListDivElms: NodeListOf<HTMLElement>,
   aListDdElms: NodeListOf<HTMLElement>,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) => {
   const buttonDeleteQuizElm = document.querySelector('.js-buttonDeleteQuiz');
 
@@ -424,7 +428,8 @@ const setEventForDeleteQuiz = (
       aModalForDeleteElms,
       aListDivElms,
       aListDdElms,
-      aButtonCancelElm
+      aButtonCancelElm,
+      aSectionElms
     );
   });
 };
@@ -435,7 +440,8 @@ export function displayList(
   aListDivElms: NodeListOf<Element>,
   aListUlElm: HTMLElement,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -454,7 +460,8 @@ export function displayList(
     aListDivElms as NodeListOf<HTMLElement>,
     aModalForDeleteElms,
     listDdElms as NodeListOf<HTMLElement>,
-    aButtonCancelElm
+    aButtonCancelElm,
+    aSectionElms
   );
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
 
@@ -464,7 +471,8 @@ export function displayList(
     aModalForDeleteElms as modalForDeleteElmsType,
     aListDivElms as NodeListOf<HTMLElement>,
     listDdElms as NodeListOf<HTMLElement>,
-    aButtonCancelElm as HTMLButtonElement
+    aButtonCancelElm as HTMLButtonElement,
+    aSectionElms
   );
 }
 
@@ -472,7 +480,8 @@ export function resetIsActiveInTheCategoryData(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -494,6 +503,7 @@ export function resetIsActiveInTheCategoryData(
     aQuizCategory,
     aQuizData,
     aModalForDeleteElms,
-    aButtonCancelElm
+    aButtonCancelElm,
+    aSectionElms
   );
 }

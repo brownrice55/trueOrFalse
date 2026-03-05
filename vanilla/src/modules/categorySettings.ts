@@ -14,7 +14,8 @@ import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
 
 export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,
-  aInputCategoryAreaElm: HTMLElement
+  aInputCategoryAreaElm: HTMLElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -52,14 +53,16 @@ export function saveCategoryData(
     displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
       aButtonSaveElm,
       'カテゴリー設定を保存しました。<br />編集中のクイズ詳細ページに戻りますか？',
-      '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。'
+      '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。',
+      aSectionElms
     );
   } else {
     displayModalToSelectWhatToDoNextAfterSavingData(
       'whatToDoNext',
       'カテゴリー設定の保存',
       newMap.size,
-      'カテゴリー'
+      'カテゴリー',
+      aSectionElms
     );
   }
 }
@@ -200,7 +203,8 @@ export function editOrDeleteCategoryName(
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
   aButtonAddInputElm: HTMLButtonElement,
-  aModalForDeleteElms: modalForDeleteElmsType
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
     '.js-categoryEditBtn'
@@ -297,7 +301,8 @@ export function editOrDeleteCategoryName(
           aModalForDeleteElms,
           null,
           null,
-          null
+          null,
+          aSectionElms
         );
       }
     });

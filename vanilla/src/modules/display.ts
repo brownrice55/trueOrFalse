@@ -38,7 +38,8 @@ export function switchPage(
   aIndex: number,
   aIsCategorySettingsUnderEdit: boolean,
   aModalForPageTransitionElms: Partial<modalForPageTransitionElmsType>,
-  aButtonCancelElm: HTMLButtonElement | null
+  aButtonCancelElm: HTMLButtonElement | null,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
 
@@ -71,7 +72,8 @@ export function switchPage(
           aIndex,
           aButtonCancelElm as HTMLButtonElement,
           pageTransitionIndex,
-          aModalForPageTransitionElms as modalForPageTransitionElmsType
+          aModalForPageTransitionElms as modalForPageTransitionElmsType,
+          aSectionElms
         );
       }
     } else if (isQuestionUnderEdit) {
@@ -80,7 +82,8 @@ export function switchPage(
           aIndex,
           aButtonCancelElm as HTMLButtonElement,
           1,
-          aModalForPageTransitionElms as modalForPageTransitionElmsType
+          aModalForPageTransitionElms as modalForPageTransitionElmsType,
+          aSectionElms
         );
       }
     }
@@ -95,14 +98,16 @@ export function setupDisplay(
   aQuizData: Map<number, Inputs>,
   aIsCategorySettingsUnderEdit: boolean,
   aModalForPageTransitionElms: modalForPageTransitionElmsType,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const pageIndex = !aQuizCategory.size ? 3 : !aQuizData.size ? 2 : 0;
   switchPage(
     pageIndex,
     aIsCategorySettingsUnderEdit,
     aModalForPageTransitionElms as modalForPageTransitionElmsType,
-    aButtonCancelElm
+    aButtonCancelElm,
+    aSectionElms
   );
 }
 
@@ -132,7 +137,8 @@ export function setQuizList(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
@@ -142,12 +148,13 @@ export function setQuizList(
     listDivElms as NodeListOf<Element>,
     listUlElm as HTMLElement,
     aModalForDeleteElms,
-    aButtonCancelElm
+    aButtonCancelElm,
+    aSectionElms
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
   buttonGoToAddNewElm?.addEventListener('click', function () {
-    switchPage(2, false, {}, null);
+    switchPage(2, false, {}, null, aSectionElms);
   });
 }
 
@@ -187,7 +194,8 @@ export function setCategoryInputs(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -214,7 +222,8 @@ export function setCategoryInputs(
     e.preventDefault();
     saveCategoryData(
       buttonSaveElm as HTMLButtonElement,
-      inputCategoryAreaElm as HTMLElement
+      inputCategoryAreaElm as HTMLElement,
+      aSectionElms
     );
   });
 
@@ -232,7 +241,8 @@ export function setCategoryInputs(
     buttonSaveElm as HTMLButtonElement,
     aButtonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement,
-    aModalForDeleteElms
+    aModalForDeleteElms,
+    aSectionElms
   );
 
   let isUnderEdit = false;
@@ -251,7 +261,8 @@ export function setAddNew(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -316,7 +327,8 @@ export function setAddNew(
     addNewOptionInputsDivElm as HTMLElement,
     addNewTypeDivElms as NodeListOf<HTMLElement>,
     aModalForDeleteElms,
-    aButtonCancelElm
+    aButtonCancelElm,
+    aSectionElms
   );
 
   setValidation(
@@ -330,6 +342,6 @@ export function setAddNew(
     '.js-buttonBackToListFromAddNew'
   );
   buttonBackToListFromAddNewElm?.addEventListener('click', function () {
-    switchPage(1, false, {}, null);
+    switchPage(1, false, {}, null, aSectionElms);
   });
 }
