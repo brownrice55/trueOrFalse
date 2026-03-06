@@ -55,7 +55,6 @@ export function switchPage(
     displayPage(aIndex, sectionElms);
   } else if (!hasDnoneArray[3]) {
     //when leaving the category settings
-    isContinued = false;
     const buttons = (
       aButtonCancelElm?.parentNode as HTMLElement
     ).querySelectorAll('button');
@@ -68,6 +67,7 @@ export function switchPage(
         (!pageTransitionIndex && aIndex !== 3) ||
         (pageTransitionIndex === 2 && aIndex !== 3)
       ) {
+        isContinued = false;
         displayModalForPageTransition(
           aIndex,
           aButtonCancelElm as HTMLButtonElement,
@@ -78,6 +78,7 @@ export function switchPage(
       }
     } else if (isQuestionUnderEdit) {
       if (aIndex !== 1 && aIndex !== 3) {
+        isContinued = false;
         displayModalForPageTransition(
           aIndex,
           aButtonCancelElm as HTMLButtonElement,

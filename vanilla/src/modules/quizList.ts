@@ -220,10 +220,12 @@ const setEventForDisplayDetail = (
       const key = aCurrentVal[aCurrentValKey];
       if (aCurrentVal[aCurrentValKey] === 'unspecified') {
         aListDdElms[0].innerHTML = '指定しない';
+        aListDdElms[0].dataset.text = '指定しない';
       } else if (typeof key === 'string' && typeof parseInt(key) === 'number') {
         const currentCategory = aQuizCategory.get(parseInt(key, 10));
         if (currentCategory) {
           aListDdElms[0].innerHTML = String(currentCategory.categoryName);
+          aListDdElms[0].dataset.text = String(currentCategory.categoryName);
         }
       }
     } else if (aIdx === 1) {
