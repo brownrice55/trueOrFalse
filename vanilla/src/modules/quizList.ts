@@ -304,94 +304,106 @@ const setEventForDisplayDetail = (
         };
 
         listEditBtnElms.forEach((elm, idx) => {
-          elm.addEventListener('click', function (e) {
-            isUnderEdit = !isUnderEdit;
-            setDisabled(isUnderEdit);
+          if (
+            (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset
+              .add !== 'true'
+          ) {
+            elm.addEventListener('click', function (e) {
+              isUnderEdit = !isUnderEdit;
+              setDisabled(isUnderEdit);
 
-            const targetBtnElm = e.currentTarget;
-            if (isUnderEdit) {
-              elm.textContent = '上書きする';
+              const targetBtnElm = e.currentTarget;
+              if (isUnderEdit) {
+                elm.textContent = '上書きする';
 
-              if (targetBtnElm) {
-                (targetBtnElm as HTMLButtonElement).disabled = false;
-              }
+                if (targetBtnElm) {
+                  (targetBtnElm as HTMLButtonElement).disabled = false;
+                }
 
-              const cancelBtnElms = document.querySelectorAll('.btn-secondary');
-              if (cancelBtnElms) {
-                cancelBtnElms.forEach((elm) => {
-                  if (elm) {
-                    elm.remove();
+                const cancelBtnElms =
+                  document.querySelectorAll('.btn-secondary');
+                if (cancelBtnElms) {
+                  cancelBtnElms.forEach((elm) => {
+                    if (elm) {
+                      elm.remove();
+                    }
+                  });
+                }
+
+                cancelBtnElm = document.createElement('button');
+                cancelBtnElm.textContent = 'キャンセル';
+                cancelBtnElm.classList.add(
+                  'btn',
+                  'btn-secondary',
+                  'btn-sm',
+                  'ms-2'
+                );
+
+                elm?.parentNode?.appendChild(cancelBtnElm);
+                cancelBtnElm.addEventListener('click', function () {
+                  this.remove();
+                  cancelBtnElm = null;
+                  isUnderEdit = false;
+                  setDisabled(isUnderEdit);
+                  elm.textContent = '編集する';
+                  if (idx === 3 || idx === 7) {
+                    setInnerHTMLForEditIrregular(
+                      idx,
+                      currentVal as Inputs,
+                      isUnderEdit
+                    );
+                  } else {
+                    setInnerHTMLForEdit(idx, currentVal as Inputs, isUnderEdit);
                   }
                 });
-              }
-
-              cancelBtnElm = document.createElement('button');
-              cancelBtnElm.textContent = 'キャンセル';
-              cancelBtnElm.classList.add(
-                'btn',
-                'btn-secondary',
-                'btn-sm',
-                'ms-2'
-              );
-
-              elm?.parentNode?.appendChild(cancelBtnElm);
-              cancelBtnElm.addEventListener('click', function () {
-                this.remove();
-                cancelBtnElm = null;
-                isUnderEdit = false;
-                setDisabled(isUnderEdit);
-                elm.textContent = '編集する';
-                if (idx === 3 || idx === 7) {
-                  setInnerHTMLForEditIrregular(
-                    idx,
-                    currentVal as Inputs,
-                    isUnderEdit
+              } else {
+                currentVal = saveEachItem(
+                  idx,
+                  currentVal as Inputs,
+                  currentValKeys[idx]
+                );
+                aQuizData.set(key, currentVal);
+                localStorage.setItem(
+                  'quizData',
+                  JSON.stringify([...aQuizData])
+                );
+                if (!idx) {
+                  resetIsActiveInTheCategoryData(
+                    aQuizData,
+                    aQuizCategory,
+                    aModalForDeleteElms,
+                    aButtonCancelElm,
+                    aSectionElms
                   );
-                } else {
-                  setInnerHTMLForEdit(idx, currentVal as Inputs, isUnderEdit);
                 }
-              });
-            } else {
-              currentVal = saveEachItem(
-                idx,
-                currentVal as Inputs,
-                currentValKeys[idx]
-              );
-              aQuizData.set(key, currentVal);
-              localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-              if (!idx) {
-                resetIsActiveInTheCategoryData(
-                  aQuizData,
-                  aQuizCategory,
-                  aModalForDeleteElms,
-                  aButtonCancelElm,
-                  aSectionElms
-                );
-              }
-              if (idx === 2) {
-                setQuizList(
-                  aQuizData,
-                  aQuizCategory,
-                  aModalForDeleteElms,
-                  aButtonCancelElm,
-                  aSectionElms
-                );
-              }
+                if (idx === 2) {
+                  setQuizList(
+                    aQuizData,
+                    aQuizCategory,
+                    aModalForDeleteElms,
+                    aButtonCancelElm,
+                    aSectionElms
+                  );
+                }
 
-              elm.textContent = '編集する';
-              cancelBtnElm?.remove();
-              cancelBtnElm = null;
-            }
-            if (idx === 3 || idx === 7) {
-              setInnerHTMLForEditIrregular(
-                idx,
-                currentVal as Inputs,
-                isUnderEdit
-              );
-            } else {
-              setInnerHTMLForEdit(idx, currentVal as Inputs, isUnderEdit);
-            }
-          });
+                elm.textContent = '編集する';
+                cancelBtnElm?.remove();
+                cancelBtnElm = null;
+              }
+              if (idx === 3 || idx === 7) {
+                setInnerHTMLForEditIrregular(
+                  idx,
+                  currentVal as Inputs,
+                  isUnderEdit
+                );
+              } else {
+                setInnerHTMLForEdit(idx, currentVal as Inputs, isUnderEdit);
+              }
+              (
+                elm.parentNode?.parentNode?.parentNode as HTMLElement
+              ).dataset.add = String(true);
+            });
+          }
         });
       }
     });
