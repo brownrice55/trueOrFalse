@@ -192,6 +192,27 @@ export function displayModalForPageTransition(
       }
     });
 
+    const resetQuizDetail = () => {
+      const listDlElm = document.querySelector('.js-listDl');
+      if (listDlElm) {
+        const listDtElms = listDlElm.querySelectorAll('dt');
+        const listDdElms = listDlElm.querySelectorAll('dd');
+        const btnElms = listDtElms[0].querySelectorAll('button');
+        const saveBtn = btnElms[0];
+        const cancelBtn = btnElms[1];
+        cancelBtn.remove();
+        saveBtn.innerHTML = '編集する';
+        listDdElms[0].innerHTML = String(listDdElms[0].dataset.key);
+        const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+        listEditBtnElms.forEach((elm) => {
+          (elm as HTMLButtonElement).disabled = false;
+        });
+      }
+      const listDivElms = document.querySelectorAll('.js-listDiv');
+      listDivElms[0].classList.remove('d-none');
+      listDivElms[1].classList.add('d-none');
+    };
+
     const categoryButtonElms: NodeListOf<HTMLButtonElement> | undefined =
       aButtonCancelElm?.parentNode?.querySelectorAll('button');
     buttonElms?.forEach((elm: HTMLButtonElement, idx: number) => {
@@ -207,37 +228,12 @@ export function displayModalForPageTransition(
         } else if (aPatternIndex === 1) {
           if (idx === 1) {
           } else if (idx === 2) {
-            resetAndDisplayPage(
-              categoryButtonElms as NodeListOf<HTMLButtonElement>,
-              aIndex,
-              aSectionElms
-            );
+            resetQuizDetail();
+            displayPage(aIndex, aSectionElms);
           }
         } else if (aPatternIndex === 2) {
           if (idx === 2) {
-            // reset quiz detail page start
-            const listDlElm = document.querySelector('.js-listDl');
-            if (listDlElm) {
-              const listDtElms = listDlElm.querySelectorAll('dt');
-              const listDdElms = listDlElm.querySelectorAll('dd');
-              const btnElms = listDtElms[0].querySelectorAll('button');
-              const saveBtn = btnElms[0];
-              const cancelBtn = btnElms[1];
-              cancelBtn.remove();
-              saveBtn.innerHTML = '編集する';
-              listDdElms[0].innerHTML = String(listDdElms[0].dataset.key);
-              const listEditBtnElms =
-                document.querySelectorAll('.js-listEditBtn');
-              listEditBtnElms.forEach((elm) => {
-                (elm as HTMLButtonElement).disabled = false;
-              });
-            }
-            // reset quiz detail page end
-
-            const listDivElms = document.querySelectorAll('.js-listDiv');
-            listDivElms[0].classList.remove('d-none');
-            listDivElms[1].classList.add('d-none');
-
+            resetQuizDetail();
             resetAndDisplayPage(
               categoryButtonElms as NodeListOf<HTMLButtonElement>,
               aIndex,
