@@ -1,10 +1,5 @@
 import * as bootstrap from 'bootstrap';
-import {
-  switchPage,
-  setCategoryInputs,
-  setQuizList,
-  displayPage,
-} from '../display';
+import { setCategoryInputs, setQuizList, displayPage } from '../display';
 import { resetIsActiveInTheCategoryData } from '../quizList';
 import { resetCategoryForm } from '../categorySettings';
 import type { Inputs } from '../../types/inputs.type';
@@ -64,7 +59,7 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
           'click',
           function () {
             bsModal.hide();
-            switchPage(switchIndices[cnt], false, {}, null, aSectionElms);
+            displayPage(switchIndices[cnt], aSectionElms);
           }
         );
       }
@@ -72,6 +67,27 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
   } else {
   }
 }
+
+const resetQuizDetail = () => {
+  const listDlElm = document.querySelector('.js-listDl');
+  if (listDlElm) {
+    const listDtElms = listDlElm.querySelectorAll('dt');
+    const listDdElms = listDlElm.querySelectorAll('dd');
+    const btnElms = listDtElms[0].querySelectorAll('button');
+    const saveBtn = btnElms[0];
+    const cancelBtn = btnElms[1];
+    cancelBtn.remove();
+    saveBtn.innerHTML = '編集する';
+    listDdElms[0].innerHTML = String(listDdElms[0].dataset.key);
+    const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+    listEditBtnElms.forEach((elm) => {
+      (elm as HTMLButtonElement).disabled = false;
+    });
+  }
+  const listDivElms = document.querySelectorAll('.js-listDiv');
+  listDivElms[0].classList.remove('d-none');
+  listDivElms[1].classList.add('d-none');
+};
 
 export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   aButtonSaveElm: HTMLButtonElement,
@@ -92,9 +108,9 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
     modalForPageTransitionDivElm?.querySelector('.js-textDiv');
 
   if (Array.isArray(textDivElms)) {
-    const testArray: string[] = [aText, aText2];
+    const textArray: string[] = [aText, aText2];
     textDivElms.forEach((elm: HTMLElement, idx: number) => {
-      elm.innerHTML = String(testArray[idx]);
+      elm.innerHTML = String(textArray[idx]);
     });
   }
 
@@ -107,18 +123,21 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
     buttonPageTransitionElms[0].innerHTML = 'ページを移動しない※';
     buttonPageTransitionElms[1].innerHTML = 'クイズ詳細へ戻る';
   }
+  const noteTextDivElm =
+    modalForPageTransitionDivElm?.querySelector('.js-noteTextDiv');
+  if (noteTextDivElm) {
+    noteTextDivElm.innerHTML =
+      '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。';
+  }
 
   buttonPageTransitionElms?.forEach((elm, idx) => {
     elm.addEventListener('click', function () {
-      // reset quiz list all to update category names
       aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
-      // const key = aButtonSaveElm.dataset.key;
-      // display quizDetail again***************
       aButtonSaveElm.dataset.key = '0';
       if (!idx) {
-        // reset
+        resetQuizDetail();
       } else {
-        switchPage(1, false, {}, null, aSectionElms);
+        displayPage(1, aSectionElms);
       }
       bsModal.hide();
     });
@@ -192,27 +211,6 @@ export function displayModalForPageTransition(
       }
     });
 
-    const resetQuizDetail = () => {
-      const listDlElm = document.querySelector('.js-listDl');
-      if (listDlElm) {
-        const listDtElms = listDlElm.querySelectorAll('dt');
-        const listDdElms = listDlElm.querySelectorAll('dd');
-        const btnElms = listDtElms[0].querySelectorAll('button');
-        const saveBtn = btnElms[0];
-        const cancelBtn = btnElms[1];
-        cancelBtn.remove();
-        saveBtn.innerHTML = '編集する';
-        listDdElms[0].innerHTML = String(listDdElms[0].dataset.key);
-        const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
-        listEditBtnElms.forEach((elm) => {
-          (elm as HTMLButtonElement).disabled = false;
-        });
-      }
-      const listDivElms = document.querySelectorAll('.js-listDiv');
-      listDivElms[0].classList.remove('d-none');
-      listDivElms[1].classList.add('d-none');
-    };
-
     const categoryButtonElms: NodeListOf<HTMLButtonElement> | undefined =
       aButtonCancelElm?.parentNode?.querySelectorAll('button');
     buttonElms?.forEach((elm: HTMLButtonElement, idx: number) => {
@@ -227,6 +225,7 @@ export function displayModalForPageTransition(
           }
         } else if (aPatternIndex === 1) {
           if (idx === 1) {
+            displayPage(1, aSectionElms);
           } else if (idx === 2) {
             resetQuizDetail();
             displayPage(aIndex, aSectionElms);
