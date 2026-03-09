@@ -69,7 +69,7 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
   }
 }
 
-const resetQuizDetail = () => {
+const resetQuizDetail = (aIsListDisplayed: boolean) => {
   const listDlElm = document.querySelector('.js-listDl');
   if (listDlElm) {
     const listDtElms = listDlElm.querySelectorAll('dt');
@@ -79,15 +79,17 @@ const resetQuizDetail = () => {
     const cancelBtn = btnElms[1];
     cancelBtn.remove();
     saveBtn.innerHTML = '編集する';
-    listDdElms[0].innerHTML = String(listDdElms[0].dataset.key);
-    const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
-    listEditBtnElms.forEach((elm) => {
-      (elm as HTMLButtonElement).disabled = false;
-    });
+    saveBtn.disabled = true;
+
+    if (aIsListDisplayed) {
+      listDdElms[0].innerHTML = String(listDdElms[0].dataset.key);
+    }
   }
-  const listDivElms = document.querySelectorAll('.js-listDiv');
-  listDivElms[0].classList.remove('d-none');
-  listDivElms[1].classList.add('d-none');
+  if (aIsListDisplayed) {
+    const listDivElms = document.querySelectorAll('.js-listDiv');
+    listDivElms[0].classList.remove('d-none');
+    listDivElms[1].classList.add('d-none');
+  }
 };
 
 export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
@@ -136,7 +138,7 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   buttonPageTransitionElms?.forEach((elm, idx) => {
     elm.addEventListener('click', function () {
       if (!idx) {
-        resetQuizDetail();
+        resetQuizDetail(true);
       } else {
         const quizData = getDataFromLocalStorage('quizData');
         const quizCategory = getDataFromLocalStorage('quizCategory');
@@ -158,6 +160,7 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
           aSectionElms
         );
 
+        resetQuizDetail(false);
         displayPage(1, aSectionElms);
       }
       aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
@@ -249,12 +252,12 @@ export function displayModalForPageTransition(
           if (idx === 1) {
             displayPage(1, aSectionElms);
           } else if (idx === 2) {
-            resetQuizDetail();
+            resetQuizDetail(true);
             displayPage(aIndex, aSectionElms);
           }
         } else if (aPatternIndex === 2) {
           if (idx === 2) {
-            resetQuizDetail();
+            resetQuizDetail(true);
             resetAndDisplayPage(
               categoryButtonElms as NodeListOf<HTMLButtonElement>,
               aIndex,
