@@ -94,7 +94,9 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   aButtonSaveElm: HTMLButtonElement,
   aText: string,
   aText2: string,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   const modalForPageTransitionDivElm = document.querySelector(
     '.js-modalForPageTransitionDiv'
@@ -141,68 +143,18 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
         const key = parseInt(aButtonSaveElm.dataset.key ?? '0');
         const currentVal = quizData.get(key);
 
-        const currentValKeys: (keyof Inputs)[] = [
-          'category',
-          'type',
-          'question',
-          'answer',
-          'explanation',
-          'priority',
-          'notes',
-          'numberOfCorrectAnswers',
-        ];
         const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
         const listDdElms = document.querySelectorAll('.js-listDd');
-
-        const getElmsForModal = (
-          aType: string,
-          aContainerDivElm: HTMLElement
-        ) => {
-          if (aContainerDivElm) {
-            if (aType === 'delete') {
-              return {
-                containerDiv: aContainerDivElm as HTMLElement,
-                textDiv: aContainerDivElm.querySelector(
-                  '.js-textDiv'
-                ) as HTMLElement,
-                titleH1: aContainerDivElm.querySelector(
-                  '.js-titleH1'
-                ) as HTMLElement,
-                deleteButton: aContainerDivElm.querySelector(
-                  '.js-deleteButton'
-                ) as HTMLButtonElement,
-              };
-            } else {
-              return {
-                containerDiv: aContainerDivElm as HTMLElement,
-                textDiv: aContainerDivElm.querySelector(
-                  '.js-textDiv'
-                ) as HTMLElement,
-                buttonAreaDiv: aContainerDivElm.querySelector(
-                  '.js-pageTransitionButtonAreaDiv'
-                ) as HTMLButtonElement,
-              };
-            }
-          }
-        };
-        const modalForDeleteDivElm = document.querySelector(
-          '.js-modalForDeleteDiv'
-        );
-
-        const modalForDeleteElms = getElmsForModal(
-          'delete',
-          modalForDeleteDivElm as HTMLElement
-        );
 
         displayDetail(
           key,
           currentVal,
-          currentValKeys,
+          aCurrentValKeys,
           listEditBtnElms as NodeListOf<HTMLButtonElement>,
           listDdElms as NodeListOf<HTMLElement>,
           quizData,
           quizCategory,
-          modalForDeleteElms as modalForDeleteElmsType,
+          aModalForDeleteElms as modalForDeleteElmsType,
           aSectionElms
         );
 
@@ -325,7 +277,8 @@ export function displayModalForDelete(
   aListDivElms: NodeListOf<HTMLElement> | null,
   aListDdElms: NodeListOf<HTMLElement> | null,
   aButtonCancelElm: HTMLButtonElement | null,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const modalTextDivElm = aModalForDeleteElms.textDiv;
@@ -371,7 +324,8 @@ export function displayModalForDelete(
         aQuizData as Map<number, Inputs>,
         aModalForDeleteElms as modalForDeleteElmsType,
         aButtonCancelElm as HTMLButtonElement,
-        aSectionElms
+        aSectionElms,
+        aCurrentValKeys
       );
     } else {
       if (aListDivElms) {
@@ -384,7 +338,8 @@ export function displayModalForDelete(
           aQuizCategory,
           aModalForDeleteElms,
           aButtonCancelElm as HTMLButtonElement,
-          aSectionElms
+          aSectionElms,
+          aCurrentValKeys
         );
 
         aListDivElms[0].classList.remove('d-none');
@@ -394,7 +349,8 @@ export function displayModalForDelete(
           aQuizCategory,
           aModalForDeleteElms,
           aButtonCancelElm as HTMLButtonElement,
-          aSectionElms
+          aSectionElms,
+          aCurrentValKeys
         );
       }
     }

@@ -20,24 +20,14 @@ import type {
   labelForPriorityType,
 } from '../types/labels.type';
 
-const currentValKeys: (keyof Inputs)[] = [
-  'category',
-  'type',
-  'question',
-  'answer',
-  'explanation',
-  'priority',
-  'notes',
-  'numberOfCorrectAnswers',
-];
-
 const setInnerHTMLForEdit = (
   aIdx: number,
   aCurrentVal: Inputs,
   aIsUnderEdit: boolean,
   aQuizCategory: Map<number, InputsCategory>,
   aListDdElms: NodeListOf<HTMLElement>,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) => {
   const formElements = [
     `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category)}</select>`,
@@ -49,7 +39,7 @@ const setInnerHTMLForEdit = (
     getTextArea(aCurrentVal.notes, 'detailNotes'),
   ];
 
-  const currentValKey = currentValKeys[aIdx];
+  const currentValKey = aCurrentValKeys[aIdx];
 
   if (aIsUnderEdit) {
     aListDdElms[aIdx].innerHTML = formElements[aIdx];
@@ -271,7 +261,8 @@ const setEventForDisplayDetail = (
   aListDivElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aListDdElms: NodeListOf<HTMLElement>,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) => {
   const listDetailButtonElms = document.querySelectorAll(
     '.js-listDetailButton'
@@ -294,7 +285,7 @@ const setEventForDisplayDetail = (
         displayDetail(
           key,
           currentVal,
-          currentValKeys,
+          aCurrentValKeys,
           listEditBtnElms as NodeListOf<HTMLButtonElement>,
           aListDdElms,
           aQuizData,
@@ -310,7 +301,7 @@ const setEventForDisplayDetail = (
 export function displayDetail(
   key: number,
   currentVal: Inputs,
-  currentValKeys: (keyof Inputs)[],
+  aCurrentValKeys: (keyof Inputs)[],
   listEditBtnElms: NodeListOf<HTMLButtonElement>,
   aListDdElms: NodeListOf<HTMLElement>,
   aQuizData: Map<number, Inputs>,
@@ -318,7 +309,7 @@ export function displayDetail(
   aModalForDeleteElms: modalForDeleteElmsType,
   aSectionElms: NodeListOf<HTMLElement>
 ) {
-  currentValKeys.forEach((val, idx: number) => {
+  aCurrentValKeys.forEach((val, idx: number) => {
     if (idx === 3 || idx === 7) {
       setInnerHTMLForEditIrregular(
         idx,
@@ -404,7 +395,8 @@ export function displayDetail(
                 isUnderEdit,
                 aQuizCategory,
                 aListDdElms,
-                aSectionElms
+                aSectionElms,
+                aCurrentValKeys
               );
             }
           });
@@ -412,7 +404,7 @@ export function displayDetail(
           currentVal = saveEachItem(
             idx,
             currentVal as Inputs,
-            currentValKeys[idx],
+            aCurrentValKeys[idx],
             aListDdElms
           );
           aQuizData.set(key, currentVal);
@@ -423,7 +415,8 @@ export function displayDetail(
               aQuizCategory,
               aModalForDeleteElms,
               cancelBtnElm as HTMLButtonElement,
-              aSectionElms
+              aSectionElms,
+              aCurrentValKeys
             );
           }
           if (idx === 2) {
@@ -432,7 +425,8 @@ export function displayDetail(
               aQuizCategory,
               aModalForDeleteElms,
               cancelBtnElm as HTMLButtonElement,
-              aSectionElms
+              aSectionElms,
+              aCurrentValKeys
             );
           }
 
@@ -454,7 +448,8 @@ export function displayDetail(
             isUnderEdit,
             aQuizCategory,
             aListDdElms,
-            aSectionElms
+            aSectionElms,
+            aCurrentValKeys
           );
         }
         (elm.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add =
@@ -484,7 +479,8 @@ const setEventForDeleteQuiz = (
   aListDivElms: NodeListOf<HTMLElement>,
   aListDdElms: NodeListOf<HTMLElement>,
   aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) => {
   const buttonDeleteQuizElm = document.querySelector('.js-buttonDeleteQuiz');
 
@@ -497,7 +493,8 @@ const setEventForDeleteQuiz = (
       aListDivElms,
       aListDdElms,
       aButtonCancelElm,
-      aSectionElms
+      aSectionElms,
+      aCurrentValKeys
     );
   });
 };
@@ -509,7 +506,8 @@ export function displayList(
   aListUlElm: HTMLElement,
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -528,7 +526,8 @@ export function displayList(
     aListDivElms as NodeListOf<HTMLElement>,
     aModalForDeleteElms,
     listDdElms as NodeListOf<HTMLElement>,
-    aSectionElms
+    aSectionElms,
+    aCurrentValKeys as (keyof Inputs)[]
   );
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
 
@@ -539,7 +538,8 @@ export function displayList(
     aListDivElms as NodeListOf<HTMLElement>,
     listDdElms as NodeListOf<HTMLElement>,
     aButtonCancelElm as HTMLButtonElement,
-    aSectionElms as NodeListOf<HTMLElement>
+    aSectionElms as NodeListOf<HTMLElement>,
+    aCurrentValKeys
   );
 }
 
@@ -548,7 +548,8 @@ export function resetIsActiveInTheCategoryData(
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -571,6 +572,7 @@ export function resetIsActiveInTheCategoryData(
     aQuizData,
     aModalForDeleteElms,
     aButtonCancelElm,
-    aSectionElms
+    aSectionElms,
+    aCurrentValKeys
   );
 }

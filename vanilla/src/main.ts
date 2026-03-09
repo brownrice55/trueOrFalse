@@ -59,6 +59,18 @@ const modalForPageTransitionElms = getElmsForModal(
   'pageTransition',
   modalForPageTransitionDivElm as HTMLElement
 );
+
+const currentValKeys: (keyof Inputs)[] = [
+  'category',
+  'type',
+  'question',
+  'answer',
+  'explanation',
+  'priority',
+  'notes',
+  'numberOfCorrectAnswers',
+];
+
 const buttonCancelElm =
   document.querySelector<HTMLButtonElement>('.js-buttonCancel');
 
@@ -97,7 +109,8 @@ setQuizList(
   quizCategory as Map<number, InputsCategory>,
   modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
-  sectionElms
+  sectionElms,
+  currentValKeys
 );
 
 setCategoryInputs(
@@ -105,7 +118,8 @@ setCategoryInputs(
   quizData as Map<number, Inputs>,
   modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
-  sectionElms
+  sectionElms,
+  currentValKeys
 );
 
 setAddNew(
@@ -113,5 +127,6 @@ setAddNew(
   quizData as Map<number, Inputs>,
   modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
-  sectionElms
+  sectionElms,
+  currentValKeys
 );

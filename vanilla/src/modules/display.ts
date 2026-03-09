@@ -139,7 +139,8 @@ export function setQuizList(
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
@@ -150,7 +151,8 @@ export function setQuizList(
     listUlElm as HTMLElement,
     aModalForDeleteElms,
     aButtonCancelElm,
-    aSectionElms
+    aSectionElms,
+    aCurrentValKeys
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
@@ -196,7 +198,8 @@ export function setCategoryInputs(
   aQuizData: Map<number, Inputs>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -224,7 +227,9 @@ export function setCategoryInputs(
     saveCategoryData(
       buttonSaveElm as HTMLButtonElement,
       inputCategoryAreaElm as HTMLElement,
-      aSectionElms
+      aSectionElms,
+      aModalForDeleteElms,
+      aCurrentValKeys
     );
   });
 
@@ -243,7 +248,8 @@ export function setCategoryInputs(
     aButtonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement,
     aModalForDeleteElms,
-    aSectionElms
+    aSectionElms,
+    aCurrentValKeys
   );
 
   let isUnderEdit = false;
@@ -263,7 +269,8 @@ export function setAddNew(
   aQuizData: Map<number, Inputs>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -329,7 +336,8 @@ export function setAddNew(
     addNewTypeDivElms as NodeListOf<HTMLElement>,
     aModalForDeleteElms,
     aButtonCancelElm,
-    aSectionElms
+    aSectionElms,
+    aCurrentValKeys as (keyof Inputs)[]
   );
 
   setValidation(

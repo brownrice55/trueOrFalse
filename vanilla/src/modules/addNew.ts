@@ -157,7 +157,8 @@ export function saveQuizData(
   aAddNewTypeDivElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -225,7 +226,8 @@ export function saveQuizData(
           aQuizData,
           aModalForDeleteElms,
           aButtonCancelElm,
-          aSectionElms
+          aSectionElms,
+          aCurrentValKeys
         );
       }
     }
@@ -266,7 +268,8 @@ export function saveQuizData(
       listUlElm as HTMLElement,
       aModalForDeleteElms,
       aButtonCancelElm,
-      aSectionElms
+      aSectionElms,
+      aCurrentValKeys
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(
