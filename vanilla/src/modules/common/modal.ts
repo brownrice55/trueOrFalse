@@ -1,7 +1,8 @@
 import * as bootstrap from 'bootstrap';
 import { setCategoryInputs, setQuizList, displayPage } from '../display';
-import { resetIsActiveInTheCategoryData } from '../quizList';
+import { resetIsActiveInTheCategoryData, displayDetail } from '../quizList';
 import { resetCategoryForm } from '../categorySettings';
+import { getDataFromLocalStorage } from '../dataManagement';
 import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
@@ -132,13 +133,82 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
 
   buttonPageTransitionElms?.forEach((elm, idx) => {
     elm.addEventListener('click', function () {
-      aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
-      aButtonSaveElm.dataset.key = '0';
       if (!idx) {
         resetQuizDetail();
       } else {
+        const quizData = getDataFromLocalStorage('quizData');
+        const quizCategory = getDataFromLocalStorage('quizCategory');
+        const key = parseInt(aButtonSaveElm.dataset.key ?? '0');
+        const currentVal = quizData.get(key);
+
+        const currentValKeys: (keyof Inputs)[] = [
+          'category',
+          'type',
+          'question',
+          'answer',
+          'explanation',
+          'priority',
+          'notes',
+          'numberOfCorrectAnswers',
+        ];
+        const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+        const listDdElms = document.querySelectorAll('.js-listDd');
+
+        const getElmsForModal = (
+          aType: string,
+          aContainerDivElm: HTMLElement
+        ) => {
+          if (aContainerDivElm) {
+            if (aType === 'delete') {
+              return {
+                containerDiv: aContainerDivElm as HTMLElement,
+                textDiv: aContainerDivElm.querySelector(
+                  '.js-textDiv'
+                ) as HTMLElement,
+                titleH1: aContainerDivElm.querySelector(
+                  '.js-titleH1'
+                ) as HTMLElement,
+                deleteButton: aContainerDivElm.querySelector(
+                  '.js-deleteButton'
+                ) as HTMLButtonElement,
+              };
+            } else {
+              return {
+                containerDiv: aContainerDivElm as HTMLElement,
+                textDiv: aContainerDivElm.querySelector(
+                  '.js-textDiv'
+                ) as HTMLElement,
+                buttonAreaDiv: aContainerDivElm.querySelector(
+                  '.js-pageTransitionButtonAreaDiv'
+                ) as HTMLButtonElement,
+              };
+            }
+          }
+        };
+        const modalForDeleteDivElm = document.querySelector(
+          '.js-modalForDeleteDiv'
+        );
+
+        const modalForDeleteElms = getElmsForModal(
+          'delete',
+          modalForDeleteDivElm as HTMLElement
+        );
+
+        displayDetail(
+          key,
+          currentVal,
+          currentValKeys,
+          listEditBtnElms as NodeListOf<HTMLButtonElement>,
+          listDdElms as NodeListOf<HTMLElement>,
+          quizData,
+          quizCategory,
+          modalForDeleteElms as modalForDeleteElmsType,
+          aSectionElms
+        );
+
         displayPage(1, aSectionElms);
       }
+      aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
       bsModal.hide();
     });
   });
