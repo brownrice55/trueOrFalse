@@ -229,7 +229,8 @@ export function setCategoryInputs(
       inputCategoryAreaElm as HTMLElement,
       aSectionElms,
       aModalForDeleteElms,
-      aCurrentValKeys
+      aCurrentValKeys,
+      aQuizData
     );
   });
 

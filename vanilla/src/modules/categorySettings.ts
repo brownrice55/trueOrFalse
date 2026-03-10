@@ -17,7 +17,8 @@ export function saveCategoryData(
   aInputCategoryAreaElm: HTMLElement,
   aSectionElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aCurrentValKeys: (keyof Inputs)[]
+  aCurrentValKeys: (keyof Inputs)[],
+  aQuizData: Map<number, Inputs>
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -58,7 +59,8 @@ export function saveCategoryData(
       '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。',
       aSectionElms,
       aModalForDeleteElms,
-      aCurrentValKeys
+      aCurrentValKeys,
+      aQuizData
     );
   } else {
     displayModalToSelectWhatToDoNextAfterSavingData(

@@ -20,7 +20,7 @@ import type {
   labelForPriorityType,
 } from '../types/labels.type';
 
-const setInnerHTMLForEdit = (
+export function setInnerHTMLForEdit(
   aIdx: number,
   aCurrentVal: Inputs,
   aIsUnderEdit: boolean,
@@ -28,7 +28,7 @@ const setInnerHTMLForEdit = (
   aListDdElms: NodeListOf<HTMLElement>,
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[]
-) => {
+) {
   const formElements = [
     `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category)}</select>`,
     `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
@@ -73,7 +73,7 @@ const setInnerHTMLForEdit = (
       aListDdElms[aIdx].innerHTML = String(aCurrentVal[currentValKey]);
     }
   }
-};
+}
 
 const setInnerHTMLForEditIrregular = (
   aIdx: number,
@@ -291,7 +291,8 @@ const setEventForDisplayDetail = (
           aQuizData,
           aQuizCategory,
           aModalForDeleteElms,
-          aSectionElms
+          aSectionElms,
+          false
         );
       }
     });
@@ -307,7 +308,8 @@ export function displayDetail(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aIsUnderEdit: boolean
 ) {
   aCurrentValKeys.forEach((val, idx: number) => {
     if (idx === 3 || idx === 7) {
@@ -335,7 +337,7 @@ export function displayDetail(
     }
   });
 
-  let isUnderEdit = false;
+  let isUnderEdit = aIsUnderEdit;
   let cancelBtnElm: HTMLButtonElement | null = null;
 
   const setDisabled = (aIsUnderEdit: boolean) => {
