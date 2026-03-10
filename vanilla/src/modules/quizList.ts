@@ -59,6 +59,19 @@ export function setInnerHTMLForEdit(
           }
         }
       });
+    } else if (aIdx === 1) {
+      const typeSelectElm = aListDdElms[1].querySelector('select');
+      typeSelectElm?.addEventListener('change', function (e) {
+        const targetValue = (e.currentTarget as HTMLSelectElement).value;
+        aCurrentVal.type = targetValue;
+
+        setInnerHTMLForEditIrregular(
+          3,
+          aCurrentVal as Inputs,
+          true,
+          aListDdElms
+        );
+      });
     }
   } else {
     if (aIdx === 0 || aIdx === 1 || aIdx === 5) {
@@ -69,6 +82,14 @@ export function setInnerHTMLForEdit(
         aListDdElms,
         aQuizCategory
       );
+      if (aIdx === 1) {
+        setInnerHTMLForEditIrregular(
+          3,
+          aCurrentVal as Inputs,
+          aIsUnderEdit,
+          aListDdElms
+        );
+      }
     } else {
       aListDdElms[aIdx].innerHTML = String(aCurrentVal[currentValKey]);
     }
