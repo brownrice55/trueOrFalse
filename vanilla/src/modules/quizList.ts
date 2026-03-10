@@ -108,26 +108,25 @@ const setInnerHTMLForEditIrregular = (
   };
   if (aIsUnderEdit && aIdx === 3) {
     const formElementsIrregularIndex3: FormElementsIrregularIndex3Type = {
-      trueOrFalse: `<div class="form-check form-check-inline my-3">
+      trueOrFalse: `<div class="form-check form-check-inline cursor-pointer my-3">
+          <input
+            class="form-check-input js-addNewAnswerRadio"
+            type="radio"
+            name="answer"
+            id="answer0"
+            value="0"
+          />
+          <label class="form-check-label" for="answer0">まる</label>
+        </div>
+        <div class="form-check form-check-inline cursor-pointer">
           <input
             class="form-check-input js-addNewAnswerRadio"
             type="radio"
             name="answer"
             id="answer1"
             value="1"
-            checked
           />
-          <label class="form-check-label" for="answer1">まる</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input js-addNewAnswerRadio"
-            type="radio"
-            name="answer"
-            id="answer2"
-            value="2"
-          />
-          <label class="form-check-label" for="answer2">ばつ</label>
+          <label class="form-check-label" for="answer1">ばつ</label>
         </div>`,
       selection: `<div class="my-3">
             <label for="numberOfOptions" class="form-label"
@@ -192,6 +191,21 @@ const setInnerHTMLForEditIrregular = (
         aCurrentVal.type as keyof FormElementsIrregularIndex3Type
       ]
     );
+
+    const addNewAnswerRadioElms = document.querySelectorAll(
+      '.js-addNewAnswerRadio'
+    );
+
+    const checkedIndex = aCurrentVal.answer == 0 ? 0 : 1;
+    (addNewAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
+
+    addNewAnswerRadioElms.forEach((elm) => {
+      elm.addEventListener('click', function (e) {
+        const targetElm = e.currentTarget as HTMLInputElement;
+        targetElm.checked = true;
+        aCurrentVal.answer = parseInt(targetElm.value);
+      });
+    });
   } else {
     if (aIdx === 3) {
       let answerForSelection = '';

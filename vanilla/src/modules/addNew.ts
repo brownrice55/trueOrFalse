@@ -188,7 +188,7 @@ export function saveQuizData(
     );
 
     if (newValue.type === 'trueOrFalse') {
-      newValue.answer = aAddNewAnswerRadioElms[0].checked ? 1 : 2;
+      newValue.answer = aAddNewAnswerRadioElms[0].checked ? 0 : 1;
     } else {
       newValue.numberOfOptions = parseInt(aAddNewOptionNumberSelectElm.value);
 
