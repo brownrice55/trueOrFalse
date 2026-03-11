@@ -151,38 +151,7 @@ const setInnerHTMLForEditIrregular = (
           <p>
             選択肢を入力して、正解の選択肢にチェックを入れてください。
           </p>
-          <div class="my-3 js-addNewOptionInputsDiv">
-            <div class="input-group mb-3">
-              <div class="input-group-text">
-                <input
-                  id="option1"
-                  class="js-addNewOptionsCheckbox form-check-input mt-0"
-                  type="checkbox"
-                  value=""
-                />
-              </div>
-              <input
-                id="option1-2"
-                type="text"
-                class="js-addNewOptionsInputText form-control"
-              />
-            </div>
-            <div class="input-group mb-3">
-              <div class="input-group-text">
-                <input
-                  id="option2"
-                  class="js-addNewOptionsCheckbox form-check-input mt-0"
-                  type="checkbox"
-                  value=""
-                />
-              </div>
-              <input
-                id="option2-2"
-                type="text"
-                class="js-addNewOptionsInputText form-control"
-              />
-            </div>
-          </div>
+          <div class="my-3 js-addNewOptionInputsDiv"></div>
         </div>`,
     };
 
@@ -206,6 +175,42 @@ const setInnerHTMLForEditIrregular = (
         aCurrentVal.answer = parseInt(targetElm.value);
       });
     });
+
+    const addNewOptionNumberSelectElm = document.querySelector(
+      '.js-addNewOptionNumberSelect'
+    );
+    if (addNewOptionNumberSelectElm) {
+      (addNewOptionNumberSelectElm as HTMLSelectElement).value = String(
+        aCurrentVal.numberOfOptions
+      );
+    }
+
+    const addNewOptionInputsDivElm = document.querySelector(
+      '.js-addNewOptionInputsDiv'
+    );
+
+    if (addNewOptionInputsDivElm) {
+      let result = '';
+      let isChecked = '';
+      aCurrentVal.options.forEach((arr, idx) => {
+        isChecked = arr[0] ? 'checked' : '';
+        result += `<div class="input-group mb-3">
+        <div class="input-group-text">
+          <input
+            id="option${idx}"
+            class="js-addNewOptionsCheckbox form-check-input mt-0"
+            type="checkbox" ${isChecked}
+          />
+        </div>
+        <input
+          id="option${idx}-2"
+          type="text"
+          class="js-addNewOptionsInputText form-control" value="${arr[1]}"
+        />
+      </div>`;
+      });
+      addNewOptionInputsDivElm.innerHTML = result;
+    }
   } else {
     if (aIdx === 3) {
       let answerForSelection = '';
@@ -278,6 +283,42 @@ const saveEachItem = <K extends keyof Inputs>(
     ) as HTMLSelectElement | null;
     if (selectElm && typeof aCurrentVal[key] === 'string') {
       (aCurrentVal as any)[key] = (selectElm as HTMLSelectElement).value;
+    }
+    if (aIdx === 1) {
+      if (aCurrentVal.type === 'trueOrFalse') {
+        const addNewAnswerRadioElms = document.querySelectorAll(
+          '.js-addNewAnswerRadio'
+        );
+
+        aCurrentVal.answer = (addNewAnswerRadioElms[0] as HTMLInputElement)
+          .checked
+          ? 0
+          : 1;
+      } else {
+        const addNewOptionNumberSelectElm = document.querySelector(
+          '.js-addNewOptionNumberSelect'
+        );
+        aCurrentVal.numberOfOptions = parseInt(
+          (addNewOptionNumberSelectElm as HTMLSelectElement).value
+        );
+        const addNewOptionsCheckboxElms = document.querySelectorAll(
+          '.js-addNewOptionsCheckbox'
+        );
+        const addNewOptionsInputTextElms = document.querySelectorAll(
+          '.js-addNewOptionsInputText'
+        );
+
+        let newArray: [boolean, string][] = [];
+        Array(aCurrentVal.numberOfOptions)
+          .fill('')
+          .forEach((_, idx) => {
+            newArray.push([
+              (addNewOptionsCheckboxElms[idx] as HTMLInputElement).checked,
+              (addNewOptionsInputTextElms[idx] as HTMLInputElement).value,
+            ]);
+          });
+        aCurrentVal.options = newArray;
+      }
     }
   } else if (aIdx === 2 || aIdx === 4 || aIdx === 6) {
     const textareaElm = aListDdElms[aIdx].querySelector(
