@@ -73,12 +73,21 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
   }
 }
 
-const resetQuizDetail = () => {
+export function resetBtns(aIsFromModal: boolean) {
+  const quizDetailEditCancelBtnElm =
+    document.querySelector('.js-quizDetailEditCancelBtn') || null;
+  if (!quizDetailEditCancelBtnElm) {
+    return;
+  }
   const listDlElm = document.querySelector('.js-listDl');
   if (listDlElm) {
     const listDtElms = listDlElm.querySelectorAll('dt');
-    const listDdElms = listDlElm.querySelectorAll('dd');
-    const btnElms = listDtElms[0].querySelectorAll('button');
+    const targetListDtElm = aIsFromModal
+      ? listDtElms[0]
+      : quizDetailEditCancelBtnElm?.parentNode?.parentNode;
+    const btnElms = targetListDtElm?.querySelectorAll(
+      'button'
+    ) as NodeListOf<HTMLButtonElement>;
     const saveBtn = btnElms[0];
     const cancelBtn = btnElms[1];
     cancelBtn.remove();
@@ -87,9 +96,15 @@ const resetQuizDetail = () => {
     const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
     listEditBtnElms.forEach((elm) => {
       (elm as HTMLButtonElement).disabled = false;
+      if (!aIsFromModal) {
+        (elm as HTMLButtonElement).dataset.adjustment = 'true';
+      }
     });
-    listDdElms[0].innerHTML = String(listDdElms[0].dataset.key);
   }
+}
+
+const resetQuizDetail = () => {
+  resetBtns(true);
   const listDivElms = document.querySelectorAll('.js-listDiv');
   listDivElms[0].classList.remove('d-none');
   listDivElms[1].classList.add('d-none');

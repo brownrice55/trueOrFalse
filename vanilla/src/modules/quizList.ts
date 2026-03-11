@@ -10,7 +10,7 @@ import {
   labelForType,
   labelForPriority,
 } from './common/labels';
-import { displayModalForDelete } from './common/modal';
+import { displayModalForDelete, resetBtns } from './common/modal';
 import { getAccuracyRate } from './common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -445,6 +445,12 @@ export function displayDetail(
     ) {
       elm.addEventListener('click', function (e) {
         isUnderEdit = !isUnderEdit;
+        if (elm.dataset.adjustment === 'true') {
+          isUnderEdit = true;
+          listEditBtnElms.forEach((elm2) => {
+            elm2.dataset.adjustment = 'false';
+          });
+        }
         setDisabled(isUnderEdit);
 
         const targetBtnElm = e.currentTarget;
@@ -466,7 +472,13 @@ export function displayDetail(
 
           cancelBtnElm = document.createElement('button');
           cancelBtnElm.textContent = 'キャンセル';
-          cancelBtnElm.classList.add('btn', 'btn-secondary', 'btn-sm', 'ms-2');
+          cancelBtnElm.classList.add(
+            'btn',
+            'btn-secondary',
+            'btn-sm',
+            'ms-2',
+            'js-quizDetailEditCancelBtn'
+          );
 
           elm?.parentNode?.appendChild(cancelBtnElm);
           cancelBtnElm.addEventListener('click', function () {
@@ -562,6 +574,8 @@ const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
     elm.addEventListener('click', function () {
       aListDivElms[0].classList.remove('d-none');
       aListDivElms[1].classList.add('d-none');
+      // ***** add functions later
+      resetBtns(false);
     });
   });
 };
