@@ -189,12 +189,17 @@ const setInnerHTMLForEditIrregular = (
       '.js-addNewOptionInputsDiv'
     );
 
-    if (addNewOptionInputsDivElm) {
+    const displaySelectionOptions = (aNumberOfOptions: number) => {
       let result = '';
       let isChecked = '';
-      aCurrentVal.options.forEach((arr, idx) => {
-        isChecked = arr[0] ? 'checked' : '';
-        result += `<div class="input-group mb-3">
+      Array(aNumberOfOptions)
+        .fill('')
+        .forEach((_, idx) => {
+          if (!aCurrentVal.options[idx]) {
+            aCurrentVal.options[idx] = [false, ''];
+          }
+          isChecked = aCurrentVal.options[idx][0] ? 'checked' : '';
+          result += `<div class="input-group mb-3">
         <div class="input-group-text">
           <input
             id="option${idx}"
@@ -205,12 +210,23 @@ const setInnerHTMLForEditIrregular = (
         <input
           id="option${idx}-2"
           type="text"
-          class="js-addNewOptionsInputText form-control" value="${arr[1]}"
+          class="js-addNewOptionsInputText form-control" value="${aCurrentVal.options[idx][1]}"
         />
       </div>`;
-      });
-      addNewOptionInputsDivElm.innerHTML = result;
+        });
+      (addNewOptionInputsDivElm as HTMLElement).innerHTML = result;
+    };
+
+    if (addNewOptionInputsDivElm) {
+      displaySelectionOptions(aCurrentVal.numberOfOptions);
     }
+
+    addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
+      aCurrentVal.numberOfOptions = parseInt(
+        (e.currentTarget as HTMLSelectElement).value
+      );
+      displaySelectionOptions(aCurrentVal.numberOfOptions);
+    });
   } else {
     if (aIdx === 3) {
       let answerForSelection = '';
