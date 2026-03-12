@@ -391,6 +391,13 @@ const setEventForDisplayDetail = (
   });
 };
 
+const setDisabled = (aIsUnderEdit: boolean) => {
+  const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+  listEditBtnElms.forEach((elm) => {
+    (elm as HTMLButtonElement).disabled = aIsUnderEdit ? true : false;
+  });
+};
+
 export function displayDetail(
   key: number,
   currentVal: Inputs,
@@ -431,12 +438,6 @@ export function displayDetail(
 
   let isUnderEdit = aIsUnderEdit;
   let cancelBtnElm: HTMLButtonElement | null = null;
-
-  const setDisabled = (aIsUnderEdit: boolean) => {
-    listEditBtnElms.forEach((elm) => {
-      (elm as HTMLButtonElement).disabled = aIsUnderEdit ? true : false;
-    });
-  };
 
   listEditBtnElms.forEach((elm, idx) => {
     if (
@@ -484,27 +485,16 @@ export function displayDetail(
           cancelBtnElm.addEventListener('click', function () {
             this.remove();
             cancelBtnElm = null;
-            isUnderEdit = false;
-            setDisabled(isUnderEdit);
-            elm.textContent = '編集する';
-            if (idx === 3 || idx === 7) {
-              setInnerHTMLForEditIrregular(
-                idx,
-                currentVal as Inputs,
-                isUnderEdit,
-                aListDdElms
-              );
-            } else {
-              setInnerHTMLForEdit(
-                idx,
-                currentVal as Inputs,
-                isUnderEdit,
-                aQuizCategory,
-                aListDdElms,
-                aSectionElms,
-                aCurrentValKeys
-              );
-            }
+            resetQuizDetail(
+              elm,
+              idx,
+              currentVal,
+              aQuizCategory,
+              aListDdElms,
+              aSectionElms,
+              aCurrentValKeys,
+              listEditBtnElms
+            );
           });
         } else {
           currentVal = saveEachItem(
@@ -565,6 +555,43 @@ export function displayDetail(
   });
 }
 
+export function resetQuizDetail(
+  elm: HTMLButtonElement,
+  idx: number,
+  currentVal: Inputs,
+  aQuizCategory: Map<number, InputsCategory>,
+  aListDdElms: NodeListOf<HTMLElement>,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListEditBtnElms: NodeListOf<HTMLButtonElement>
+) {
+  let isUnderEdit = false;
+  setDisabled(isUnderEdit);
+  elm.textContent = '編集する';
+
+  if (idx === 3 || idx === 7) {
+    setInnerHTMLForEditIrregular(
+      idx,
+      currentVal as Inputs,
+      isUnderEdit,
+      aListDdElms
+    );
+  } else {
+    setInnerHTMLForEdit(
+      idx,
+      currentVal as Inputs,
+      isUnderEdit,
+      aQuizCategory,
+      aListDdElms,
+      aSectionElms,
+      aCurrentValKeys
+    );
+  }
+  aListEditBtnElms.forEach((elm) => {
+    elm.dataset.adjustment = 'true';
+  });
+}
+
 const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
   const buttonBackToListElms = document.querySelectorAll(
     '.js-buttonBackToList'
@@ -574,7 +601,6 @@ const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
     elm.addEventListener('click', function () {
       aListDivElms[0].classList.remove('d-none');
       aListDivElms[1].classList.add('d-none');
-      // ***** add functions later
       resetBtns(false);
     });
   });
@@ -637,6 +663,7 @@ export function displayList(
     aSectionElms,
     aCurrentValKeys as (keyof Inputs)[]
   );
+
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
 
   setEventForDeleteQuiz(

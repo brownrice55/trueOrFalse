@@ -4,6 +4,7 @@ import {
   resetIsActiveInTheCategoryData,
   displayDetail,
   setInnerHTMLForEdit,
+  resetQuizDetail,
 } from '../quizList';
 import { resetCategoryForm } from '../categorySettings';
 import { getDataFromLocalStorage } from '../dataManagement';
@@ -100,10 +101,39 @@ export function resetBtns(aIsFromModal: boolean) {
         (elm as HTMLButtonElement).dataset.adjustment = 'true';
       }
     });
+
+    const targetIndex = parseInt(
+      (targetListDtElm as HTMLElement).dataset.index ?? '0'
+    );
+    const quizData = getDataFromLocalStorage('quizData');
+    const quizCategory = getDataFromLocalStorage('quizCategory');
+    const currentVal = quizData.get(targetIndex);
+    const listDdElms = document.querySelectorAll('.js-listDl dd');
+    const currentValKeys: (keyof Inputs)[] = [
+      'category',
+      'type',
+      'question',
+      'answer',
+      'explanation',
+      'priority',
+      'notes',
+      'numberOfCorrectAnswers',
+    ];
+    const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
+    resetQuizDetail(
+      saveBtn,
+      targetIndex,
+      currentVal as Inputs,
+      quizCategory,
+      listDdElms as NodeListOf<HTMLElement>,
+      sectionElms as NodeListOf<HTMLElement>,
+      currentValKeys,
+      listEditBtnElms as NodeListOf<HTMLButtonElement>
+    );
   }
 }
 
-const resetQuizDetail = () => {
+const resetAndDisplayList = () => {
   resetBtns(true);
   const listDivElms = document.querySelectorAll('.js-listDiv');
   listDivElms[0].classList.remove('d-none');
@@ -157,7 +187,7 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   buttonPageTransitionElms?.forEach((elm, idx) => {
     elm.addEventListener('click', function () {
       if (!idx) {
-        resetQuizDetail();
+        resetAndDisplayList();
       } else {
         const quizCategory = getDataFromLocalStorage('quizCategory');
         const key = parseInt(aButtonSaveElm.dataset.key ?? '0');
@@ -280,12 +310,12 @@ export function displayModalForPageTransition(
           if (idx === 1) {
             displayPage(1, aSectionElms);
           } else if (idx === 2) {
-            resetQuizDetail();
+            resetAndDisplayList();
             displayPage(aIndex, aSectionElms);
           }
         } else if (aPatternIndex === 2) {
           if (idx === 2) {
-            resetQuizDetail();
+            resetAndDisplayList();
             resetAndDisplayPage(
               categoryButtonElms as NodeListOf<HTMLButtonElement>,
               aIndex,
