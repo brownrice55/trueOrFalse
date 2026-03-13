@@ -86,20 +86,29 @@ export function switchType(
   });
 }
 
-const getHTMLForOptionInputs = (aNumber: number) => {
+const getHTMLForOptionInputs = (
+  aNumber: number,
+  aTemporaryValues: [boolean, string][]
+) => {
   let html = '';
+  let checked = '';
   Array(aNumber)
     .fill('')
     .forEach((_, idx) => {
+      if (!aTemporaryValues[idx]) {
+        aTemporaryValues[idx] = [false, ''];
+      }
+      checked =
+        aTemporaryValues[idx] && aTemporaryValues[idx][0] ? 'checked' : '';
       html += `<div class="input-group mb-3">
                 <div class="input-group-text">
                   <input id="option${idx + 1}" 
                     class="js-addNewOptionsCheckbox form-check-input mt-0"
-                    type="checkbox"
-                    value=""
+                    type="checkbox" ${checked} data-checktemporary="${aTemporaryValues[idx][0] ?? ''}"
                   />
                 </div>
-                <input id="option${idx + 1}-2"  type="text" class="js-addNewOptionsInputText form-control" />
+                <input id="option${idx + 1}-2"  type="text" class="js-addNewOptionsInputText form-control"
+                    value="${aTemporaryValues[idx][1] ?? ''}" data-texttemporary="${aTemporaryValues[idx][1] ?? ''}" />
               </div>`;
     });
   return html;
@@ -114,7 +123,27 @@ export function setOptionInputs(
 ) {
   aAddNewOptionNumberSelectElm.addEventListener('change', function (e) {
     const number = parseInt((e.currentTarget as HTMLSelectElement).value, 10);
-    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(number);
+
+    const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+      '.js-addNewOptionsCheckbox'
+    );
+    const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+      '.js-addNewOptionsInputText'
+    );
+    let temporaryValues: [boolean, string][] = [];
+    checkboxElms.forEach((elm, idx) => {
+      temporaryValues.push([
+        (elm as HTMLInputElement).dataset.checktemporary === 'true'
+          ? true
+          : false,
+        (inputTextElms[idx] as HTMLInputElement).dataset.texttemporary!,
+      ]);
+    });
+
+    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(
+      number,
+      temporaryValues
+    );
 
     setDisabled(
       aAddNewTypeSelectElm,
@@ -250,7 +279,10 @@ export function saveQuizData(
     aAddNewAnswerRadioElms[0].checked = true;
     aAddNewAnswerRadioElms[1].checked = false;
     aAddNewOptionNumberSelectElm.value = '2';
-    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(2);
+    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(2, [
+      [false, ''],
+      [false, ''],
+    ]);
     aAddNewPrioritySelectElm.value = 'high';
 
     if (newValue.type === 'selection') {
@@ -329,6 +361,16 @@ const setDisabled = (
         aButtonAddNewElm,
         aAddNewOptionInputsDivElm
       );
+
+      if (aElms === 'checkbox') {
+        (elm as HTMLInputElement).dataset.checktemporary = String(
+          (elm as HTMLInputElement).checked
+        );
+      } else if (aElms === 'inputText') {
+        (elm as HTMLInputElement).dataset.texttemporary = (
+          elm as HTMLInputElement
+        ).value;
+      }
     });
   }
 };
