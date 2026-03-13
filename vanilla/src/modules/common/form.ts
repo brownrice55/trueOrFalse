@@ -45,3 +45,51 @@ export function getPriorityOptions(aValue: string) {
           <option value="medium"${selectedArray[1]}>普通</option>
           <option value="low"${selectedArray[2]}>低い</option>`;
 }
+
+export function getHTMLForOptionInputsOfSelection(
+  aNumber: number,
+  aIsDefault: boolean,
+  aElm: HTMLElement
+) {
+  const checkboxElms = aElm.querySelectorAll('.js-addNewOptionsCheckbox');
+  const inputTextElms = aElm.querySelectorAll('.js-addNewOptionsInputText');
+  let temporaryValues: [boolean, string][] = [];
+  if (!aIsDefault) {
+    temporaryValues = [
+      [false, ''],
+      [false, ''],
+    ];
+  } else {
+    checkboxElms.forEach((elm, idx) => {
+      temporaryValues.push([
+        (elm as HTMLInputElement).dataset.checktemporary === 'true'
+          ? true
+          : false,
+        (inputTextElms[idx] as HTMLInputElement).dataset.texttemporary!,
+      ]);
+    });
+  }
+
+  let html = '';
+  let checked = '';
+  Array(aNumber)
+    .fill('')
+    .forEach((_, idx) => {
+      if (!temporaryValues[idx]) {
+        temporaryValues[idx] = [false, ''];
+      }
+      checked =
+        temporaryValues[idx] && temporaryValues[idx][0] ? 'checked' : '';
+      html += `<div class="input-group mb-3">
+                <div class="input-group-text">
+                  <input id="option${idx + 1}" 
+                    class="js-addNewOptionsCheckbox form-check-input mt-0"
+                    type="checkbox" ${checked} data-checktemporary="${temporaryValues[idx][0] ?? ''}"
+                  />
+                </div>
+                <input id="option${idx + 1}-2"  type="text" class="js-addNewOptionsInputText form-control"
+                    value="${temporaryValues[idx][1] ?? ''}" data-texttemporary="${temporaryValues[idx][1] ?? ''}" />
+              </div>`;
+    });
+  return html;
+}

@@ -4,7 +4,8 @@ import {
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
 import { setCategoryInputs } from './display';
-import { displayModalToSelectWhatToDoNextAfterSavingData } from './common/modal.ts';
+import { displayModalToSelectWhatToDoNextAfterSavingData } from './common/modal';
+import { getHTMLForOptionInputsOfSelection } from './common/form';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
@@ -86,34 +87,6 @@ export function switchType(
   });
 }
 
-const getHTMLForOptionInputs = (
-  aNumber: number,
-  aTemporaryValues: [boolean, string][]
-) => {
-  let html = '';
-  let checked = '';
-  Array(aNumber)
-    .fill('')
-    .forEach((_, idx) => {
-      if (!aTemporaryValues[idx]) {
-        aTemporaryValues[idx] = [false, ''];
-      }
-      checked =
-        aTemporaryValues[idx] && aTemporaryValues[idx][0] ? 'checked' : '';
-      html += `<div class="input-group mb-3">
-                <div class="input-group-text">
-                  <input id="option${idx + 1}" 
-                    class="js-addNewOptionsCheckbox form-check-input mt-0"
-                    type="checkbox" ${checked} data-checktemporary="${aTemporaryValues[idx][0] ?? ''}"
-                  />
-                </div>
-                <input id="option${idx + 1}-2"  type="text" class="js-addNewOptionsInputText form-control"
-                    value="${aTemporaryValues[idx][1] ?? ''}" data-texttemporary="${aTemporaryValues[idx][1] ?? ''}" />
-              </div>`;
-    });
-  return html;
-};
-
 export function setOptionInputs(
   aAddNewOptionNumberSelectElm: HTMLSelectElement,
   aAddNewOptionInputsDivElm: HTMLElement,
@@ -124,25 +97,10 @@ export function setOptionInputs(
   aAddNewOptionNumberSelectElm.addEventListener('change', function (e) {
     const number = parseInt((e.currentTarget as HTMLSelectElement).value, 10);
 
-    const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
-      '.js-addNewOptionsCheckbox'
-    );
-    const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
-      '.js-addNewOptionsInputText'
-    );
-    let temporaryValues: [boolean, string][] = [];
-    checkboxElms.forEach((elm, idx) => {
-      temporaryValues.push([
-        (elm as HTMLInputElement).dataset.checktemporary === 'true'
-          ? true
-          : false,
-        (inputTextElms[idx] as HTMLInputElement).dataset.texttemporary!,
-      ]);
-    });
-
-    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(
+    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       number,
-      temporaryValues
+      false,
+      aAddNewOptionInputsDivElm
     );
 
     setDisabled(
@@ -279,10 +237,11 @@ export function saveQuizData(
     aAddNewAnswerRadioElms[0].checked = true;
     aAddNewAnswerRadioElms[1].checked = false;
     aAddNewOptionNumberSelectElm.value = '2';
-    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(2, [
-      [false, ''],
-      [false, ''],
-    ]);
+    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
+      2,
+      true,
+      aAddNewOptionInputsDivElm
+    );
     aAddNewPrioritySelectElm.value = 'high';
 
     if (newValue.type === 'selection') {

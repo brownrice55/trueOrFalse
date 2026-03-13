@@ -4,6 +4,7 @@ import {
   getTypeOptions,
   getTextArea,
   getPriorityOptions,
+  getHTMLForOptionInputsOfSelection,
 } from './common/form';
 import {
   labelForQuestionAnswer,
@@ -190,36 +191,13 @@ const setInnerHTMLForEditIrregular = (
       '.js-addNewOptionInputsDiv'
     );
 
-    const displaySelectionOptions = (aNumberOfOptions: number) => {
-      let result = '';
-      let isChecked = '';
-      Array(aNumberOfOptions)
-        .fill('')
-        .forEach((_, idx) => {
-          if (!aCurrentVal.options[idx]) {
-            aCurrentVal.options[idx] = [false, ''];
-          }
-          isChecked = aCurrentVal.options[idx][0] ? 'checked' : '';
-          result += `<div class="input-group mb-3">
-        <div class="input-group-text">
-          <input
-            id="option${idx}"
-            class="js-addNewOptionsCheckbox form-check-input mt-0"
-            type="checkbox" ${isChecked}
-          />
-        </div>
-        <input
-          id="option${idx}-2"
-          type="text"
-          class="js-addNewOptionsInputText form-control" value="${aCurrentVal.options[idx][1]}"
-        />
-      </div>`;
-        });
-      (addNewOptionInputsDivElm as HTMLElement).innerHTML = result;
-    };
-
     if (addNewOptionInputsDivElm) {
-      displaySelectionOptions(aCurrentVal.numberOfOptions);
+      (addNewOptionInputsDivElm as HTMLElement).innerHTML =
+        getHTMLForOptionInputsOfSelection(
+          aCurrentVal.numberOfOptions,
+          false,
+          addNewOptionInputsDivElm as HTMLElement
+        );
     }
 
     addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
@@ -227,7 +205,12 @@ const setInnerHTMLForEditIrregular = (
         (e.currentTarget as HTMLSelectElement).value,
         10
       );
-      displaySelectionOptions(aCurrentVal.numberOfOptions);
+      (addNewOptionInputsDivElm as HTMLElement).innerHTML =
+        getHTMLForOptionInputsOfSelection(
+          aCurrentVal.numberOfOptions,
+          true,
+          addNewOptionInputsDivElm as HTMLElement
+        );
     });
   } else {
     if (aIdx === 3) {
