@@ -113,7 +113,7 @@ export function setOptionInputs(
   aButtonAddNewElm: HTMLButtonElement
 ) {
   aAddNewOptionNumberSelectElm.addEventListener('change', function (e) {
-    const number = parseInt((e.currentTarget as HTMLSelectElement).value);
+    const number = parseInt((e.currentTarget as HTMLSelectElement).value, 10);
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputs(number);
 
     setDisabled(
@@ -190,7 +190,10 @@ export function saveQuizData(
     if (newValue.type === 'trueOrFalse') {
       newValue.answer = aAddNewAnswerRadioElms[0].checked ? 0 : 1;
     } else {
-      newValue.numberOfOptions = parseInt(aAddNewOptionNumberSelectElm.value);
+      newValue.numberOfOptions = parseInt(
+        aAddNewOptionNumberSelectElm.value,
+        10
+      );
 
       let array: [boolean, string][] = [];
       checkboxElms.forEach((elm, idx) => {
@@ -212,7 +215,7 @@ export function saveQuizData(
     aQuizData.set(newId, newValue);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
-    const key = parseInt(newValue.category);
+    const key = parseInt(newValue.category, 10);
     if (!Number.isNaN(key)) {
       const currentQuizCategoryVal = aQuizCategory.get(key);
       if (currentQuizCategoryVal) {

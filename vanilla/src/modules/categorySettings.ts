@@ -36,7 +36,7 @@ export function saveCategoryData(
     if (elm.value) {
       values.categoryName = elm.value;
       values.isActive = elm?.dataset?.isActive?.toLowerCase() === 'true';
-      const key = parseInt(elm?.dataset?.index ?? '0');
+      const key = parseInt(elm?.dataset?.index ?? '0', 10);
       newMap.set(key, values);
     }
   });

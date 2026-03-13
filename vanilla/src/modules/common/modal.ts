@@ -103,7 +103,8 @@ export function resetBtns(aIsFromModal: boolean) {
     });
 
     const targetIndex = parseInt(
-      (targetListDtElm as HTMLElement).dataset.index ?? '0'
+      (targetListDtElm as HTMLElement).dataset.index ?? '0',
+      10
     );
     const quizData = getDataFromLocalStorage('quizData');
     const quizCategory = getDataFromLocalStorage('quizCategory');
@@ -190,7 +191,7 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
         resetAndDisplayList();
       } else {
         const quizCategory = getDataFromLocalStorage('quizCategory');
-        const key = parseInt(aButtonSaveElm.dataset.key ?? '0');
+        const key = parseInt(aButtonSaveElm.dataset.key ?? '0', 10);
         const currentVal = aQuizData.get(key);
 
         const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
@@ -368,13 +369,14 @@ export function displayModalForDelete(
   deleteButtonElm?.addEventListener('click', function () {
     if (aTargetInputElm) {
       const keyNumber = parseInt(
-        (aTargetInputElm as HTMLInputElement).dataset.index ?? '10000'
+        (aTargetInputElm as HTMLInputElement).dataset.index ?? '10000',
+        10
       );
       aQuizCategory.delete(keyNumber);
       localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
 
       [...aQuizData].forEach(([_, val]) => {
-        if (parseInt(val.category) === keyNumber) {
+        if (parseInt(val.category, 10) === keyNumber) {
           val.category = 'unspecified';
         }
       });
@@ -390,7 +392,10 @@ export function displayModalForDelete(
       );
     } else {
       if (aListDivElms) {
-        const key: number = parseInt(aListDivElms[1].dataset.key ?? '10000');
+        const key: number = parseInt(
+          aListDivElms[1].dataset.key ?? '10000',
+          10
+        );
         aQuizData.delete(key);
         localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 

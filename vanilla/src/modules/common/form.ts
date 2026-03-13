@@ -7,7 +7,7 @@ export function getCategoryOptions(
   let isSelected = false;
   let selected = '';
   [...aQuizCategory].forEach(([idx, obj]) => {
-    if (parseInt(aValue) === idx) {
+    if (parseInt(aValue, 10) === idx) {
       selected = ' selected';
       isSelected = true;
     } else {

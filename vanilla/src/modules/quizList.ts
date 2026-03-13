@@ -172,7 +172,7 @@ const setInnerHTMLForEditIrregular = (
       elm.addEventListener('click', function (e) {
         const targetElm = e.currentTarget as HTMLInputElement;
         targetElm.checked = true;
-        aCurrentVal.answer = parseInt(targetElm.value);
+        aCurrentVal.answer = parseInt(targetElm.value, 10);
       });
     });
 
@@ -223,7 +223,8 @@ const setInnerHTMLForEditIrregular = (
 
     addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
       aCurrentVal.numberOfOptions = parseInt(
-        (e.currentTarget as HTMLSelectElement).value
+        (e.currentTarget as HTMLSelectElement).value,
+        10
       );
       displaySelectionOptions(aCurrentVal.numberOfOptions);
     });
@@ -264,7 +265,10 @@ const setLablesForIrregular = (
     if (aCurrentVal[aCurrentValKey] === 'unspecified') {
       aListDdElms[0].innerHTML = '指定しない';
       aListDdElms[0].dataset.text = '指定しない';
-    } else if (typeof key === 'string' && typeof parseInt(key) === 'number') {
+    } else if (
+      typeof key === 'string' &&
+      typeof parseInt(key, 10) === 'number'
+    ) {
       const currentCategory = aQuizCategory.get(parseInt(key, 10));
       if (currentCategory) {
         aListDdElms[0].innerHTML = String(currentCategory.categoryName);
@@ -315,7 +319,8 @@ const saveEachItem = <K extends keyof Inputs>(
           '.js-addNewOptionNumberSelect'
         );
         aCurrentVal.numberOfOptions = parseInt(
-          (addNewOptionNumberSelectElm as HTMLSelectElement).value
+          (addNewOptionNumberSelectElm as HTMLSelectElement).value,
+          10
         );
         const addNewOptionsCheckboxElms = document.querySelectorAll(
           '.js-addNewOptionsCheckbox'
@@ -368,7 +373,8 @@ const setEventForDisplayDetail = (
       aListDivElms[1].classList.remove('d-none');
 
       const key = parseInt(
-        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0'
+        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0',
+        10
       );
       let currentVal: Inputs | undefined = aQuizData.get(key);
       aListDivElms[1].dataset.key = String(key);
@@ -696,7 +702,7 @@ export function resetIsActiveInTheCategoryData(
   aQuizCategory.forEach((val, key) => {
     val.isActive = false;
     activeCategoryKeysSet.forEach((val2) => {
-      if (key === parseInt(val2)) {
+      if (key === parseInt(val2, 10)) {
         val.isActive = true;
       }
     });
