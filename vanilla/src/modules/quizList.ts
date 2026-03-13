@@ -10,7 +10,8 @@ import {
   labelForType,
   labelForPriority,
 } from './common/labels';
-import { displayModalForDelete, resetBtns } from './common/modal';
+import { displayModalForDelete } from './common/modal';
+import { resetBtns } from './common/utils';
 import { getAccuracyRate } from './common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -562,9 +563,9 @@ export function displayDetail(
 }
 
 export function resetQuizDetail(
-  elm: HTMLButtonElement,
-  idx: number,
-  currentVal: Inputs,
+  aElm: HTMLButtonElement,
+  aIdx: number,
+  aCurrentVal: Inputs,
   aQuizCategory: Map<number, InputsCategory>,
   aListDdElms: NodeListOf<HTMLElement>,
   aSectionElms: NodeListOf<HTMLElement>,
@@ -573,19 +574,19 @@ export function resetQuizDetail(
 ) {
   let isUnderEdit = false;
   setDisabled(isUnderEdit);
-  elm.textContent = '編集する';
+  aElm.textContent = '編集する';
 
-  if (idx === 3 || idx === 7) {
+  if (aIdx === 3 || aIdx === 7) {
     setInnerHTMLForEditIrregular(
-      idx,
-      currentVal as Inputs,
+      aIdx,
+      aCurrentVal as Inputs,
       isUnderEdit,
       aListDdElms
     );
   } else {
     setInnerHTMLForEdit(
-      idx,
-      currentVal as Inputs,
+      aIdx,
+      aCurrentVal as Inputs,
       isUnderEdit,
       aQuizCategory,
       aListDdElms,

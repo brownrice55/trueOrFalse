@@ -4,10 +4,10 @@ import {
   resetIsActiveInTheCategoryData,
   displayDetail,
   setInnerHTMLForEdit,
-  resetQuizDetail,
 } from '../quizList';
 import { resetCategoryForm } from '../categorySettings';
 import { getDataFromLocalStorage } from '../dataManagement';
+import { resetBtns } from './utils';
 import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
@@ -71,66 +71,6 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
       }
     }
   } else {
-  }
-}
-
-export function resetBtns(aIsFromModal: boolean) {
-  const quizDetailEditCancelBtnElm =
-    document.querySelector('.js-quizDetailEditCancelBtn') || null;
-  if (!quizDetailEditCancelBtnElm) {
-    return;
-  }
-  const listDlElm = document.querySelector('.js-listDl');
-  if (listDlElm) {
-    const listDtElms = listDlElm.querySelectorAll('dt');
-    const targetListDtElm = aIsFromModal
-      ? listDtElms[0]
-      : quizDetailEditCancelBtnElm?.parentNode?.parentNode;
-    const btnElms = targetListDtElm?.querySelectorAll(
-      'button'
-    ) as NodeListOf<HTMLButtonElement>;
-    const saveBtn = btnElms[0];
-    const cancelBtn = btnElms[1];
-    cancelBtn.remove();
-    saveBtn.innerHTML = '編集する';
-
-    const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
-    listEditBtnElms.forEach((elm) => {
-      (elm as HTMLButtonElement).disabled = false;
-      if (!aIsFromModal) {
-        (elm as HTMLButtonElement).dataset.adjustment = 'true';
-      }
-    });
-
-    const targetIndex = parseInt(
-      (targetListDtElm as HTMLElement).dataset.index ?? '0',
-      10
-    );
-    const quizData = getDataFromLocalStorage('quizData');
-    const quizCategory = getDataFromLocalStorage('quizCategory');
-    const currentVal = quizData.get(targetIndex);
-    const listDdElms = document.querySelectorAll('.js-listDl dd');
-    const currentValKeys: (keyof Inputs)[] = [
-      'category',
-      'type',
-      'question',
-      'answer',
-      'explanation',
-      'priority',
-      'notes',
-      'numberOfCorrectAnswers',
-    ];
-    const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
-    resetQuizDetail(
-      saveBtn,
-      targetIndex,
-      currentVal as Inputs,
-      quizCategory,
-      listDdElms as NodeListOf<HTMLElement>,
-      sectionElms as NodeListOf<HTMLElement>,
-      currentValKeys,
-      listEditBtnElms as NodeListOf<HTMLButtonElement>
-    );
   }
 }
 
