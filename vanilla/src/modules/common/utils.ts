@@ -1,5 +1,6 @@
 import { getDataFromLocalStorage } from '../dataManagement';
 import { resetQuizDetail } from '../quizList';
+import { switchPage } from '../display';
 import type { Inputs } from '../../types/inputs.type';
 
 export function getAccuracyRate(aVal: Inputs) {
@@ -71,5 +72,20 @@ export function resetBtns(aIsFromModal: boolean) {
       currentValKeys,
       listEditBtnElms as NodeListOf<HTMLButtonElement>
     );
+  }
+}
+
+export function goToCategoryToSetNewCategory(
+  aSectionElms: NodeListOf<HTMLElement>
+) {
+  switchPage(3, false, {}, null, aSectionElms);
+  const buttonSaveElm =
+    document.querySelector<HTMLButtonElement>('.js-buttonSave');
+  if (buttonSaveElm) {
+    buttonSaveElm.classList.add('js-quizDataIsUnderEdit');
+    const listDdElms = document.querySelectorAll('.js-listDd');
+    buttonSaveElm.dataset.key = (
+      listDdElms[0]?.parentNode?.parentNode as HTMLElement
+    )?.dataset?.key;
   }
 }

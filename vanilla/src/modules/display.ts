@@ -12,6 +12,7 @@ import {
   saveQuizData,
   setValidation,
 } from './addNew';
+import { goToCategoryToSetNewCategory } from './common/utils';
 import { getInputValues } from './inputValidation';
 import {
   getCategoryOptions,
@@ -353,5 +354,12 @@ export function setAddNew(
   );
   buttonBackToListFromAddNewElm?.addEventListener('click', function () {
     switchPage(1, false, {}, null, aSectionElms);
+  });
+
+  addNewCategorySelectElm?.addEventListener('change', function (e) {
+    const targetValue = (e.currentTarget as HTMLSelectElement).value;
+    if (targetValue === 'add') {
+      goToCategoryToSetNewCategory(aSectionElms);
+    }
   });
 }

@@ -1,4 +1,4 @@
-import { setQuizList, setCategoryInputs, switchPage } from './display';
+import { setQuizList, setCategoryInputs } from './display';
 import {
   getCategoryOptions,
   getTypeOptions,
@@ -12,7 +12,7 @@ import {
   labelForPriority,
 } from './common/labels';
 import { displayModalForDelete } from './common/modal';
-import { resetBtns } from './common/utils';
+import { resetBtns, goToCategoryToSetNewCategory } from './common/utils';
 import { getAccuracyRate } from './common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -50,15 +50,7 @@ export function setInnerHTMLForEdit(
       categorySelectElm?.addEventListener('change', function (e) {
         const targetValue = (e.currentTarget as HTMLSelectElement).value;
         if (targetValue === 'add') {
-          switchPage(3, false, {}, null, aSectionElms);
-          const buttonSaveElm =
-            document.querySelector<HTMLButtonElement>('.js-buttonSave');
-          if (buttonSaveElm) {
-            buttonSaveElm.classList.add('js-quizDataIsUnderEdit');
-            buttonSaveElm.dataset.key = (
-              aListDdElms[0]?.parentNode?.parentNode as HTMLElement
-            )?.dataset?.key;
-          }
+          goToCategoryToSetNewCategory(aSectionElms);
         }
       });
     } else if (aIdx === 1) {
