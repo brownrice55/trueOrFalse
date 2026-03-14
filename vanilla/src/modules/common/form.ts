@@ -93,3 +93,20 @@ export function getHTMLForOptionInputsOfSelection(
     });
   return html;
 }
+
+export function setAlertForInputField(
+  aElms: NodeListOf<Element>,
+  aIsInputed: boolean,
+  aType: string
+) {
+  aElms.forEach((elm) => {
+    const targetValue =
+      aType === 'checkbox'
+        ? (elm as HTMLInputElement).checked
+        : (elm as HTMLInputElement | HTMLTextAreaElement).value;
+    elm.classList.remove('border', 'border-danger', 'border-3');
+    if (!targetValue && !aIsInputed) {
+      elm.classList.add('border', 'border-danger', 'border-3');
+    }
+  });
+}

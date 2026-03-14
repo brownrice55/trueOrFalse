@@ -5,7 +5,10 @@ import {
 } from './inputValidation';
 import { setCategoryInputs } from './display';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from './common/modal';
-import { getHTMLForOptionInputsOfSelection } from './common/form';
+import {
+  getHTMLForOptionInputsOfSelection,
+  setAlertForInputField,
+} from './common/form';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
@@ -19,7 +22,8 @@ const setValidationForDataEntry = (
   const isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
   setAlertForInputField(
     aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-    isInputed
+    isInputed,
+    'textarea'
   );
   aButtonAddNewElm.disabled = isInputed ? false : true;
 
@@ -39,7 +43,8 @@ const setValidationForDataEntry = (
 
     setAlertForInputField(
       checkboxElms as NodeListOf<HTMLInputElement>,
-      isChecked
+      isChecked,
+      'checkbox'
     );
 
     const inputValues: string[] = getInputValues(
@@ -54,7 +59,8 @@ const setValidationForDataEntry = (
     if (!duplicateValuesIndices.length) {
       setAlertForInputField(
         inputTextElms as NodeListOf<HTMLInputElement>,
-        isInputed2
+        isInputed2,
+        'inputText'
       );
     }
 
@@ -275,18 +281,6 @@ export function saveQuizData(
     );
   });
 }
-
-const setAlertForInputField = (
-  aElms: NodeListOf<Element>,
-  aIsInputed: boolean
-) => {
-  aElms.forEach((elm2) => {
-    elm2.classList.remove('border', 'border-danger', 'border-3');
-    if (!(elm2 as HTMLInputElement).value && !aIsInputed) {
-      elm2.classList.add('border', 'border-danger', 'border-3');
-    }
-  });
-};
 
 const setDisabled = (
   aAddNewTypeSelectElm: HTMLSelectElement,
