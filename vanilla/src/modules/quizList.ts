@@ -50,7 +50,7 @@ export function setInnerHTMLForEdit(
       categorySelectElm?.addEventListener('change', function (e) {
         const targetValue = (e.currentTarget as HTMLSelectElement).value;
         if (targetValue === 'add') {
-          goToCategoryToSetNewCategory(aSectionElms);
+          goToCategoryToSetNewCategory(aSectionElms, 'quizList');
         }
       });
     } else if (aIdx === 1) {

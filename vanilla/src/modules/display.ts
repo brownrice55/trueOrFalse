@@ -62,7 +62,14 @@ export function switchPage(
     const isQuestionUnderEdit = buttons[1].classList.contains(
       'js-quizDataIsUnderEdit'
     );
-    const pageTransitionIndex = isQuestionUnderEdit ? 2 : 0;
+    const isNewDataUnderEdit = buttons[1].classList.contains(
+      'js-newDataIsUnderEdit'
+    );
+    const pageTransitionIndex = isQuestionUnderEdit
+      ? 2
+      : isNewDataUnderEdit
+        ? 3
+        : 0;
     if (aIsCategorySettingsUnderEdit) {
       if (
         (!pageTransitionIndex && aIndex !== 3) ||
@@ -359,7 +366,7 @@ export function setAddNew(
   addNewCategorySelectElm?.addEventListener('change', function (e) {
     const targetValue = (e.currentTarget as HTMLSelectElement).value;
     if (targetValue === 'add') {
-      goToCategoryToSetNewCategory(aSectionElms);
+      goToCategoryToSetNewCategory(aSectionElms, 'addNew');
     }
   });
 }

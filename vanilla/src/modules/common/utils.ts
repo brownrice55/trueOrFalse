@@ -76,13 +76,16 @@ export function resetBtns(aIsFromModal: boolean) {
 }
 
 export function goToCategoryToSetNewCategory(
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aFrom: string
 ) {
   switchPage(3, false, {}, null, aSectionElms);
   const buttonSaveElm =
     document.querySelector<HTMLButtonElement>('.js-buttonSave');
   if (buttonSaveElm) {
-    buttonSaveElm.classList.add('js-quizDataIsUnderEdit');
+    const className =
+      aFrom === 'quizList' ? 'js-quizDataIsUnderEdit' : 'js-newDataIsUnderEdit';
+    buttonSaveElm.classList.add(className);
     const listDdElms = document.querySelectorAll('.js-listDd');
     buttonSaveElm.dataset.key = (
       listDdElms[0]?.parentNode?.parentNode as HTMLElement
