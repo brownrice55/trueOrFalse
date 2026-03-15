@@ -19,7 +19,7 @@ export const currentValKeys: (keyof Inputs)[] = [
   'notes',
   'numberOfCorrectAnswers',
 ];
-export function resetBtns(aIsFromModal: boolean) {
+export function resetEditQuizBtns(aIsFromModal: boolean) {
   const quizDetailEditCancelBtnElm =
     document.querySelector('.js-quizDetailEditCancelBtn') || null;
   if (!quizDetailEditCancelBtnElm) {

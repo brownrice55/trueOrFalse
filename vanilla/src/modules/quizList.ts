@@ -12,7 +12,10 @@ import {
   labelForPriority,
 } from './common/labels';
 import { displayModalForDelete } from './common/modal';
-import { resetBtns, goToCategoryToSetNewCategory } from './common/utils';
+import {
+  resetEditQuizBtns,
+  goToCategoryToSetNewCategory,
+} from './common/utils';
 import { getAccuracyRate } from './common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -583,7 +586,7 @@ const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
     elm.addEventListener('click', function () {
       aListDivElms[0].classList.remove('d-none');
       aListDivElms[1].classList.add('d-none');
-      resetBtns(false);
+      resetEditQuizBtns(false);
     });
   });
 };

@@ -7,7 +7,7 @@ import {
 } from '../quizList';
 import { resetCategoryForm } from '../categorySettings';
 import { getDataFromLocalStorage } from '../dataManagement';
-import { resetBtns } from './utils';
+import { resetEditQuizBtns } from './utils';
 import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
@@ -75,7 +75,7 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
 }
 
 const resetAndDisplayList = () => {
-  resetBtns(true);
+  resetEditQuizBtns(true);
   const listDivElms = document.querySelectorAll('.js-listDiv');
   listDivElms[0].classList.remove('d-none');
   listDivElms[1].classList.add('d-none');
