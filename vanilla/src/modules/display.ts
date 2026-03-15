@@ -66,41 +66,37 @@ export function switchPage(
       'js-newDataIsUnderEdit'
     );
 
-    if (aIsCategorySettingsUnderEdit) {
-      isContinued = false;
-      const pageTransitionPatternIndex = isQuestionUnderEdit
-        ? 2
-        : isNewDataUnderEdit
-          ? 4
-          : 0;
+    const setModalFunction = (
+      aIndex: number,
+      aPageTransitionPatternIndex: number
+    ) => {
       displayModalForPageTransition(
         aIndex,
         aButtonCancelElm as HTMLButtonElement,
-        pageTransitionPatternIndex,
+        aPageTransitionPatternIndex,
         aModalForPageTransitionElms as modalForPageTransitionElmsType,
         aSectionElms
       );
+    };
+
+    if (aIsCategorySettingsUnderEdit) {
+      isContinued = false;
+      let pageTransitionPatternIndex = 0;
+      if (isQuestionUnderEdit) {
+        pageTransitionPatternIndex = aIndex === 1 ? 5 : 2;
+      } else if (isNewDataUnderEdit) {
+        pageTransitionPatternIndex = aIndex === 2 ? 6 : 4;
+      }
+      setModalFunction(aIndex, pageTransitionPatternIndex);
     } else if (isQuestionUnderEdit) {
       if (aIndex !== 1 && aIndex !== 3) {
         isContinued = false;
-        displayModalForPageTransition(
-          aIndex,
-          aButtonCancelElm as HTMLButtonElement,
-          1,
-          aModalForPageTransitionElms as modalForPageTransitionElmsType,
-          aSectionElms
-        );
+        setModalFunction(aIndex, 1);
       }
     } else if (isNewDataUnderEdit) {
       if (aIndex !== 2 && aIndex !== 3) {
         isContinued = false;
-        displayModalForPageTransition(
-          aIndex,
-          aButtonCancelElm as HTMLButtonElement,
-          3,
-          aModalForPageTransitionElms as modalForPageTransitionElmsType,
-          aSectionElms
-        );
+        setModalFunction(aIndex, 3);
       }
     }
   }

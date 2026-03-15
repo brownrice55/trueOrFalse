@@ -199,9 +199,19 @@ export function displayModalForPageTransition(
     ],
     ['新規登録が完了していませんが', '移動しない', 'ページを移動する'],
     [
-      '編集途中のカテゴリー設定を全てキャンセルの上、',
+      '編集途中のカテゴリー設定をキャンセルの上、',
       '移動しない',
       '変更内容をキャンセルして<br />ページを移動する',
+    ],
+    [
+      '編集途中のカテゴリー設定をキャンセルの上、',
+      '移動しない',
+      'クイズ詳細に戻る',
+    ],
+    [
+      '編集途中のカテゴリー設定をキャンセルの上、',
+      '移動しない',
+      '新規登録に戻る',
     ],
   ];
 
@@ -262,20 +272,33 @@ export function displayModalForPageTransition(
               resetAndDisplayList();
               displayPage(aIndex, aSectionElms);
             }
-          } else if (aPatternIndex === 2) {
+          } else if (aPatternIndex === 2 || aPatternIndex === 5) {
             if (idx === 2) {
               categoryButtonElms[1]?.classList.remove('js-quizDataIsUnderEdit');
-              resetAndDisplayList();
+              if (aPatternIndex === 2) {
+                resetAndDisplayList();
+              }
               resetAndDisplayPage(
                 categoryButtonElms as NodeListOf<HTMLButtonElement>,
                 aIndex,
                 aSectionElms
               );
             }
-          } else if (aPatternIndex === 3 || aPatternIndex === 4) {
+          } else if (
+            aPatternIndex === 3 ||
+            aPatternIndex === 4 ||
+            aPatternIndex === 6
+          ) {
             if (idx === 2) {
               categoryButtonElms[1]?.classList.remove('js-newDataIsUnderEdit');
               displayPage(aIndex, aSectionElms);
+              if (aPatternIndex === 4 || aPatternIndex === 6) {
+                resetAndDisplayPage(
+                  categoryButtonElms as NodeListOf<HTMLButtonElement>,
+                  aIndex,
+                  aSectionElms
+                );
+              }
             }
           }
         }
