@@ -197,6 +197,12 @@ export function displayModalForPageTransition(
       '移動しない',
       '変更内容を全てキャンセルして<br />ページを移動する',
     ],
+    ['新規登録が完了していませんが', '移動しない', 'ページを移動する'],
+    [
+      '編集途中のカテゴリー設定を全てキャンセルの上、',
+      '移動しない',
+      '変更内容をキャンセルして<br />ページを移動する',
+    ],
   ];
 
   const resetAndDisplayPage = (
@@ -247,21 +253,30 @@ export function displayModalForPageTransition(
               aSectionElms
             );
           }
-        } else if (aPatternIndex === 1) {
-          if (idx === 1) {
-            displayPage(1, aSectionElms);
-          } else if (idx === 2) {
-            resetAndDisplayList();
-            displayPage(aIndex, aSectionElms);
-          }
-        } else if (aPatternIndex === 2) {
-          if (idx === 2) {
-            resetAndDisplayList();
-            resetAndDisplayPage(
-              categoryButtonElms as NodeListOf<HTMLButtonElement>,
-              aIndex,
-              aSectionElms
-            );
+        } else if (categoryButtonElms) {
+          if (aPatternIndex === 1) {
+            if (idx === 1) {
+              displayPage(1, aSectionElms);
+            } else if (idx === 2) {
+              categoryButtonElms[1].classList.remove('js-quizDataIsUnderEdit');
+              resetAndDisplayList();
+              displayPage(aIndex, aSectionElms);
+            }
+          } else if (aPatternIndex === 2) {
+            if (idx === 2) {
+              categoryButtonElms[1]?.classList.remove('js-quizDataIsUnderEdit');
+              resetAndDisplayList();
+              resetAndDisplayPage(
+                categoryButtonElms as NodeListOf<HTMLButtonElement>,
+                aIndex,
+                aSectionElms
+              );
+            }
+          } else if (aPatternIndex === 3 || aPatternIndex === 4) {
+            if (idx === 2) {
+              categoryButtonElms[1]?.classList.remove('js-newDataIsUnderEdit');
+              displayPage(aIndex, aSectionElms);
+            }
           }
         }
 

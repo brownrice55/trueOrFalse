@@ -65,25 +65,21 @@ export function switchPage(
     const isNewDataUnderEdit = buttons[1].classList.contains(
       'js-newDataIsUnderEdit'
     );
-    const pageTransitionIndex = isQuestionUnderEdit
-      ? 2
-      : isNewDataUnderEdit
-        ? 3
-        : 0;
+
     if (aIsCategorySettingsUnderEdit) {
-      if (
-        (!pageTransitionIndex && aIndex !== 3) ||
-        (pageTransitionIndex === 2 && aIndex !== 3)
-      ) {
-        isContinued = false;
-        displayModalForPageTransition(
-          aIndex,
-          aButtonCancelElm as HTMLButtonElement,
-          pageTransitionIndex,
-          aModalForPageTransitionElms as modalForPageTransitionElmsType,
-          aSectionElms
-        );
-      }
+      isContinued = false;
+      const pageTransitionPatternIndex = isQuestionUnderEdit
+        ? 2
+        : isNewDataUnderEdit
+          ? 4
+          : 0;
+      displayModalForPageTransition(
+        aIndex,
+        aButtonCancelElm as HTMLButtonElement,
+        pageTransitionPatternIndex,
+        aModalForPageTransitionElms as modalForPageTransitionElmsType,
+        aSectionElms
+      );
     } else if (isQuestionUnderEdit) {
       if (aIndex !== 1 && aIndex !== 3) {
         isContinued = false;
@@ -91,6 +87,17 @@ export function switchPage(
           aIndex,
           aButtonCancelElm as HTMLButtonElement,
           1,
+          aModalForPageTransitionElms as modalForPageTransitionElmsType,
+          aSectionElms
+        );
+      }
+    } else if (isNewDataUnderEdit) {
+      if (aIndex !== 2 && aIndex !== 3) {
+        isContinued = false;
+        displayModalForPageTransition(
+          aIndex,
+          aButtonCancelElm as HTMLButtonElement,
+          3,
           aModalForPageTransitionElms as modalForPageTransitionElmsType,
           aSectionElms
         );
