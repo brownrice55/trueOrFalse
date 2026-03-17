@@ -1,8 +1,13 @@
+import { getDataFromLocalStorage } from '../dataManagement';
 import type { InputsCategory } from '../../types/inputsCategory.type';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
   aValue: string
 ) {
+  const buttonSaveElm = document.querySelector('.js-buttonSave');
+  if (buttonSaveElm?.classList.contains('js-categoryNameIsUpdated')) {
+    aQuizCategory = getDataFromLocalStorage('quizCategory');
+  }
   let optionHTML2 = '';
   let isSelected = false;
   let selected = '';

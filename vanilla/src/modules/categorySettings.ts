@@ -75,18 +75,20 @@ export function saveCategoryData(
     aCurrentValKeys as (keyof Inputs)[]
   );
 
-  const key = parseInt(aButtonSaveElm.dataset.key ?? '0', 10);
-  const currentVal = aQuizData.get(key);
+  if (aButtonSaveElm.dataset.key) {
+    const key = parseInt(aButtonSaveElm.dataset.key, 10);
+    const currentVal = aQuizData.get(key);
 
-  setInnerHTMLForEdit(
-    0,
-    currentVal as Inputs,
-    true,
-    newMap,
-    listDdElms as NodeListOf<HTMLElement>,
-    aSectionElms,
-    aCurrentValKeys
-  );
+    setInnerHTMLForEdit(
+      0,
+      currentVal as Inputs,
+      true,
+      newMap,
+      listDdElms as NodeListOf<HTMLElement>,
+      aSectionElms,
+      aCurrentValKeys
+    );
+  }
 
   const buttonSaveAndCancelElms =
     aButtonSaveElm?.parentNode?.querySelectorAll('button');
