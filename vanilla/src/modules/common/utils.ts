@@ -1,5 +1,3 @@
-import { getDataFromLocalStorage } from '../dataManagement';
-import { resetQuizDetail } from '../quizList';
 import { switchPage } from '../display';
 import type { Inputs } from '../../types/inputs.type';
 
@@ -46,32 +44,6 @@ export function resetEditQuizBtns(aIsFromModal: boolean) {
         (elm as HTMLButtonElement).dataset.adjustment = 'true';
       }
     });
-
-    const targetListDtElmIndex = parseInt(
-      (targetListDtElm as HTMLElement).dataset.index ?? '0',
-      10
-    );
-
-    const key = parseInt(
-      (targetListDtElm?.parentNode?.parentNode as HTMLElement).dataset.key ??
-        '0',
-      10
-    );
-    const quizData = getDataFromLocalStorage('quizData');
-    const quizCategory = getDataFromLocalStorage('quizCategory');
-    const currentVal = quizData.get(key);
-    const listDdElms = document.querySelectorAll('.js-listDl dd');
-    const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
-    resetQuizDetail(
-      saveBtn,
-      targetListDtElmIndex,
-      currentVal as Inputs,
-      quizCategory,
-      listDdElms as NodeListOf<HTMLElement>,
-      sectionElms as NodeListOf<HTMLElement>,
-      currentValKeys,
-      listEditBtnElms as NodeListOf<HTMLButtonElement>
-    );
   }
 }
 
@@ -79,7 +51,9 @@ export function goToCategoryToSetNewCategory(
   aSectionElms: NodeListOf<HTMLElement>,
   aFrom: string
 ) {
-  switchPage(3, false, {}, null, aSectionElms);
+  const buttonCancelElm =
+    document.querySelector<HTMLButtonElement>('.js-buttonCancel');
+  switchPage(3, false, {}, buttonCancelElm, aSectionElms);
   const buttonSaveElm =
     document.querySelector<HTMLButtonElement>('.js-buttonSave');
   if (buttonSaveElm) {

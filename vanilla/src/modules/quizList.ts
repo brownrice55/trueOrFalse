@@ -331,7 +331,7 @@ const saveEachItem = <K extends keyof Inputs>(
   return aCurrentVal;
 };
 
-const setEventForDisplayDetail = (
+export function setEventForDisplayDetail(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<HTMLElement>,
@@ -339,11 +339,10 @@ const setEventForDisplayDetail = (
   aListDdElms: NodeListOf<HTMLElement>,
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[]
-) => {
+) {
   const listDetailButtonElms = document.querySelectorAll(
     '.js-listDetailButton'
   );
-
   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 
   listDetailButtonElms.forEach((elm) => {
@@ -374,7 +373,7 @@ const setEventForDisplayDetail = (
       }
     });
   });
-};
+}
 
 const setDisabled = (aIsUnderEdit: boolean) => {
   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');

@@ -1,12 +1,7 @@
 import * as bootstrap from 'bootstrap';
 import { setCategoryInputs, setQuizList, displayPage } from '../display';
-import {
-  resetIsActiveInTheCategoryData,
-  displayDetail,
-  setInnerHTMLForEdit,
-} from '../quizList';
+import { resetIsActiveInTheCategoryData } from '../quizList';
 import { resetCategoryForm } from '../categorySettings';
-import { getDataFromLocalStorage } from '../dataManagement';
 import { resetEditQuizBtns } from './utils';
 import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
@@ -85,10 +80,7 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   aButtonSaveElm: HTMLButtonElement,
   aText: string,
   aText2: string,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aCurrentValKeys: (keyof Inputs)[],
-  aQuizData: Map<number, Inputs>
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   const modalForPageTransitionDivElm = document.querySelector(
     '.js-modalForPageTransitionDiv'
@@ -99,14 +91,15 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
 
   bsModal.show();
 
-  const textDivElms =
-    modalForPageTransitionDivElm?.querySelector('.js-textDiv');
+  const textDivElm = modalForPageTransitionDivElm?.querySelector('.js-textDiv');
+  const noteTextDivElm =
+    modalForPageTransitionDivElm?.querySelector('.js-noteTextDiv');
 
-  if (Array.isArray(textDivElms)) {
-    const textArray: string[] = [aText, aText2];
-    textDivElms.forEach((elm: HTMLElement, idx: number) => {
-      elm.innerHTML = String(textArray[idx]);
-    });
+  if (textDivElm) {
+    textDivElm.innerHTML = aText;
+  }
+  if (noteTextDivElm) {
+    noteTextDivElm.innerHTML = aText2;
   }
 
   const pageTransitionButtonAreaDivElm = document.querySelector(
@@ -118,48 +111,12 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
     buttonPageTransitionElms[0].innerHTML = 'ページを移動しない※';
     buttonPageTransitionElms[1].innerHTML = 'クイズ詳細へ戻る';
   }
-  const noteTextDivElm =
-    modalForPageTransitionDivElm?.querySelector('.js-noteTextDiv');
-  if (noteTextDivElm) {
-    noteTextDivElm.innerHTML =
-      '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。';
-  }
 
   buttonPageTransitionElms?.forEach((elm, idx) => {
     elm.addEventListener('click', function () {
       if (!idx) {
         resetAndDisplayList();
       } else {
-        const quizCategory = getDataFromLocalStorage('quizCategory');
-        const key = parseInt(aButtonSaveElm.dataset.key ?? '0', 10);
-        const currentVal = aQuizData.get(key);
-
-        const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
-        const listDdElms = document.querySelectorAll('.js-listDd');
-
-        displayDetail(
-          key,
-          currentVal as Inputs,
-          aCurrentValKeys,
-          listEditBtnElms as NodeListOf<HTMLButtonElement>,
-          listDdElms as NodeListOf<HTMLElement>,
-          aQuizData,
-          quizCategory,
-          aModalForDeleteElms as modalForDeleteElmsType,
-          aSectionElms,
-          false
-        );
-
-        setInnerHTMLForEdit(
-          0,
-          currentVal as Inputs,
-          true,
-          quizCategory,
-          listDdElms as NodeListOf<HTMLElement>,
-          aSectionElms,
-          aCurrentValKeys
-        );
-
         displayPage(1, aSectionElms);
       }
       aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
@@ -215,7 +172,7 @@ export function displayModalForPageTransition(
     ],
   ];
 
-  const resetAndDisplayPage = (
+  const resetCategoryFormAndDisplayPage = (
     aCategoryButtonElms: NodeListOf<HTMLButtonElement>,
     aIndex: number,
     aSectionElms: NodeListOf<HTMLElement>
@@ -257,7 +214,7 @@ export function displayModalForPageTransition(
       elm.addEventListener('click', function () {
         if (!aPatternIndex) {
           if (idx === 2) {
-            resetAndDisplayPage(
+            resetCategoryFormAndDisplayPage(
               categoryButtonElms as NodeListOf<HTMLButtonElement>,
               aIndex,
               aSectionElms
@@ -278,7 +235,7 @@ export function displayModalForPageTransition(
               if (aPatternIndex === 2) {
                 resetAndDisplayList();
               }
-              resetAndDisplayPage(
+              resetCategoryFormAndDisplayPage(
                 categoryButtonElms as NodeListOf<HTMLButtonElement>,
                 aIndex,
                 aSectionElms
@@ -293,7 +250,7 @@ export function displayModalForPageTransition(
               categoryButtonElms[1]?.classList.remove('js-newDataIsUnderEdit');
               displayPage(aIndex, aSectionElms);
               if (aPatternIndex === 4 || aPatternIndex === 6) {
-                resetAndDisplayPage(
+                resetCategoryFormAndDisplayPage(
                   categoryButtonElms as NodeListOf<HTMLButtonElement>,
                   aIndex,
                   aSectionElms
@@ -302,7 +259,6 @@ export function displayModalForPageTransition(
             }
           }
         }
-
         bsModal.hide();
       });
     });
