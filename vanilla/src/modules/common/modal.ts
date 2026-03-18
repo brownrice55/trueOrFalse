@@ -1,10 +1,7 @@
 import * as bootstrap from 'bootstrap';
-import { setCategoryInputs, setQuizList, displayPage } from '../display';
-import { resetIsActiveInTheCategoryData } from '../quizList';
+import { displayPage } from '../display';
 import { resetCategoryForm } from '../categorySettings';
 import { resetEditQuizBtns } from './utils';
-import type { Inputs } from '../../types/inputs.type';
-import type { InputsCategory } from '../../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
 import type { modalForPageTransitionElmsType } from '../../types/modalForPageTransitionElms.type';
 
@@ -265,16 +262,11 @@ export function displayModalForPageTransition(
   }
 }
 
-export function displayModalForDelete(
-  aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>,
+export function showModalForDelete(
   aTargetInputElm: HTMLInputElement | null,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aListDivElms: NodeListOf<HTMLElement> | null,
   aListDdElms: NodeListOf<HTMLElement> | null,
-  aButtonCancelElm: HTMLButtonElement | null,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aBsModal: bootstrap.Modal
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const modalTextDivElm = aModalForDeleteElms.textDiv;
@@ -297,63 +289,15 @@ export function displayModalForDelete(
       : `削除する`;
   }
 
-  const bsModal = new bootstrap.Modal(modalForDeleteDivElm as HTMLElement);
-  bsModal.show();
+  if (modalForDeleteDivElm) {
+    modalForDeleteDivElm.dataset.page = aTargetInputElm
+      ? 'category'
+      : 'quizlist';
 
-  deleteButtonElm?.addEventListener('click', function () {
-    if (aTargetInputElm) {
-      const keyNumber = parseInt(
-        (aTargetInputElm as HTMLInputElement).dataset.index ?? '10000',
-        10
-      );
-      aQuizCategory.delete(keyNumber);
-      localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
+    modalForDeleteDivElm.dataset.key = aTargetInputElm
+      ? aTargetInputElm.dataset.index
+      : '10000';
+  }
 
-      [...aQuizData].forEach(([_, val]) => {
-        if (parseInt(val.category, 10) === keyNumber) {
-          val.category = 'unspecified';
-        }
-      });
-      localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-
-      setCategoryInputs(
-        aQuizCategory as Map<number, InputsCategory>,
-        aQuizData as Map<number, Inputs>,
-        aModalForDeleteElms as modalForDeleteElmsType,
-        aButtonCancelElm as HTMLButtonElement,
-        aSectionElms,
-        aCurrentValKeys
-      );
-    } else {
-      if (aListDivElms) {
-        const key: number = parseInt(
-          aListDivElms[1].dataset.key ?? '10000',
-          10
-        );
-        aQuizData.delete(key);
-        localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-
-        resetIsActiveInTheCategoryData(
-          aQuizData,
-          aQuizCategory,
-          aModalForDeleteElms,
-          aButtonCancelElm as HTMLButtonElement,
-          aSectionElms,
-          aCurrentValKeys
-        );
-
-        aListDivElms[0].classList.remove('d-none');
-        aListDivElms[1].classList.add('d-none');
-        setQuizList(
-          aQuizData,
-          aQuizCategory,
-          aModalForDeleteElms,
-          aButtonCancelElm as HTMLButtonElement,
-          aSectionElms,
-          aCurrentValKeys
-        );
-      }
-    }
-    bsModal.hide();
-  });
+  aBsModal.show();
 }

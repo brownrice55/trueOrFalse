@@ -11,7 +11,7 @@ import {
   labelForType,
   labelForPriority,
 } from './common/labels';
-import { displayModalForDelete } from './common/modal';
+import { showModalForDelete } from './common/modal';
 import {
   resetEditQuizBtns,
   goToCategoryToSetNewCategory,
@@ -24,6 +24,7 @@ import type {
   labelForTypeType,
   labelForPriorityType,
 } from '../types/labels.type';
+import type { ListenerForShowModalForDeleteType } from '../types/listenerForShowModalForDelete.type';
 
 export function setInnerHTMLForEdit(
   aIdx: number,
@@ -331,49 +332,48 @@ const saveEachItem = <K extends keyof Inputs>(
   return aCurrentVal;
 };
 
-export function setEventForDisplayDetail(
-  aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>,
-  aListDivElms: NodeListOf<HTMLElement>,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aListDdElms: NodeListOf<HTMLElement>,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
-) {
-  const listDetailButtonElms = document.querySelectorAll(
-    '.js-listDetailButton'
-  );
-  const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
-
-  listDetailButtonElms.forEach((elm) => {
-    elm.addEventListener('click', function (e) {
-      aListDivElms[0].classList.add('d-none');
-      aListDivElms[1].classList.remove('d-none');
-
-      const key = parseInt(
-        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0',
-        10
-      );
-      let currentVal: Inputs | undefined = aQuizData.get(key);
-      aListDivElms[1].dataset.key = String(key);
-
-      if (currentVal) {
-        displayDetail(
-          key,
-          currentVal,
-          aCurrentValKeys,
-          listEditBtnElms as NodeListOf<HTMLButtonElement>,
-          aListDdElms,
-          aQuizData,
-          aQuizCategory,
-          aModalForDeleteElms,
-          aSectionElms,
-          false
-        );
-      }
-    });
-  });
-}
+// *********
+// export function goToDetailPage(
+//   aQuizData: Map<number, Inputs>,
+//   aQuizCategory: Map<number, InputsCategory>,
+//   aListDivElms: NodeListOf<HTMLElement>,
+//   aModalForDeleteElms: modalForDeleteElmsType,
+//   aListDdElms: NodeListOf<HTMLElement>,
+//   aSectionElms: NodeListOf<HTMLElement>,
+//   aCurrentValKeys: (keyof Inputs)[]
+// ) {
+//   const listDetailButtonElms = document.querySelectorAll(
+//     '.js-listDetailButton'
+//   );
+//   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+//   listDetailButtonElms.forEach((elm) => {
+//     elm.addEventListener('click', function (e) {
+//       aListDivElms[0].classList.add('d-none');
+//       aListDivElms[1].classList.remove('d-none');
+//       const key = parseInt(
+//         (e.currentTarget as HTMLButtonElement).dataset.key ?? '0',
+//         10
+//       );
+//       let currentVal: Inputs | undefined = aQuizData.get(key);
+//       aListDivElms[1].dataset.key = String(key);
+//       if (currentVal) {
+//         displayDetail(
+//           key,
+//           currentVal,
+//           aCurrentValKeys,
+//           listEditBtnElms as NodeListOf<HTMLButtonElement>,
+//           aListDdElms,
+//           aQuizData,
+//           aQuizCategory,
+//           aModalForDeleteElms,
+//           aSectionElms,
+//           false
+//         );
+//       }
+//     });
+//   });
+// }
+// *********
 
 const setDisabled = (aIsUnderEdit: boolean) => {
   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
@@ -392,7 +392,8 @@ export function displayDetail(
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aSectionElms: NodeListOf<HTMLElement>,
-  aIsUnderEdit: boolean
+  aIsUnderEdit: boolean,
+  aBsModal: bootstrap.Modal
 ) {
   aCurrentValKeys.forEach((val, idx: number) => {
     if (idx === 3 || idx === 7) {
@@ -496,7 +497,8 @@ export function displayDetail(
               aModalForDeleteElms,
               cancelBtnElm as HTMLButtonElement,
               aSectionElms,
-              aCurrentValKeys
+              aCurrentValKeys,
+              aBsModal
             );
           }
           if (idx === 2) {
@@ -504,9 +506,9 @@ export function displayDetail(
               aQuizData,
               aQuizCategory,
               aModalForDeleteElms,
-              cancelBtnElm as HTMLButtonElement,
               aSectionElms,
-              aCurrentValKeys
+              aCurrentValKeys,
+              aBsModal
             );
           }
 
@@ -590,42 +592,15 @@ const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
   });
 };
 
-const setEventForDeleteQuiz = (
-  aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aListDivElms: NodeListOf<HTMLElement>,
-  aListDdElms: NodeListOf<HTMLElement>,
-  aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
-) => {
-  const buttonDeleteQuizElm = document.querySelector('.js-buttonDeleteQuiz');
-
-  buttonDeleteQuizElm?.addEventListener('click', function () {
-    displayModalForDelete(
-      aQuizData,
-      aQuizCategory,
-      null,
-      aModalForDeleteElms,
-      aListDivElms,
-      aListDdElms,
-      aButtonCancelElm,
-      aSectionElms,
-      aCurrentValKeys
-    );
-  });
-};
-
 export function displayList(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aListDivElms: NodeListOf<Element>,
   aListUlElm: HTMLElement,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aCurrentValKeys: (keyof Inputs)[],
+  aBsModal: bootstrap.Modal
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -638,28 +613,64 @@ export function displayList(
   aListUlElm.innerHTML = liHtml;
   const listDdElms = document.querySelectorAll('.js-listDd');
 
-  setEventForDisplayDetail(
-    aQuizData,
-    aQuizCategory,
-    aListDivElms as NodeListOf<HTMLElement>,
-    aModalForDeleteElms,
-    listDdElms as NodeListOf<HTMLElement>,
-    aSectionElms,
-    aCurrentValKeys as (keyof Inputs)[]
+  const listDetailButtonElms = document.querySelectorAll(
+    '.js-listDetailButton'
   );
+  const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+
+  listDetailButtonElms.forEach((elm) => {
+    elm.addEventListener('click', function (e) {
+      aListDivElms[0].classList.add('d-none');
+      aListDivElms[1].classList.remove('d-none');
+
+      const key = parseInt(
+        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0',
+        10
+      );
+      let currentVal: Inputs | undefined = aQuizData.get(key);
+      (aListDivElms[1] as HTMLElement).dataset.key = String(key);
+
+      if (currentVal) {
+        displayDetail(
+          key,
+          currentVal,
+          aCurrentValKeys,
+          listEditBtnElms as NodeListOf<HTMLButtonElement>,
+          listDdElms as NodeListOf<HTMLButtonElement>,
+          aQuizData,
+          aQuizCategory,
+          aModalForDeleteElms,
+          aSectionElms,
+          false,
+          aBsModal
+        );
+      }
+    });
+  });
 
   setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
 
-  setEventForDeleteQuiz(
-    aQuizData,
-    aQuizCategory,
-    aModalForDeleteElms as modalForDeleteElmsType,
-    aListDivElms as NodeListOf<HTMLElement>,
-    listDdElms as NodeListOf<HTMLElement>,
-    aButtonCancelElm as HTMLButtonElement,
-    aSectionElms as NodeListOf<HTMLElement>,
-    aCurrentValKeys
-  );
+  const handleEventForshowModalForDelete: ListenerForShowModalForDeleteType['handleEvent'] =
+    function (this: any) {
+      showModalForDelete(
+        this.targetInputElm,
+        this.modalForDeleteElms,
+        this.listDdElms,
+        this.bsModal
+      );
+    };
+
+  const listener = {
+    targetInputElm: null,
+    modalForDeleteElms: aModalForDeleteElms,
+    listDdElms: listDdElms,
+    bsModal: aBsModal,
+    handleEvent: handleEventForshowModalForDelete,
+  };
+
+  const buttonDeleteQuizElm = document.querySelector('.js-buttonDeleteQuiz');
+  buttonDeleteQuizElm?.removeEventListener('click', listener, false);
+  buttonDeleteQuizElm?.addEventListener('click', listener, false);
 }
 
 export function resetIsActiveInTheCategoryData(
@@ -668,7 +679,8 @@ export function resetIsActiveInTheCategoryData(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aCurrentValKeys: (keyof Inputs)[],
+  aBsModal: bootstrap.Modal
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -692,6 +704,7 @@ export function resetIsActiveInTheCategoryData(
     aModalForDeleteElms,
     aButtonCancelElm,
     aSectionElms,
-    aCurrentValKeys
+    aCurrentValKeys,
+    aBsModal
   );
 }

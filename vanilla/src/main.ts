@@ -1,5 +1,5 @@
 import './style.scss';
-import 'bootstrap';
+import * as bootstrap from 'bootstrap';
 import { getDataFromLocalStorage } from './modules/dataManagement';
 import {
   setupDisplay,
@@ -9,6 +9,7 @@ import {
   setAddNew,
   setQuizList,
 } from './modules/display';
+import { deleteDataThroughDeleteBtnInTheModal } from './modules/setEvent';
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
 import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';
@@ -104,13 +105,27 @@ if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }
 
+const bsModal: bootstrap.Modal = new bootstrap.Modal(
+  modalForDeleteDivElm as HTMLElement
+);
+
 setQuizList(
   quizData as Map<number, Inputs>,
   quizCategory as Map<number, InputsCategory>,
   modalForDeleteElms as modalForDeleteElmsType,
-  buttonCancelElm as HTMLButtonElement,
   sectionElms,
-  currentValKeys
+  currentValKeys,
+  bsModal
+);
+
+deleteDataThroughDeleteBtnInTheModal(
+  quizData as Map<number, Inputs>,
+  quizCategory as Map<number, InputsCategory>,
+  buttonCancelElm as HTMLButtonElement | null,
+  sectionElms as NodeListOf<HTMLElement>,
+  currentValKeys as (keyof Inputs)[],
+  modalForDeleteElms as modalForDeleteElmsType,
+  bsModal
 );
 
 setCategoryInputs(
@@ -119,7 +134,8 @@ setCategoryInputs(
   modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
-  currentValKeys
+  currentValKeys,
+  bsModal
 );
 
 setAddNew(
@@ -128,5 +144,6 @@ setAddNew(
   modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
-  currentValKeys
+  currentValKeys,
+  bsModal
 );

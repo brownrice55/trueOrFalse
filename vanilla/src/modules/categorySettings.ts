@@ -4,11 +4,11 @@ import {
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
 import { setAddNew } from './display';
-import { setEventForDisplayDetail, setInnerHTMLForEdit } from './quizList';
+import { setInnerHTMLForEdit } from './quizList';
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData,
-  displayModalForDelete,
+  showModalForDelete,
 } from './common/modal.ts';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -20,7 +20,8 @@ export function saveCategoryData(
   aSectionElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aCurrentValKeys: (keyof Inputs)[],
-  aQuizData: Map<number, Inputs>
+  aQuizData: Map<number, Inputs>,
+  aBsModal: bootstrap.Modal
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -59,21 +60,24 @@ export function saveCategoryData(
     aModalForDeleteElms,
     buttonCancelElm as HTMLButtonElement,
     aSectionElms,
-    aCurrentValKeys
+    aCurrentValKeys,
+    aBsModal
   );
 
   const listDdElms = document.querySelectorAll('.js-listDd');
-  const listDivElms = document.querySelectorAll('.js-listDiv');
+  // const listDivElms = document.querySelectorAll('.js-listDiv');
 
-  setEventForDisplayDetail(
-    aQuizData,
-    newMap,
-    listDivElms as NodeListOf<HTMLElement>,
-    aModalForDeleteElms,
-    listDdElms as NodeListOf<HTMLElement>,
-    aSectionElms,
-    aCurrentValKeys as (keyof Inputs)[]
-  );
+  // *********
+  // goToDetailPage(
+  //   aQuizData,
+  //   newMap,
+  //   listDivElms as NodeListOf<HTMLElement>,
+  //   aModalForDeleteElms,
+  //   listDdElms as NodeListOf<HTMLElement>,
+  //   aSectionElms,
+  //   aCurrentValKeys as (keyof Inputs)[]
+  // );
+  // *********
 
   if (aButtonSaveElm.dataset.key) {
     const key = parseInt(aButtonSaveElm.dataset.key, 10);
@@ -246,16 +250,13 @@ const getInputStatus = (
 };
 
 export function editOrDeleteCategoryName(
-  aQuizCategory: Map<number, InputsCategory>,
-  aQuizData: Map<number, Inputs>,
   aInputCategoryAreaElm: HTMLElement,
   aInitialInputValues: string[],
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
   aButtonAddInputElm: HTMLButtonElement,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aBsModal: bootstrap.Modal
 ) {
   const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
     '.js-categoryEditBtn'
@@ -345,16 +346,12 @@ export function editOrDeleteCategoryName(
         }
       } else if (!isUnderEdit) {
         const targetInputElm = this?.parentNode?.nextSibling;
-        displayModalForDelete(
-          aQuizData,
-          aQuizCategory,
+
+        showModalForDelete(
           targetInputElm as HTMLInputElement,
           aModalForDeleteElms,
           null,
-          null,
-          null,
-          aSectionElms,
-          aCurrentValKeys
+          aBsModal
         );
       }
     });

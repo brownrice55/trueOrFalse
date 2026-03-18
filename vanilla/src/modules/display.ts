@@ -149,9 +149,9 @@ export function setQuizList(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aCurrentValKeys: (keyof Inputs)[],
+  aBsModal: bootstrap.Modal
 ) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
@@ -161,9 +161,9 @@ export function setQuizList(
     listDivElms as NodeListOf<Element>,
     listUlElm as HTMLElement,
     aModalForDeleteElms,
-    aButtonCancelElm,
     aSectionElms,
-    aCurrentValKeys
+    aCurrentValKeys,
+    aBsModal
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
@@ -210,7 +210,8 @@ export function setCategoryInputs(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aCurrentValKeys: (keyof Inputs)[],
+  aBsModal: bootstrap.Modal
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -241,7 +242,8 @@ export function setCategoryInputs(
       aSectionElms,
       aModalForDeleteElms,
       aCurrentValKeys,
-      aQuizData
+      aQuizData,
+      aBsModal
     );
   });
 
@@ -252,16 +254,13 @@ export function setCategoryInputs(
   );
 
   editOrDeleteCategoryName(
-    aQuizCategory as Map<number, InputsCategory>,
-    aQuizData as Map<number, Inputs>,
     inputCategoryAreaElm as HTMLElement,
     initialInputValues,
     buttonSaveElm as HTMLButtonElement,
     aButtonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement,
     aModalForDeleteElms,
-    aSectionElms,
-    aCurrentValKeys
+    aBsModal
   );
 
   let isUnderEdit = false;
@@ -282,7 +281,8 @@ export function setAddNew(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aCurrentValKeys: (keyof Inputs)[],
+  aBsModal: bootstrap.Modal
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -349,7 +349,8 @@ export function setAddNew(
     aModalForDeleteElms,
     aButtonCancelElm,
     aSectionElms,
-    aCurrentValKeys as (keyof Inputs)[]
+    aCurrentValKeys as (keyof Inputs)[],
+    aBsModal
   );
 
   setValidation(
