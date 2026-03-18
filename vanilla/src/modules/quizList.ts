@@ -1,4 +1,4 @@
-import { setQuizList, setCategoryInputs } from './display';
+import { setCategoryInputs } from './display';
 import {
   getCategoryOptions,
   getTypeOptions,
@@ -94,12 +94,12 @@ export function setInnerHTMLForEdit(
   }
 }
 
-const setInnerHTMLForEditIrregular = (
+export function setInnerHTMLForEditIrregular(
   aIdx: number,
   aCurrentVal: Inputs,
   aIsUnderEdit: boolean,
   aListDdElms: NodeListOf<HTMLElement>
-) => {
+) {
   type FormElementsIrregularIndex3Type = {
     trueOrFalse: string;
     selection: string;
@@ -230,7 +230,7 @@ const setInnerHTMLForEditIrregular = (
       aListDdElms[7].innerHTML = String(getAccuracyRate(aCurrentVal));
     }
   }
-};
+}
 
 const setLablesForIrregular = (
   aIdx: number,
@@ -270,19 +270,20 @@ const setLablesForIrregular = (
   }
 };
 
-const saveEachItem = <K extends keyof Inputs>(
+export function getUpdatedCurrentVal<K extends keyof Inputs>(
   aIdx: number,
   aCurrentVal: Inputs,
   aCurrentValKey: K,
   aListDdElms: NodeListOf<HTMLElement>
-): Inputs => {
-  const key = aCurrentValKey;
+): Inputs {
   if (!aIdx || aIdx === 1 || aIdx === 5) {
     const selectElm = aListDdElms[aIdx].querySelector(
       'select'
     ) as HTMLSelectElement | null;
-    if (selectElm && typeof aCurrentVal[key] === 'string') {
-      (aCurrentVal as any)[key] = (selectElm as HTMLSelectElement).value;
+    if (selectElm && typeof aCurrentVal[aCurrentValKey] === 'string') {
+      (aCurrentVal as any)[aCurrentValKey] = (
+        selectElm as HTMLSelectElement
+      ).value;
     }
     if (aIdx === 1) {
       if (aCurrentVal.type === 'trueOrFalse') {
@@ -325,12 +326,12 @@ const saveEachItem = <K extends keyof Inputs>(
     const textareaElm = aListDdElms[aIdx].querySelector(
       'textarea'
     ) as HTMLTextAreaElement | null;
-    if (textareaElm && typeof aCurrentVal[key] === 'string') {
-      (aCurrentVal as any)[key] = textareaElm.value;
+    if (textareaElm && typeof aCurrentVal[aCurrentValKey] === 'string') {
+      (aCurrentVal as any)[aCurrentValKey] = textareaElm.value;
     }
   }
   return aCurrentVal;
-};
+}
 
 export function setDisabledForListEditBtns(aIsUnderEdit: boolean) {
   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
@@ -340,159 +341,34 @@ export function setDisabledForListEditBtns(aIsUnderEdit: boolean) {
 }
 
 export function displayDetail(
-  key: number,
-  currentVal: Inputs,
+  aCurrentVal: Inputs,
   aCurrentValKeys: (keyof Inputs)[],
-  listEditBtnElms: NodeListOf<HTMLButtonElement>,
   aListDdElms: NodeListOf<HTMLElement>,
-  aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aBsModal: bootstrap.Modal
+  aQuizCategory: Map<number, InputsCategory>
 ) {
   aCurrentValKeys.forEach((val, idx: number) => {
     if (idx === 3 || idx === 7) {
       setInnerHTMLForEditIrregular(
         idx,
-        currentVal as Inputs,
+        aCurrentVal as Inputs,
         false,
         aListDdElms
       );
     } else {
-      const currentValKey = val;
+      const aCurrentValKey = val;
       if (idx === 0 || idx === 1 || idx === 5) {
         setLablesForIrregular(
           idx,
-          currentVal as Inputs,
-          currentValKey,
+          aCurrentVal as Inputs,
+          aCurrentValKey,
           aListDdElms,
           aQuizCategory
         );
       } else {
         aListDdElms[idx].innerHTML = String(
-          (currentVal as Inputs)[currentValKey]
+          (aCurrentVal as Inputs)[aCurrentValKey]
         );
       }
-    }
-  });
-
-  let isUnderEdit = false;
-  let cancelBtnElm: HTMLButtonElement | null = null;
-
-  listEditBtnElms.forEach((elm, idx) => {
-    if (
-      (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
-      'true'
-    ) {
-      elm.addEventListener('click', function (e) {
-        isUnderEdit = !isUnderEdit;
-        if (elm.dataset.adjustment === 'true') {
-          isUnderEdit = true;
-          listEditBtnElms.forEach((elm2) => {
-            elm2.dataset.adjustment = 'false';
-          });
-        }
-        setDisabledForListEditBtns(isUnderEdit);
-
-        const targetBtnElm = e.currentTarget;
-        if (isUnderEdit) {
-          elm.textContent = '上書きする';
-
-          if (targetBtnElm) {
-            (targetBtnElm as HTMLButtonElement).disabled = false;
-          }
-
-          const cancelBtnElms = document.querySelectorAll('.btn-secondary');
-          if (cancelBtnElms) {
-            cancelBtnElms.forEach((elm) => {
-              if (elm) {
-                elm.remove();
-              }
-            });
-          }
-
-          cancelBtnElm = document.createElement('button');
-          cancelBtnElm.textContent = 'キャンセル';
-          cancelBtnElm.classList.add(
-            'btn',
-            'btn-secondary',
-            'btn-sm',
-            'ms-2',
-            'js-quizDetailEditCancelBtn'
-          );
-
-          elm?.parentNode?.appendChild(cancelBtnElm);
-          cancelBtnElm.addEventListener('click', function () {
-            this.remove();
-            cancelBtnElm = null;
-            resetQuizDetail(
-              elm,
-              idx,
-              currentVal,
-              aQuizCategory,
-              aListDdElms,
-              aSectionElms,
-              aCurrentValKeys,
-              listEditBtnElms
-            );
-          });
-        } else {
-          currentVal = saveEachItem(
-            idx,
-            currentVal as Inputs,
-            aCurrentValKeys[idx],
-            aListDdElms
-          );
-          aQuizData.set(key, currentVal);
-          localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-          if (!idx) {
-            resetIsActiveInTheCategoryData(
-              aQuizData,
-              aQuizCategory,
-              aModalForDeleteElms,
-              cancelBtnElm as HTMLButtonElement,
-              aSectionElms,
-              aCurrentValKeys,
-              aBsModal
-            );
-          }
-          if (idx === 2) {
-            setQuizList(
-              aQuizData,
-              aQuizCategory,
-              aModalForDeleteElms,
-              aSectionElms,
-              aCurrentValKeys,
-              aBsModal
-            );
-          }
-
-          elm.textContent = '編集する';
-          cancelBtnElm?.remove();
-          cancelBtnElm = null;
-        }
-        if (idx === 3 || idx === 7) {
-          setInnerHTMLForEditIrregular(
-            idx,
-            currentVal as Inputs,
-            isUnderEdit,
-            aListDdElms
-          );
-        } else {
-          setInnerHTMLForEdit(
-            idx,
-            currentVal as Inputs,
-            isUnderEdit,
-            aQuizCategory,
-            aListDdElms,
-            aSectionElms,
-            aCurrentValKeys
-          );
-        }
-        (elm.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add =
-          String(true);
-      });
     }
   });
 }
@@ -554,7 +430,6 @@ export function displayList(
   aListDivElms: NodeListOf<Element>,
   aListUlElm: HTMLElement,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal
 ) {
@@ -572,7 +447,6 @@ export function displayList(
   const listDetailButtonElms = document.querySelectorAll(
     '.js-listDetailButton'
   );
-  const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
@@ -588,16 +462,10 @@ export function displayList(
 
       if (currentVal) {
         displayDetail(
-          key,
           currentVal,
           aCurrentValKeys,
-          listEditBtnElms as NodeListOf<HTMLButtonElement>,
           listDdElms as NodeListOf<HTMLButtonElement>,
-          aQuizData,
-          aQuizCategory,
-          aModalForDeleteElms,
-          aSectionElms,
-          aBsModal
+          aQuizCategory
         );
       }
     });

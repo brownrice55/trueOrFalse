@@ -161,7 +161,6 @@ export function setQuizList(
     listDivElms as NodeListOf<Element>,
     listUlElm as HTMLElement,
     aModalForDeleteElms,
-    aSectionElms,
     aCurrentValKeys,
     aBsModal
   );

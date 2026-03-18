@@ -9,7 +9,10 @@ import {
   setAddNew,
   setQuizList,
 } from './modules/display';
-import { deleteDataThroughDeleteBtnInTheModal } from './modules/setEvent';
+import {
+  deleteDataThroughDeleteBtnInTheModal,
+  editQuizData,
+} from './modules/setEvent';
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
 import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';
@@ -145,5 +148,20 @@ setAddNew(
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
   currentValKeys,
+  bsModal
+);
+
+const listDlElm = document.querySelector('.js-listDl');
+const listDdElms = document.querySelectorAll('.js-listDd');
+const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+editQuizData(
+  quizData,
+  quizCategory,
+  listEditBtnElms as NodeListOf<HTMLButtonElement>,
+  listDlElm as HTMLElement,
+  listDdElms as NodeListOf<HTMLElement>,
+  sectionElms,
+  currentValKeys,
+  modalForDeleteElms as modalForDeleteElmsType,
   bsModal
 );
