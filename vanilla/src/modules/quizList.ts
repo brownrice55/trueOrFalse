@@ -332,55 +332,12 @@ const saveEachItem = <K extends keyof Inputs>(
   return aCurrentVal;
 };
 
-// *********
-// export function goToDetailPage(
-//   aQuizData: Map<number, Inputs>,
-//   aQuizCategory: Map<number, InputsCategory>,
-//   aListDivElms: NodeListOf<HTMLElement>,
-//   aModalForDeleteElms: modalForDeleteElmsType,
-//   aListDdElms: NodeListOf<HTMLElement>,
-//   aSectionElms: NodeListOf<HTMLElement>,
-//   aCurrentValKeys: (keyof Inputs)[]
-// ) {
-//   const listDetailButtonElms = document.querySelectorAll(
-//     '.js-listDetailButton'
-//   );
-//   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
-//   listDetailButtonElms.forEach((elm) => {
-//     elm.addEventListener('click', function (e) {
-//       aListDivElms[0].classList.add('d-none');
-//       aListDivElms[1].classList.remove('d-none');
-//       const key = parseInt(
-//         (e.currentTarget as HTMLButtonElement).dataset.key ?? '0',
-//         10
-//       );
-//       let currentVal: Inputs | undefined = aQuizData.get(key);
-//       aListDivElms[1].dataset.key = String(key);
-//       if (currentVal) {
-//         displayDetail(
-//           key,
-//           currentVal,
-//           aCurrentValKeys,
-//           listEditBtnElms as NodeListOf<HTMLButtonElement>,
-//           aListDdElms,
-//           aQuizData,
-//           aQuizCategory,
-//           aModalForDeleteElms,
-//           aSectionElms,
-//           false
-//         );
-//       }
-//     });
-//   });
-// }
-// *********
-
-const setDisabled = (aIsUnderEdit: boolean) => {
+export function setDisabledForListEditBtns(aIsUnderEdit: boolean) {
   const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
   listEditBtnElms.forEach((elm) => {
     (elm as HTMLButtonElement).disabled = aIsUnderEdit ? true : false;
   });
-};
+}
 
 export function displayDetail(
   key: number,
@@ -392,7 +349,6 @@ export function displayDetail(
   aQuizCategory: Map<number, InputsCategory>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aSectionElms: NodeListOf<HTMLElement>,
-  aIsUnderEdit: boolean,
   aBsModal: bootstrap.Modal
 ) {
   aCurrentValKeys.forEach((val, idx: number) => {
@@ -421,7 +377,7 @@ export function displayDetail(
     }
   });
 
-  let isUnderEdit = aIsUnderEdit;
+  let isUnderEdit = false;
   let cancelBtnElm: HTMLButtonElement | null = null;
 
   listEditBtnElms.forEach((elm, idx) => {
@@ -437,7 +393,7 @@ export function displayDetail(
             elm2.dataset.adjustment = 'false';
           });
         }
-        setDisabled(isUnderEdit);
+        setDisabledForListEditBtns(isUnderEdit);
 
         const targetBtnElm = e.currentTarget;
         if (isUnderEdit) {
@@ -552,7 +508,7 @@ export function resetQuizDetail(
   aListEditBtnElms: NodeListOf<HTMLButtonElement>
 ) {
   let isUnderEdit = false;
-  setDisabled(isUnderEdit);
+  setDisabledForListEditBtns(isUnderEdit);
   aElm.textContent = '編集する';
 
   if (aIdx === 3 || aIdx === 7) {
@@ -641,7 +597,6 @@ export function displayList(
           aQuizCategory,
           aModalForDeleteElms,
           aSectionElms,
-          false,
           aBsModal
         );
       }

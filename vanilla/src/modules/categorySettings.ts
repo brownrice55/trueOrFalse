@@ -3,13 +3,13 @@ import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
-import { setAddNew } from './display';
 import { setInnerHTMLForEdit } from './quizList';
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData,
   showModalForDelete,
-} from './common/modal.ts';
+} from './common/modal';
+import { getCategoryOptions } from './common/form';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
@@ -18,10 +18,9 @@ export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,
   aInputCategoryAreaElm: HTMLElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aModalForDeleteElms: modalForDeleteElmsType,
   aCurrentValKeys: (keyof Inputs)[],
   aQuizData: Map<number, Inputs>,
-  aBsModal: bootstrap.Modal
+  aQuizCategory: Map<number, InputsCategory>
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -53,32 +52,14 @@ export function saveCategoryData(
 
   aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
 
-  const buttonCancelElm = aButtonSaveElm?.parentNode?.querySelector('button');
-  setAddNew(
-    newMap,
-    aQuizData,
-    aModalForDeleteElms,
-    buttonCancelElm as HTMLButtonElement,
-    aSectionElms,
-    aCurrentValKeys,
-    aBsModal
+  const addNewCategorySelectElm = document.querySelector(
+    '.js-addNewCategorySelect'
   );
+  if (addNewCategorySelectElm) {
+    addNewCategorySelectElm.innerHTML = getCategoryOptions(aQuizCategory, '');
+  }
 
   const listDdElms = document.querySelectorAll('.js-listDd');
-  // const listDivElms = document.querySelectorAll('.js-listDiv');
-
-  // *********
-  // goToDetailPage(
-  //   aQuizData,
-  //   newMap,
-  //   listDivElms as NodeListOf<HTMLElement>,
-  //   aModalForDeleteElms,
-  //   listDdElms as NodeListOf<HTMLElement>,
-  //   aSectionElms,
-  //   aCurrentValKeys as (keyof Inputs)[]
-  // );
-  // *********
-
   if (aButtonSaveElm.dataset.key) {
     const key = parseInt(aButtonSaveElm.dataset.key, 10);
     const currentVal = aQuizData.get(key);

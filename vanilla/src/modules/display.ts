@@ -240,10 +240,9 @@ export function setCategoryInputs(
       buttonSaveElm as HTMLButtonElement,
       inputCategoryAreaElm as HTMLElement,
       aSectionElms,
-      aModalForDeleteElms,
       aCurrentValKeys,
       aQuizData,
-      aBsModal
+      aQuizCategory
     );
   });
 
