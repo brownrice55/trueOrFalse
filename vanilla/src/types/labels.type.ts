@@ -5,6 +5,6 @@ export type labelForTypeType = {
 
 export type labelForPriorityType = {
   high: string;
-  midium: string;
+  medium: string;
   low: string;
 };

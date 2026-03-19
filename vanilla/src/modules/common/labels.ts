@@ -6,6 +6,6 @@ export const labelForType = {
 };
 export const labelForPriority = {
   high: '高い',
-  midium: '普通',
+  medium: '普通',
   low: '低い',
 };

@@ -41,7 +41,7 @@ export function getTextArea(aValue: string, aId: string) {
 
 export function getPriorityOptions(aValue: string) {
   let selectedArray =
-    aValue === 'midium'
+    aValue === 'medium'
       ? ['', ' selected', '']
       : aValue === 'low'
         ? ['', '', ' selected']
