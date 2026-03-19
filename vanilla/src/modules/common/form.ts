@@ -12,13 +12,13 @@ export function getCategoryOptions(
   let isSelected = false;
   let selected = '';
   [...aQuizCategory].forEach(([idx, obj]) => {
-    if (parseInt(aValue, 10) === idx) {
-      selected = ' selected';
-      isSelected = true;
-    } else {
-      selected = '';
+    if (obj && obj.categoryName) {
+      if (aValue !== 'unspecified' && parseInt(aValue, 10) === idx) {
+        selected = ' selected';
+        isSelected = true;
+      }
+      optionHTML2 += `<option value="${idx}"${selected}>${obj.categoryName}</option>`;
     }
-    optionHTML2 += `<option value="${idx}"${selected}>${obj.categoryName}</option>`;
   });
   optionHTML2 += `<option value="add">カテゴリーを追加する</option>`;
 

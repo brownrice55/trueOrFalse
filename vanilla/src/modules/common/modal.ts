@@ -73,7 +73,7 @@ const resetAndDisplayList = () => {
   listDivElms[1].classList.add('d-none');
 };
 
-export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
+export function displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData(
   aButtonSaveElm: HTMLButtonElement,
   aText: string,
   aText2: string,
@@ -89,14 +89,16 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   bsModal.show();
 
   const textDivElm = modalForPageTransitionDivElm?.querySelector('.js-textDiv');
-  const noteTextDivElm =
-    modalForPageTransitionDivElm?.querySelector('.js-noteTextDiv');
 
   if (textDivElm) {
     textDivElm.innerHTML = aText;
   }
-  if (noteTextDivElm) {
-    noteTextDivElm.innerHTML = aText2;
+  if (aText2) {
+    const noteTextDivElm =
+      modalForPageTransitionDivElm?.querySelector('.js-noteTextDiv');
+    if (noteTextDivElm) {
+      noteTextDivElm.innerHTML = aText2;
+    }
   }
 
   const pageTransitionButtonAreaDivElm = document.querySelector(
@@ -105,14 +107,18 @@ export function displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
   const buttonPageTransitionElms =
     pageTransitionButtonAreaDivElm?.querySelectorAll('button');
   if (buttonPageTransitionElms) {
-    buttonPageTransitionElms[0].innerHTML = 'ページを移動しない※';
+    buttonPageTransitionElms[0].innerHTML = aText2
+      ? 'ページを移動しない※'
+      : 'ページを移動しない';
     buttonPageTransitionElms[1].innerHTML = 'クイズ詳細へ戻る';
   }
 
   buttonPageTransitionElms?.forEach((elm, idx) => {
     elm.addEventListener('click', function () {
       if (!idx) {
-        resetAndDisplayList();
+        if (aText2) {
+          resetAndDisplayList();
+        }
       } else {
         displayPage(1, aSectionElms);
       }

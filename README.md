@@ -116,7 +116,7 @@
 
 #### クイズ詳細・新規登録の「カテゴリー追加」から遷移してカテゴリー設定で保存した後に、次に何をするか確認
 
-<p>関数名：displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData</p>
+<p>関数名：displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData</p>
 
 <ul>
 <li>カテゴリー設定で保存した際に、クイズスタート・クイズ一覧・新規登録でカテゴリー名を更新する。</li>

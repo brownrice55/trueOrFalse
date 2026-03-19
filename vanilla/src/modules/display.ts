@@ -285,51 +285,63 @@ export function setAddNew(
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
   );
-  if (addNewCategorySelectElm) {
-    addNewCategorySelectElm.innerHTML = getCategoryOptions(aQuizCategory, '');
-  }
-
   const addNewTypeSelectElm = document.querySelector('.js-addNewTypeSelect');
-
-  if (addNewTypeSelectElm) {
-    addNewTypeSelectElm.innerHTML = getTypeOptions('trueOrFalse');
-  }
-
   const addNewTypeDivElms = document.querySelectorAll('.js-addNewTypeDiv');
-
-  const buttonAddNewElm = document.querySelector('.js-buttonAddNew');
-  const addNewTextAreaElms = document.querySelectorAll('.js-addNewTextArea');
   const addNewPrioritySelectElm = document.querySelector(
     '.js-addNewPrioritySelect'
   );
-  if (addNewPrioritySelectElm) {
-    addNewPrioritySelectElm.innerHTML = getPriorityOptions('high');
-  }
+
+  const setForm = () => {
+    if (addNewCategorySelectElm) {
+      addNewCategorySelectElm.innerHTML = getCategoryOptions(
+        aQuizCategory,
+        'unspecified'
+      );
+    }
+    if (addNewTypeSelectElm) {
+      addNewTypeSelectElm.innerHTML = getTypeOptions('trueOrFalse');
+    }
+    if (addNewPrioritySelectElm) {
+      addNewPrioritySelectElm.innerHTML = getPriorityOptions('high');
+    }
+  };
+  setForm();
+
+  const buttonAddNewElm = document.querySelector('.js-buttonAddNew');
+  const addNewTextAreaElms = document.querySelectorAll('.js-addNewTextArea');
   const addNewAnswerRadioElms = document.querySelectorAll(
     '.js-addNewAnswerRadio'
   );
   const addNewOptionNumberSelectElm = document.querySelector(
     '.js-addNewOptionNumberSelect'
   );
-
   const addNewOptionInputsDivElm = document.querySelector(
     '.js-addNewOptionInputsDiv'
   );
 
-  switchType(
-    addNewTypeSelectElm as HTMLElement,
-    addNewTypeDivElms as NodeListOf<HTMLElement>,
+  const setFormForTypeSelection = () => {
+    switchType(
+      addNewTypeSelectElm as HTMLElement,
+      addNewTypeDivElms as NodeListOf<HTMLElement>,
+      buttonAddNewElm as HTMLButtonElement,
+      addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+      addNewOptionInputsDivElm as HTMLElement
+    );
+    setOptionInputs(
+      addNewOptionNumberSelectElm as HTMLSelectElement,
+      addNewOptionInputsDivElm as HTMLElement,
+      addNewTypeSelectElm as HTMLSelectElement,
+      addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+      buttonAddNewElm as HTMLButtonElement
+    );
+  };
+  setFormForTypeSelection();
+
+  setValidation(
+    addNewTypeSelectElm as HTMLSelectElement,
     buttonAddNewElm as HTMLButtonElement,
     addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
     addNewOptionInputsDivElm as HTMLElement
-  );
-
-  setOptionInputs(
-    addNewOptionNumberSelectElm as HTMLSelectElement,
-    addNewOptionInputsDivElm as HTMLElement,
-    addNewTypeSelectElm as HTMLSelectElement,
-    addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-    buttonAddNewElm as HTMLButtonElement
   );
 
   saveQuizData(
@@ -349,13 +361,6 @@ export function setAddNew(
     aSectionElms,
     aCurrentValKeys as (keyof Inputs)[],
     aBsModal
-  );
-
-  setValidation(
-    addNewTypeSelectElm as HTMLSelectElement,
-    buttonAddNewElm as HTMLButtonElement,
-    addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-    addNewOptionInputsDivElm as HTMLElement
   );
 
   const buttonBackToListFromAddNewElm = document.querySelector(

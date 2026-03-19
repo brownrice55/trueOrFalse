@@ -6,7 +6,7 @@ import {
 import { setInnerHTMLForEdit } from './quizList';
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
-  displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData,
+  displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData,
   showModalForDelete,
 } from './common/modal';
 import { getCategoryOptions } from './common/form';
@@ -51,29 +51,35 @@ export function saveCategoryData(
   // set updated category names in the quiz detail page and the registration page
 
   aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
-
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
   );
   if (addNewCategorySelectElm) {
-    addNewCategorySelectElm.innerHTML = getCategoryOptions(aQuizCategory, '');
+    addNewCategorySelectElm.innerHTML = getCategoryOptions(
+      aQuizCategory,
+      'unspecified'
+    );
   }
 
+  // update quiz category select start
   const listDdElms = document.querySelectorAll('.js-listDd');
   if (aButtonSaveElm.dataset.key) {
     const key = parseInt(aButtonSaveElm.dataset.key, 10);
     const currentVal = aQuizData.get(key);
-
-    setInnerHTMLForEdit(
-      0,
-      currentVal as Inputs,
-      true,
-      newMap,
-      listDdElms as NodeListOf<HTMLElement>,
-      aSectionElms,
-      aCurrentValKeys
-    );
+    if (currentVal) {
+      setInnerHTMLForEdit(
+        0,
+        currentVal as Inputs,
+        true,
+        newMap,
+        listDdElms as NodeListOf<HTMLElement>,
+        aSectionElms,
+        aCurrentValKeys
+      );
+    }
+    aButtonSaveElm.dataset.key = '';
   }
+  // update quiz category select end
 
   const buttonSaveAndCancelElms =
     aButtonSaveElm?.parentNode?.querySelectorAll('button');
@@ -85,10 +91,20 @@ export function saveCategoryData(
     aButtonSaveElm.classList.contains('js-quizDataIsUnderEdit') &&
     aButtonSaveElm.classList.contains('js-categoryNameIsUpdated')
   ) {
-    displayModalToSelectWhetherToGoBackQuizDetailAfterSavingData(
+    displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData(
       aButtonSaveElm,
       'カテゴリー設定を保存しました。<br />編集中のクイズ詳細ページに戻りますか？',
       '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。',
+      aSectionElms
+    );
+  } else if (
+    aButtonSaveElm.classList.contains('js-newDataIsUnderEdit') &&
+    aButtonSaveElm.classList.contains('js-categoryNameIsUpdated')
+  ) {
+    displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData(
+      aButtonSaveElm,
+      'カテゴリー設定を保存しました。<br />編集中の新規登録ページに戻りますか？',
+      '',
       aSectionElms
     );
   } else {
