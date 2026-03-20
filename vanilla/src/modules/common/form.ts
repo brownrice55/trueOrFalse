@@ -1,5 +1,11 @@
 import { getDataFromLocalStorage } from '../dataManagement';
+import type { Inputs } from '../../types/inputs.type';
 import type { InputsCategory } from '../../types/inputsCategory.type';
+import type {
+  labelForTypeType,
+  labelForPriorityType,
+} from '../../types/labels.type';
+import { labelForType, labelForPriority } from './labels';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
   aValue: string
@@ -114,4 +120,44 @@ export function setAlertForInputField(
       elm.classList.add('border', 'border-danger', 'border-3');
     }
   });
+}
+
+export function getValuesForIrregular(
+  aIdx: number,
+  aCurrentVal: Inputs,
+  aCurrentValKey: keyof Inputs,
+  aListDdElms: NodeListOf<HTMLElement>,
+  aQuizCategory: Map<number, InputsCategory>
+) {
+  let text = '';
+  if (aIdx === 0) {
+    // category
+    const key = aCurrentVal[aCurrentValKey];
+    if (key === 'unspecified') {
+      text = '指定しない';
+      aListDdElms[0].dataset.text = '指定しない';
+    } else if (
+      typeof key === 'string' &&
+      typeof parseInt(key, 10) === 'number'
+    ) {
+      const currentCategory = aQuizCategory.get(parseInt(key, 10));
+      if (currentCategory) {
+        text = String(currentCategory.categoryName);
+        aListDdElms[0].dataset.text = String(currentCategory.categoryName);
+      }
+    }
+  } else if (aIdx === 1) {
+    // type
+    text = String(
+      labelForType[aCurrentVal[aCurrentValKey] as keyof labelForTypeType]
+    );
+  } else if (aIdx === 5) {
+    // question
+    text = String(
+      labelForPriority[
+        String(aCurrentVal[aCurrentValKey]) as keyof labelForPriorityType
+      ]
+    );
+  }
+  return text;
 }

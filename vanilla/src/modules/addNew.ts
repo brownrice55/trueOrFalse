@@ -270,7 +270,8 @@ export function saveQuizData(
       listUlElm as HTMLElement,
       aModalForDeleteElms,
       aCurrentValKeys,
-      aBsModal
+      aBsModal,
+      aSectionElms
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(

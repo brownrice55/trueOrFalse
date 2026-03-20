@@ -156,12 +156,8 @@ const listDdElms = document.querySelectorAll('.js-listDd');
 const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 editQuizData(
   quizData,
-  quizCategory,
   listEditBtnElms as NodeListOf<HTMLButtonElement>,
   listDlElm as HTMLElement,
   listDdElms as NodeListOf<HTMLElement>,
-  sectionElms,
-  currentValKeys,
-  modalForDeleteElms as modalForDeleteElmsType,
-  bsModal
+  currentValKeys
 );

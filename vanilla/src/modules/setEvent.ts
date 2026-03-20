@@ -1,13 +1,10 @@
 import * as bootstrap from 'bootstrap';
-import { setCategoryInputs, setQuizList } from './display';
+import { setCategoryInputs } from './display';
 import {
   resetIsActiveInTheCategoryData,
   displayList,
   setDisabledForListEditBtns,
   getUpdatedCurrentVal,
-  setInnerHTMLForEdit,
-  setInnerHTMLForEditIrregular,
-  resetQuizDetail,
 } from './quizList';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -86,7 +83,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
           listUlElm as HTMLElement,
           aModalForDeleteElms,
           aCurrentValKeys,
-          aBsModal
+          aBsModal,
+          aSectionElms
         );
       }
     }
@@ -107,19 +105,16 @@ export function deleteDataThroughDeleteBtnInTheModal(
 
 export function editQuizData(
   aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>,
   aListEditBtnElms: NodeListOf<HTMLButtonElement>,
   aListDlElm: HTMLElement,
   aListDdElms: NodeListOf<HTMLElement>,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aBsModal: bootstrap.Modal
+  aCurrentValKeys: (keyof Inputs)[]
 ) {
   let isUnderEdit = false;
   let cancelBtnElm: HTMLButtonElement | null = null;
 
   aListEditBtnElms.forEach((elm, idx) => {
+    const divElms = aListDdElms[idx].querySelectorAll('div');
     if (
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
       'true'
@@ -140,6 +135,8 @@ export function editQuizData(
 
         const targetBtnElm = e.currentTarget;
         if (isUnderEdit) {
+          divElms[0].classList.add('d-none');
+          divElms[1].classList.remove('d-none');
           elm.textContent = '上書きする';
 
           if (targetBtnElm) {
@@ -169,18 +166,15 @@ export function editQuizData(
           cancelBtnElm.addEventListener('click', function () {
             this.remove();
             cancelBtnElm = null;
-            resetQuizDetail(
-              elm,
-              idx,
-              currentVal as Inputs,
-              aQuizCategory,
-              aListDdElms,
-              aSectionElms,
-              aCurrentValKeys,
-              aListEditBtnElms
-            );
+            divElms[0].classList.remove('d-none');
+            divElms[1].classList.add('d-none');
+            elm.textContent = '編集する';
+            isUnderEdit = false;
+            setDisabledForListEditBtns(isUnderEdit);
           });
         } else {
+          // when clicking save button
+          // save a new value
           currentVal = getUpdatedCurrentVal(
             idx,
             currentVal as Inputs,
@@ -189,50 +183,16 @@ export function editQuizData(
           );
           aQuizData.set(key, currentVal);
           localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-          if (!idx) {
-            resetIsActiveInTheCategoryData(
-              aQuizData,
-              aQuizCategory,
-              aModalForDeleteElms,
-              cancelBtnElm as HTMLButtonElement,
-              aSectionElms,
-              aCurrentValKeys,
-              aBsModal
-            );
-          }
-          if (idx === 2) {
-            setQuizList(
-              aQuizData,
-              aQuizCategory,
-              aModalForDeleteElms,
-              aSectionElms,
-              aCurrentValKeys,
-              aBsModal
-            );
-          }
+          // display an updated value
+          divElms[0].classList.remove('d-none');
+          divElms[1].classList.add('d-none');
 
+          // set buttons
           elm.textContent = '編集する';
           cancelBtnElm?.remove();
           cancelBtnElm = null;
         }
-        if (idx === 3 || idx === 7) {
-          setInnerHTMLForEditIrregular(
-            idx,
-            currentVal as Inputs,
-            isUnderEdit,
-            aListDdElms
-          );
-        } else {
-          setInnerHTMLForEdit(
-            idx,
-            currentVal as Inputs,
-            isUnderEdit,
-            aQuizCategory,
-            aListDdElms,
-            aSectionElms,
-            aCurrentValKeys
-          );
-        }
+
         (elm.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add =
           String(true);
       });

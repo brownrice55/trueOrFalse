@@ -162,7 +162,8 @@ export function setQuizList(
     listUlElm as HTMLElement,
     aModalForDeleteElms,
     aCurrentValKeys,
-    aBsModal
+    aBsModal,
+    aSectionElms
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
