@@ -6,6 +6,7 @@ import {
   setDisabledForListEditBtns,
   getUpdatedCurrentVal,
 } from './quizList';
+import { getEachValueForDivIndex0 } from './common/form';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
@@ -47,7 +48,6 @@ export function deleteDataThroughDeleteBtnInTheModal(
         aModalForDeleteElms as modalForDeleteElmsType,
         aButtonCancelElm as HTMLButtonElement,
         aSectionElms,
-        aCurrentValKeys,
         aBsModal
       );
     } else if (
@@ -69,7 +69,6 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aModalForDeleteElms,
           aButtonCancelElm as HTMLButtonElement,
           aSectionElms,
-          aCurrentValKeys,
           aBsModal
         );
 
@@ -105,6 +104,7 @@ export function deleteDataThroughDeleteBtnInTheModal(
 
 export function editQuizData(
   aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
   aListEditBtnElms: NodeListOf<HTMLButtonElement>,
   aListDlElm: HTMLElement,
   aListDdElms: NodeListOf<HTMLElement>,
@@ -171,6 +171,42 @@ export function editQuizData(
             elm.textContent = '編集する';
             isUnderEdit = false;
             setDisabledForListEditBtns(isUnderEdit);
+            if (idx === 0 || idx === 1 || idx === 5) {
+              const selectElm = divElms[1].querySelector('select');
+              if (
+                selectElm &&
+                currentVal &&
+                selectElm.value !== currentVal[aCurrentValKeys[idx]]
+              ) {
+                // restore to the original value
+                const optionElms = selectElm?.querySelectorAll('option');
+                optionElms.forEach((elm) => {
+                  elm.selected = false;
+                  if (
+                    currentVal &&
+                    elm.value === currentVal[aCurrentValKeys[idx]]
+                  ) {
+                    elm.selected = true;
+                  }
+                });
+              }
+            } else if (idx === 3) {
+              // trueOrFalse
+              const radioElms = divElms[1].querySelectorAll('input');
+              const radioIndex =
+                currentVal && currentVal[aCurrentValKeys[idx]] === 0
+                  ? [0, 1]
+                  : [1, 0];
+              radioElms[radioIndex[0]].checked = true; //******** */
+              radioElms[radioIndex[1]].checked = false; //******** */
+            } else {
+              const textareaElm = divElms[1].querySelector('textarea');
+              if (textareaElm && currentVal) {
+                if (textareaElm.value !== currentVal[aCurrentValKeys[idx]]) {
+                  textareaElm.value = String(currentVal[aCurrentValKeys[idx]]);
+                }
+              }
+            }
           });
         } else {
           // when clicking save button
@@ -184,6 +220,13 @@ export function editQuizData(
           aQuizData.set(key, currentVal);
           localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
           // display an updated value
+          divElms[0].innerHTML = getEachValueForDivIndex0(
+            idx,
+            currentVal,
+            aCurrentValKeys,
+            aListDdElms,
+            aQuizCategory
+          );
           divElms[0].classList.remove('d-none');
           divElms[1].classList.add('d-none');
 

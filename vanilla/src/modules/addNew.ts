@@ -224,7 +224,6 @@ export function saveQuizData(
           aModalForDeleteElms,
           aButtonCancelElm,
           aSectionElms,
-          aCurrentValKeys,
           aBsModal
         );
       }

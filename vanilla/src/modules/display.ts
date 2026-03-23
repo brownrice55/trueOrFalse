@@ -210,7 +210,6 @@ export function setCategoryInputs(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal
 ) {
   const inputCategoryAreaElm =
@@ -240,7 +239,6 @@ export function setCategoryInputs(
       buttonSaveElm as HTMLButtonElement,
       inputCategoryAreaElm as HTMLElement,
       aSectionElms,
-      aCurrentValKeys,
       aQuizData,
       aQuizCategory
     );

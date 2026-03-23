@@ -5,7 +5,13 @@ import type {
   labelForTypeType,
   labelForPriorityType,
 } from '../../types/labels.type';
-import { labelForType, labelForPriority } from './labels';
+import type { FormElementsIrregularIndex3Type } from '../../types/formElementsIrregularIndex3.type';
+import {
+  labelForType,
+  labelForPriority,
+  labelForQuestionAnswer,
+} from './labels';
+import { goToCategoryToSetNewCategory } from './utils';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
   aValue: string
@@ -19,6 +25,7 @@ export function getCategoryOptions(
   let selected = '';
   [...aQuizCategory].forEach(([idx, obj]) => {
     if (obj && obj.categoryName) {
+      selected = '';
       if (aValue !== 'unspecified' && parseInt(aValue, 10) === idx) {
         selected = ' selected';
         isSelected = true;
@@ -122,42 +129,151 @@ export function setAlertForInputField(
   });
 }
 
-export function getValuesForIrregular(
+export function getEachValueForDivIndex0(
   aIdx: number,
   aCurrentVal: Inputs,
-  aCurrentValKey: keyof Inputs,
+  aCurrentValKeys: (keyof Inputs)[],
   aListDdElms: NodeListOf<HTMLElement>,
   aQuizCategory: Map<number, InputsCategory>
 ) {
-  let text = '';
-  if (aIdx === 0) {
-    // category
-    const key = aCurrentVal[aCurrentValKey];
-    if (key === 'unspecified') {
-      text = '指定しない';
-      aListDdElms[0].dataset.text = '指定しない';
-    } else if (
-      typeof key === 'string' &&
-      typeof parseInt(key, 10) === 'number'
-    ) {
-      const currentCategory = aQuizCategory.get(parseInt(key, 10));
-      if (currentCategory) {
-        text = String(currentCategory.categoryName);
-        aListDdElms[0].dataset.text = String(currentCategory.categoryName);
-      }
+  const currentValKey = aCurrentValKeys[aIdx];
+  if (aIdx === 3) {
+    let answerForSelection = '';
+    if (aCurrentVal.type === 'selection') {
+      aCurrentVal.options.forEach((arr) => {
+        if (arr[0]) {
+          if (answerForSelection) {
+            answerForSelection += '、';
+          }
+          answerForSelection += arr[1];
+        }
+      });
     }
-  } else if (aIdx === 1) {
-    // type
-    text = String(
-      labelForType[aCurrentVal[aCurrentValKey] as keyof labelForTypeType]
+    return String(
+      aCurrentVal.type === 'trueOrFalse'
+        ? labelForQuestionAnswer[aCurrentVal.answer]
+        : answerForSelection
     );
-  } else if (aIdx === 5) {
-    // question
-    text = String(
-      labelForPriority[
-        String(aCurrentVal[aCurrentValKey]) as keyof labelForPriorityType
-      ]
-    );
+  } else if (!aIdx || aIdx === 1 || aIdx === 5) {
+    let text = '';
+    if (aIdx === 0) {
+      // category
+      const key = aCurrentVal[currentValKey];
+      if (key === 'unspecified') {
+        text = '指定しない';
+        aListDdElms[0].dataset.text = '指定しない';
+      } else if (
+        typeof key === 'string' &&
+        typeof parseInt(key, 10) === 'number'
+      ) {
+        const currentCategory = aQuizCategory.get(parseInt(key, 10));
+        if (currentCategory) {
+          text = String(currentCategory.categoryName);
+          aListDdElms[0].dataset.text = String(currentCategory.categoryName);
+        }
+      }
+    } else if (aIdx === 1) {
+      // type
+      text = String(
+        labelForType[aCurrentVal[currentValKey] as keyof labelForTypeType]
+      );
+    } else if (aIdx === 5) {
+      // question
+      text = String(
+        labelForPriority[
+          String(aCurrentVal[currentValKey]) as keyof labelForPriorityType
+        ]
+      );
+    }
+    return String(text);
+  } else {
+    return String((aCurrentVal as Inputs)[currentValKey]);
   }
-  return text;
+}
+
+export function setDivIndex1FormForQuizDetailIdx0Category(
+  aQuizCategory: Map<number, InputsCategory>,
+  aCurrentVal: Inputs,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aListDdElms: NodeListOf<HTMLElement>,
+  aDivElmsIndex1: HTMLElement
+) {
+  const formElementsArray = getFormElements(aQuizCategory, aCurrentVal);
+  const formElements = formElementsArray[0] as string[];
+  aDivElmsIndex1.innerHTML = String(formElements[0]);
+  const categorySelectElm = aListDdElms[0].querySelector('select');
+  categorySelectElm?.addEventListener('change', function (e) {
+    const targetValue = (e.currentTarget as HTMLSelectElement).value;
+    if (targetValue === 'add') {
+      goToCategoryToSetNewCategory(aSectionElms, 'quizList');
+    }
+  });
+}
+
+export function getFormElements(
+  aQuizCategory: Map<number, InputsCategory>,
+  aCurrentVal: Inputs
+) {
+  const formElements = [
+    `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category)}</select>`,
+    `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
+    getTextArea(aCurrentVal.question, 'detailQuestion'),
+    '',
+    getTextArea(aCurrentVal.explanation, 'detailExplanation'),
+    `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
+    getTextArea(aCurrentVal.notes, 'detailNotes'),
+  ];
+
+  const formElementsIrregularIndex3: FormElementsIrregularIndex3Type = {
+    trueOrFalse: `<div class="form-check form-check-inline cursor-pointer my-3">
+          <input
+            class="form-check-input js-addNewAnswerRadio"
+            type="radio"
+            name="answer"
+            id="answer0"
+            value="0"
+          />
+          <label class="form-check-label" for="answer0">まる</label>
+        </div>
+        <div class="form-check form-check-inline cursor-pointer">
+          <input
+            class="form-check-input js-addNewAnswerRadio"
+            type="radio"
+            name="answer"
+            id="answer1"
+            value="1"
+          />
+          <label class="form-check-label" for="answer1">ばつ</label>
+        </div>`,
+    selection: `<div class="my-3">
+            <label for="numberOfOptions" class="form-label"
+              >選択肢の数</label
+            >
+            <select
+              class="form-select js-addNewOptionNumberSelect"
+              aria-label="numberOfOptions"
+              id="numberOfOptions"
+            >
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <p>
+            選択肢を入力して、正解の選択肢にチェックを入れてください。
+          </p>
+          <div class="my-3 js-addNewOptionInputsDiv"></div>
+        </div>`,
+  };
+
+  return [
+    formElements as string[],
+    formElementsIrregularIndex3 as FormElementsIrregularIndex3Type,
+  ];
 }

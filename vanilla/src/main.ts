@@ -137,7 +137,6 @@ setCategoryInputs(
   modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
-  currentValKeys,
   bsModal
 );
 
@@ -156,6 +155,7 @@ const listDdElms = document.querySelectorAll('.js-listDd');
 const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 editQuizData(
   quizData,
+  quizCategory,
   listEditBtnElms as NodeListOf<HTMLButtonElement>,
   listDlElm as HTMLElement,
   listDdElms as NodeListOf<HTMLElement>,

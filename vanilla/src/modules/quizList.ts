@@ -1,220 +1,19 @@
 import { setCategoryInputs } from './display';
 import {
-  getCategoryOptions,
-  getTypeOptions,
-  getTextArea,
-  getPriorityOptions,
   getHTMLForOptionInputsOfSelection,
-  getValuesForIrregular,
+  getEachValueForDivIndex0,
+  setDivIndex1FormForQuizDetailIdx0Category,
+  getFormElements,
 } from './common/form';
+
 import { showModalForDelete } from './common/modal';
-import {
-  resetEditQuizBtns,
-  goToCategoryToSetNewCategory,
-} from './common/utils';
+import { resetEditQuizBtns } from './common/utils';
 import { getAccuracyRate } from './common/utils';
-import { labelForQuestionAnswer } from './common/labels';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
 import type { ListenerForShowModalForDeleteType } from '../types/listenerForShowModalForDelete.type';
 import type { FormElementsIrregularIndex3Type } from '../types/formElementsIrregularIndex3.type';
-
-export function setInnerHTMLForEdit(
-  aIdx: number,
-  aCurrentVal: Inputs,
-  aIsUnderEdit: boolean,
-  aQuizCategory: Map<number, InputsCategory>,
-  aListDdElms: NodeListOf<HTMLElement>,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
-) {
-  const formElements = [
-    `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category)}</select>`,
-    `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
-    getTextArea(aCurrentVal.question, 'detailQuestion'),
-    '',
-    getTextArea(aCurrentVal.explanation, 'detailExplanation'),
-    `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
-    getTextArea(aCurrentVal.notes, 'detailNotes'),
-  ];
-
-  const currentValKey = aCurrentValKeys[aIdx];
-
-  if (aIsUnderEdit) {
-    aListDdElms[aIdx].innerHTML = formElements[aIdx];
-    if (!aIdx) {
-      const categorySelectElm = aListDdElms[0].querySelector('select');
-      categorySelectElm?.addEventListener('change', function (e) {
-        const targetValue = (e.currentTarget as HTMLSelectElement).value;
-        if (targetValue === 'add') {
-          goToCategoryToSetNewCategory(aSectionElms, 'quizList');
-        }
-      });
-    } else if (aIdx === 1) {
-      const typeSelectElm = aListDdElms[1].querySelector('select');
-      typeSelectElm?.addEventListener('change', function (e) {
-        const targetValue = (e.currentTarget as HTMLSelectElement).value;
-        aCurrentVal.type = targetValue;
-
-        setInnerHTMLForEditIrregular(
-          3,
-          aCurrentVal as Inputs,
-          true,
-          aListDdElms
-        );
-      });
-    }
-  } else {
-    if (aIdx === 0 || aIdx === 1 || aIdx === 5) {
-      //
-      if (aIdx === 1) {
-        setInnerHTMLForEditIrregular(
-          3,
-          aCurrentVal as Inputs,
-          aIsUnderEdit,
-          aListDdElms
-        );
-      }
-    } else {
-      aListDdElms[aIdx].innerHTML = String(aCurrentVal[currentValKey]);
-    }
-  }
-}
-
-export function setInnerHTMLForEditIrregular(
-  aIdx: number,
-  aCurrentVal: Inputs,
-  aIsUnderEdit: boolean,
-  aListDdElms: NodeListOf<HTMLElement>
-) {
-  if (aIsUnderEdit && aIdx === 3) {
-    const formElementsIrregularIndex3: FormElementsIrregularIndex3Type = {
-      trueOrFalse: `<div class="form-check form-check-inline cursor-pointer my-3">
-          <input
-            class="form-check-input js-addNewAnswerRadio"
-            type="radio"
-            name="answer"
-            id="answer0"
-            value="0"
-          />
-          <label class="form-check-label" for="answer0">まる</label>
-        </div>
-        <div class="form-check form-check-inline cursor-pointer">
-          <input
-            class="form-check-input js-addNewAnswerRadio"
-            type="radio"
-            name="answer"
-            id="answer1"
-            value="1"
-          />
-          <label class="form-check-label" for="answer1">ばつ</label>
-        </div>`,
-      selection: `<div class="my-3">
-            <label for="numberOfOptions" class="form-label"
-              >選択肢の数</label
-            >
-            <select
-              class="form-select js-addNewOptionNumberSelect"
-              aria-label="numberOfOptions"
-              id="numberOfOptions"
-            >
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-          </div>
-          <p>
-            選択肢を入力して、正解の選択肢にチェックを入れてください。
-          </p>
-          <div class="my-3 js-addNewOptionInputsDiv"></div>
-        </div>`,
-    };
-
-    aListDdElms[3].innerHTML = String(
-      formElementsIrregularIndex3[
-        aCurrentVal.type as keyof FormElementsIrregularIndex3Type
-      ]
-    );
-
-    const addNewAnswerRadioElms = document.querySelectorAll(
-      '.js-addNewAnswerRadio'
-    );
-
-    const checkedIndex = aCurrentVal.answer == 0 ? 0 : 1;
-    (addNewAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
-
-    addNewAnswerRadioElms.forEach((elm) => {
-      elm.addEventListener('click', function (e) {
-        const targetElm = e.currentTarget as HTMLInputElement;
-        targetElm.checked = true;
-        aCurrentVal.answer = parseInt(targetElm.value, 10);
-      });
-    });
-
-    const addNewOptionNumberSelectElm = document.querySelector(
-      '.js-addNewOptionNumberSelect'
-    );
-    if (addNewOptionNumberSelectElm) {
-      (addNewOptionNumberSelectElm as HTMLSelectElement).value = String(
-        aCurrentVal.numberOfOptions
-      );
-    }
-
-    const addNewOptionInputsDivElm = document.querySelector(
-      '.js-addNewOptionInputsDiv'
-    );
-
-    if (addNewOptionInputsDivElm) {
-      (addNewOptionInputsDivElm as HTMLElement).innerHTML =
-        getHTMLForOptionInputsOfSelection(
-          aCurrentVal.numberOfOptions,
-          false,
-          addNewOptionInputsDivElm as HTMLElement
-        );
-    }
-
-    addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
-      aCurrentVal.numberOfOptions = parseInt(
-        (e.currentTarget as HTMLSelectElement).value,
-        10
-      );
-      (addNewOptionInputsDivElm as HTMLElement).innerHTML =
-        getHTMLForOptionInputsOfSelection(
-          aCurrentVal.numberOfOptions,
-          true,
-          addNewOptionInputsDivElm as HTMLElement
-        );
-    });
-  } else {
-    if (aIdx === 3) {
-      let answerForSelection = '';
-      if (aCurrentVal.type === 'selection') {
-        aCurrentVal.options.forEach((arr) => {
-          if (arr[0]) {
-            if (answerForSelection) {
-              answerForSelection += '、';
-            }
-            answerForSelection += arr[1];
-          }
-        });
-      }
-
-      aListDdElms[3].innerHTML =
-        aCurrentVal.type === 'trueOrFalse'
-          ? labelForQuestionAnswer[aCurrentVal.answer]
-          : answerForSelection;
-    } else {
-      aListDdElms[7].innerHTML = String(getAccuracyRate(aCurrentVal));
-    }
-  }
-}
 
 export function getUpdatedCurrentVal<K extends keyof Inputs>(
   aIdx: number,
@@ -242,6 +41,7 @@ export function getUpdatedCurrentVal<K extends keyof Inputs>(
           ? 0
           : 1;
       } else {
+        //selection
         const addNewOptionNumberSelectElm = document.querySelector(
           '.js-addNewOptionNumberSelect'
         );
@@ -255,7 +55,6 @@ export function getUpdatedCurrentVal<K extends keyof Inputs>(
         const addNewOptionsInputTextElms = document.querySelectorAll(
           '.js-addNewOptionsInputText'
         );
-
         let newArray: [boolean, string][] = [];
         Array(aCurrentVal.numberOfOptions)
           .fill('')
@@ -293,114 +92,96 @@ export function displayDetail(
   aQuizCategory: Map<number, InputsCategory>,
   aSectionElms: NodeListOf<HTMLElement>
 ) {
-  const formElements = [
-    `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category)}</select>`,
-    `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
-    getTextArea(aCurrentVal.question, 'detailQuestion'),
-    '',
-    getTextArea(aCurrentVal.explanation, 'detailExplanation'),
-    `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
-    getTextArea(aCurrentVal.notes, 'detailNotes'),
-  ];
-
-  const formElementsIrregularIndex3: FormElementsIrregularIndex3Type = {
-    trueOrFalse: `<div class="form-check form-check-inline cursor-pointer my-3">
-          <input
-            class="form-check-input js-addNewAnswerRadio"
-            type="radio"
-            name="answer"
-            id="answer0"
-            value="0"
-          />
-          <label class="form-check-label" for="answer0">まる</label>
-        </div>
-        <div class="form-check form-check-inline cursor-pointer">
-          <input
-            class="form-check-input js-addNewAnswerRadio"
-            type="radio"
-            name="answer"
-            id="answer1"
-            value="1"
-          />
-          <label class="form-check-label" for="answer1">ばつ</label>
-        </div>`,
-    selection: `<div class="my-3">
-            <label for="numberOfOptions" class="form-label"
-              >選択肢の数</label
-            >
-            <select
-              class="form-select js-addNewOptionNumberSelect"
-              aria-label="numberOfOptions"
-              id="numberOfOptions"
-            >
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-          </div>
-          <p>
-            選択肢を入力して、正解の選択肢にチェックを入れてください。
-          </p>
-          <div class="my-3 js-addNewOptionInputsDiv"></div>
-        </div>`,
-  };
+  const formElementsArray = getFormElements(aQuizCategory, aCurrentVal);
+  const formElements = formElementsArray[0] as string[];
+  const formElementsIrregularIndex3 =
+    formElementsArray[1] as FormElementsIrregularIndex3Type;
 
   aCurrentValKeys.forEach((_, idx: number) => {
     const divElms = aListDdElms[idx].querySelectorAll('div');
-    if (idx !== 7) {
-      divElms[1].classList.add('d-none');
-    }
-    const currentValKey = aCurrentValKeys[idx];
+
     if (idx === 7) {
       aListDdElms[7].innerHTML = String(getAccuracyRate(aCurrentVal));
-    } else if (idx === 3) {
-      divElms[1].innerHTML = String(
-        formElementsIrregularIndex3[
-          aCurrentVal.type as keyof FormElementsIrregularIndex3Type
-        ]
-      );
-      let answerForSelection = '';
-      if (aCurrentVal.type === 'selection') {
-        aCurrentVal.options.forEach((arr) => {
-          if (arr[0]) {
-            if (answerForSelection) {
-              answerForSelection += '、';
-            }
-            answerForSelection += arr[1];
-          }
-        });
-      }
-      divElms[0].innerHTML =
-        aCurrentVal.type === 'trueOrFalse'
-          ? labelForQuestionAnswer[aCurrentVal.answer]
-          : answerForSelection;
     } else {
-      if (idx === 0 || idx === 1 || idx === 5) {
-        divElms[0].innerHTML = getValuesForIrregular(
-          idx,
-          aCurrentVal,
-          currentValKey,
-          aListDdElms,
-          aQuizCategory
+      divElms[1].classList.add('d-none');
+      divElms[0].innerHTML = getEachValueForDivIndex0(
+        idx,
+        aCurrentVal,
+        aCurrentValKeys,
+        aListDdElms,
+        aQuizCategory
+      );
+
+      if (idx === 3) {
+        divElms[1].innerHTML = String(
+          formElementsIrregularIndex3[
+            aCurrentVal.type as keyof FormElementsIrregularIndex3Type
+          ]
         );
-      } else {
-        divElms[0].innerHTML = String((aCurrentVal as Inputs)[currentValKey]);
-      }
-      divElms[1].innerHTML = `${formElements[idx]}`;
-      if (idx === 0) {
-        const categorySelectElm = aListDdElms[0].querySelector('select');
-        categorySelectElm?.addEventListener('change', function (e) {
-          const targetValue = (e.currentTarget as HTMLSelectElement).value;
-          if (targetValue === 'add') {
-            goToCategoryToSetNewCategory(aSectionElms, 'quizList');
-          }
+
+        // trueOrFalse start
+        const addNewAnswerRadioElms = document.querySelectorAll(
+          '.js-addNewAnswerRadio'
+        );
+        const checkedIndex = aCurrentVal.answer == 0 ? 0 : 1;
+        (addNewAnswerRadioElms[checkedIndex] as HTMLInputElement).checked =
+          true;
+
+        addNewAnswerRadioElms.forEach((elm) => {
+          elm.addEventListener('click', function (e) {
+            const targetElm = e.currentTarget as HTMLInputElement;
+            targetElm.checked = true;
+            aCurrentVal.answer = parseInt(targetElm.value, 10);
+          });
         });
+        // trueOrFalse end
+
+        // selection start
+        const addNewOptionNumberSelectElm = document.querySelector(
+          '.js-addNewOptionNumberSelect'
+        );
+        if (addNewOptionNumberSelectElm) {
+          (addNewOptionNumberSelectElm as HTMLSelectElement).value = String(
+            aCurrentVal.numberOfOptions
+          );
+        }
+        const addNewOptionInputsDivElm = document.querySelector(
+          '.js-addNewOptionInputsDiv'
+        );
+        if (addNewOptionInputsDivElm) {
+          (addNewOptionInputsDivElm as HTMLElement).innerHTML =
+            getHTMLForOptionInputsOfSelection(
+              aCurrentVal.numberOfOptions,
+              false,
+              addNewOptionInputsDivElm as HTMLElement
+            );
+        }
+        addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
+          aCurrentVal.numberOfOptions = parseInt(
+            (e.currentTarget as HTMLSelectElement).value,
+            10
+          );
+          (addNewOptionInputsDivElm as HTMLElement).innerHTML =
+            getHTMLForOptionInputsOfSelection(
+              aCurrentVal.numberOfOptions,
+              true,
+              addNewOptionInputsDivElm as HTMLElement
+            );
+        });
+        // selection end
+        // idx===3 end
+      } else {
+        if (idx === 0) {
+          setDivIndex1FormForQuizDetailIdx0Category(
+            aQuizCategory,
+            aCurrentVal,
+            aSectionElms,
+            aListDdElms,
+            divElms[1]
+          );
+        } else {
+          divElms[1].innerHTML = formElements[idx];
+        }
       }
     }
   });
@@ -421,22 +202,14 @@ export function resetQuizDetail(
   aElm.textContent = '編集する';
 
   if (aIdx === 3 || aIdx === 7) {
-    setInnerHTMLForEditIrregular(
-      aIdx,
-      aCurrentVal as Inputs,
-      isUnderEdit,
-      aListDdElms
-    );
+    // ******
+    console.log(aQuizCategory);
+    console.log(aCurrentVal);
+    console.log(aCurrentValKeys);
+    console.log(aListDdElms);
+    console.log(aSectionElms);
   } else {
-    setInnerHTMLForEdit(
-      aIdx,
-      aCurrentVal as Inputs,
-      isUnderEdit,
-      aQuizCategory,
-      aListDdElms,
-      aSectionElms,
-      aCurrentValKeys
-    );
+    // ******
   }
   aListEditBtnElms.forEach((elm) => {
     elm.dataset.adjustment = 'true';
@@ -537,7 +310,6 @@ export function resetIsActiveInTheCategoryData(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal
 ) {
   let activeCategoryKeys: string[] = [];
@@ -562,7 +334,6 @@ export function resetIsActiveInTheCategoryData(
     aModalForDeleteElms,
     aButtonCancelElm,
     aSectionElms,
-    aCurrentValKeys,
     aBsModal
   );
 }

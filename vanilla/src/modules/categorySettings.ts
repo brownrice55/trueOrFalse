@@ -3,13 +3,15 @@ import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from './inputValidation';
-import { setInnerHTMLForEdit } from './quizList';
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData,
   showModalForDelete,
 } from './common/modal';
-import { getCategoryOptions } from './common/form';
+import {
+  getCategoryOptions,
+  setDivIndex1FormForQuizDetailIdx0Category,
+} from './common/form';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
@@ -18,7 +20,6 @@ export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,
   aInputCategoryAreaElm: HTMLElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>
 ) {
@@ -47,6 +48,7 @@ export function saveCategoryData(
   }
 
   localStorage.setItem('quizCategory', JSON.stringify([...newMap]));
+  aQuizCategory = newMap;
 
   // set updated category names in the quiz detail page and the registration page
 
@@ -62,19 +64,18 @@ export function saveCategoryData(
   }
 
   // update quiz category select start
-  const listDdElms = document.querySelectorAll('.js-listDd');
   if (aButtonSaveElm.dataset.key) {
     const key = parseInt(aButtonSaveElm.dataset.key, 10);
     const currentVal = aQuizData.get(key);
     if (currentVal) {
-      setInnerHTMLForEdit(
-        0,
+      const listDdElms = document.querySelectorAll('.js-listDd');
+      const divElms = listDdElms[0].querySelectorAll('div');
+      setDivIndex1FormForQuizDetailIdx0Category(
+        aQuizCategory,
         currentVal as Inputs,
-        true,
-        newMap,
-        listDdElms as NodeListOf<HTMLElement>,
         aSectionElms,
-        aCurrentValKeys
+        listDdElms as NodeListOf<HTMLElement>,
+        divElms[1]
       );
     }
     aButtonSaveElm.dataset.key = '';
