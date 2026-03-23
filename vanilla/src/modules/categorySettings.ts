@@ -1,4 +1,5 @@
 import type { Listener } from '../types/listener.type';
+import { setCategoryInputs } from './display';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
@@ -21,7 +22,10 @@ export function saveCategoryData(
   aInputCategoryAreaElm: HTMLElement,
   aSectionElms: NodeListOf<HTMLElement>,
   aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>
+  aQuizCategory: Map<number, InputsCategory>,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aButtonCancelElm: HTMLButtonElement,
+  aBsModal: bootstrap.Modal
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -79,6 +83,15 @@ export function saveCategoryData(
       );
     }
     aButtonSaveElm.dataset.key = '';
+
+    setCategoryInputs(
+      aQuizCategory,
+      aQuizData,
+      aModalForDeleteElms,
+      aButtonCancelElm,
+      aSectionElms,
+      aBsModal
+    );
   }
   // update quiz category select end
 

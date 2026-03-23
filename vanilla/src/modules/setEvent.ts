@@ -1,4 +1,5 @@
 import * as bootstrap from 'bootstrap';
+import { getDataFromLocalStorage } from './dataManagement';
 import { setCategoryInputs } from './display';
 import {
   resetIsActiveInTheCategoryData,
@@ -18,7 +19,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
   aModalForDeleteElms: modalForDeleteElmsType,
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const deleteButtonElm = aModalForDeleteElms.deleteButton;
@@ -83,7 +85,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aModalForDeleteElms,
           aCurrentValKeys,
           aBsModal,
-          aSectionElms
+          aSectionElms,
+          aButtonSaveElm
         );
       }
     }
@@ -108,8 +111,10 @@ export function editQuizData(
   aListEditBtnElms: NodeListOf<HTMLButtonElement>,
   aListDlElm: HTMLElement,
   aListDdElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[]
+  aCurrentValKeys: (keyof Inputs)[],
+  aButtonSaveElm: HTMLButtonElement
 ) {
+  let quizCategory = aQuizCategory;
   let isUnderEdit = false;
   let cancelBtnElm: HTMLButtonElement | null = null;
 
@@ -211,6 +216,11 @@ export function editQuizData(
         } else {
           // when clicking save button
           // save a new value
+          quizCategory = aButtonSaveElm.classList.contains(
+            'js-categoryNameIsUpdated'
+          )
+            ? getDataFromLocalStorage('quizCategory')
+            : aQuizCategory;
           currentVal = getUpdatedCurrentVal(
             idx,
             currentVal as Inputs,
@@ -225,7 +235,7 @@ export function editQuizData(
             currentVal,
             aCurrentValKeys,
             aListDdElms,
-            aQuizCategory
+            quizCategory
           );
           divElms[0].classList.remove('d-none');
           divElms[1].classList.add('d-none');

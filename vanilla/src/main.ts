@@ -112,13 +112,16 @@ const bsModal: bootstrap.Modal = new bootstrap.Modal(
   modalForDeleteDivElm as HTMLElement
 );
 
+const buttonSaveElm =
+  document.querySelector<HTMLButtonElement>('.js-buttonSave');
 setQuizList(
   quizData as Map<number, Inputs>,
   quizCategory as Map<number, InputsCategory>,
   modalForDeleteElms as modalForDeleteElmsType,
   sectionElms,
   currentValKeys,
-  bsModal
+  bsModal,
+  buttonSaveElm as HTMLButtonElement
 );
 
 deleteDataThroughDeleteBtnInTheModal(
@@ -128,7 +131,8 @@ deleteDataThroughDeleteBtnInTheModal(
   sectionElms as NodeListOf<HTMLElement>,
   currentValKeys as (keyof Inputs)[],
   modalForDeleteElms as modalForDeleteElmsType,
-  bsModal
+  bsModal,
+  buttonSaveElm as HTMLButtonElement
 );
 
 setCategoryInputs(
@@ -147,17 +151,20 @@ setAddNew(
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
   currentValKeys,
-  bsModal
+  bsModal,
+  buttonSaveElm as HTMLButtonElement
 );
 
 const listDlElm = document.querySelector('.js-listDl');
 const listDdElms = document.querySelectorAll('.js-listDd');
 const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
+
 editQuizData(
   quizData,
   quizCategory,
   listEditBtnElms as NodeListOf<HTMLButtonElement>,
   listDlElm as HTMLElement,
   listDdElms as NodeListOf<HTMLElement>,
-  currentValKeys
+  currentValKeys,
+  buttonSaveElm as HTMLButtonElement
 );

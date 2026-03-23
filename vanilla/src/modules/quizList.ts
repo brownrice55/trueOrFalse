@@ -1,4 +1,5 @@
 import { setCategoryInputs } from './display';
+import { getDataFromLocalStorage } from './dataManagement';
 import {
   getHTMLForOptionInputsOfSelection,
   getEachValueForDivIndex0,
@@ -238,7 +239,8 @@ export function displayList(
   aModalForDeleteElms: modalForDeleteElmsType,
   aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -257,6 +259,11 @@ export function displayList(
 
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
+      let quizCategory = aButtonSaveElm.classList.contains(
+        'js-categoryNameIsUpdated'
+      )
+        ? getDataFromLocalStorage('quizCategory')
+        : aQuizCategory;
       aListDivElms[0].classList.add('d-none');
       aListDivElms[1].classList.remove('d-none');
 
@@ -272,7 +279,7 @@ export function displayList(
           currentVal,
           aCurrentValKeys,
           listDdElms as NodeListOf<HTMLButtonElement>,
-          aQuizCategory,
+          quizCategory,
           aSectionElms
         );
       }

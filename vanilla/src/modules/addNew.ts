@@ -152,7 +152,8 @@ export function saveQuizData(
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -270,7 +271,8 @@ export function saveQuizData(
       aModalForDeleteElms,
       aCurrentValKeys,
       aBsModal,
-      aSectionElms
+      aSectionElms,
+      aButtonSaveElm
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(

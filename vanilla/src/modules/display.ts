@@ -151,7 +151,8 @@ export function setQuizList(
   aModalForDeleteElms: modalForDeleteElmsType,
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
@@ -163,7 +164,8 @@ export function setQuizList(
     aModalForDeleteElms,
     aCurrentValKeys,
     aBsModal,
-    aSectionElms
+    aSectionElms,
+    aButtonSaveElm as HTMLButtonElement
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
@@ -240,7 +242,10 @@ export function setCategoryInputs(
       inputCategoryAreaElm as HTMLElement,
       aSectionElms,
       aQuizData,
-      aQuizCategory
+      aQuizCategory,
+      aModalForDeleteElms,
+      aButtonCancelElm,
+      aBsModal
     );
   });
 
@@ -279,7 +284,8 @@ export function setAddNew(
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -359,7 +365,8 @@ export function setAddNew(
     aButtonCancelElm,
     aSectionElms,
     aCurrentValKeys as (keyof Inputs)[],
-    aBsModal
+    aBsModal,
+    aButtonSaveElm
   );
 
   const buttonBackToListFromAddNewElm = document.querySelector(
