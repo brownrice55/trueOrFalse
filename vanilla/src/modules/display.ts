@@ -152,7 +152,8 @@ export function setQuizList(
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   const listDivElms = document.querySelectorAll('.js-listDiv');
   const listUlElm = document.querySelector('.js-listUl');
@@ -165,7 +166,8 @@ export function setQuizList(
     aCurrentValKeys,
     aBsModal,
     aSectionElms,
-    aButtonSaveElm as HTMLButtonElement
+    aButtonSaveElm as HTMLButtonElement,
+    aButtonCancelElm
   );
 
   const buttonGoToAddNewElm = document.querySelector('.js-buttonGoToAddNew');
@@ -212,7 +214,8 @@ export function setCategoryInputs(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -229,16 +232,13 @@ export function setCategoryInputs(
     true
   );
 
-  const buttonSaveElm =
-    document.querySelector<HTMLButtonElement>('.js-buttonSave');
-
   const buttonAddInputElm =
     document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
 
-  buttonSaveElm?.addEventListener('click', function (e) {
+  aButtonSaveElm?.addEventListener('click', function (e) {
     e.preventDefault();
     saveCategoryData(
-      buttonSaveElm as HTMLButtonElement,
+      aButtonSaveElm as HTMLButtonElement,
       inputCategoryAreaElm as HTMLElement,
       aSectionElms,
       aQuizData,
@@ -258,7 +258,7 @@ export function setCategoryInputs(
   editOrDeleteCategoryName(
     inputCategoryAreaElm as HTMLElement,
     initialInputValues,
-    buttonSaveElm as HTMLButtonElement,
+    aButtonSaveElm as HTMLButtonElement,
     aButtonCancelElm as HTMLButtonElement,
     buttonAddInputElm as HTMLButtonElement,
     aModalForDeleteElms,
@@ -268,7 +268,7 @@ export function setCategoryInputs(
   let isUnderEdit = false;
 
   setButtonDisabledForCategory(
-    buttonSaveElm as HTMLButtonElement,
+    aButtonSaveElm as HTMLButtonElement,
     initialInputValues as string[],
     inputCategoryAreaElm as HTMLElement,
     isUnderEdit as boolean,
@@ -300,7 +300,8 @@ export function setAddNew(
     if (addNewCategorySelectElm) {
       addNewCategorySelectElm.innerHTML = getCategoryOptions(
         aQuizCategory,
-        'unspecified'
+        'unspecified',
+        aButtonSaveElm
       );
     }
     if (addNewTypeSelectElm) {
@@ -379,7 +380,12 @@ export function setAddNew(
   addNewCategorySelectElm?.addEventListener('change', function (e) {
     const targetValue = (e.currentTarget as HTMLSelectElement).value;
     if (targetValue === 'add') {
-      goToCategoryToSetNewCategory(aSectionElms, 'addNew');
+      goToCategoryToSetNewCategory(
+        aSectionElms,
+        'addNew',
+        aButtonSaveElm,
+        aButtonCancelElm
+      );
     }
   });
 }

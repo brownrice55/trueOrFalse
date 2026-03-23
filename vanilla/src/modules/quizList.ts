@@ -91,9 +91,15 @@ export function displayDetail(
   aCurrentValKeys: (keyof Inputs)[],
   aListDdElms: NodeListOf<HTMLElement>,
   aQuizCategory: Map<number, InputsCategory>,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement
 ) {
-  const formElementsArray = getFormElements(aQuizCategory, aCurrentVal);
+  const formElementsArray = getFormElements(
+    aQuizCategory,
+    aCurrentVal,
+    aButtonSaveElm
+  );
   const formElements = formElementsArray[0] as string[];
   const formElementsIrregularIndex3 =
     formElementsArray[1] as FormElementsIrregularIndex3Type;
@@ -178,7 +184,9 @@ export function displayDetail(
             aCurrentVal,
             aSectionElms,
             aListDdElms,
-            divElms[1]
+            divElms[1],
+            aButtonSaveElm,
+            aButtonCancelElm
           );
         } else {
           divElms[1].innerHTML = formElements[idx];
@@ -240,7 +248,8 @@ export function displayList(
   aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal,
   aSectionElms: NodeListOf<HTMLElement>,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -280,7 +289,9 @@ export function displayList(
           aCurrentValKeys,
           listDdElms as NodeListOf<HTMLButtonElement>,
           quizCategory,
-          aSectionElms
+          aSectionElms,
+          aButtonSaveElm,
+          aButtonCancelElm
         );
       }
     });
@@ -317,7 +328,8 @@ export function resetIsActiveInTheCategoryData(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -341,6 +353,7 @@ export function resetIsActiveInTheCategoryData(
     aModalForDeleteElms,
     aButtonCancelElm,
     aSectionElms,
-    aBsModal
+    aBsModal,
+    aButtonSaveElm
   );
 }

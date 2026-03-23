@@ -14,10 +14,10 @@ import {
 import { goToCategoryToSetNewCategory } from './utils';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
-  aValue: string
+  aValue: string,
+  aButtonSaveElm: HTMLButtonElement
 ) {
-  const buttonSaveElm = document.querySelector('.js-buttonSave');
-  if (buttonSaveElm?.classList.contains('js-categoryNameIsUpdated')) {
+  if (aButtonSaveElm?.classList.contains('js-categoryNameIsUpdated')) {
     aQuizCategory = getDataFromLocalStorage('quizCategory');
   }
   let optionHTML2 = '';
@@ -196,26 +196,38 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
   aCurrentVal: Inputs,
   aSectionElms: NodeListOf<HTMLElement>,
   aListDdElms: NodeListOf<HTMLElement>,
-  aDivElmsIndex1: HTMLElement
+  aDivElmsIndex1: HTMLElement,
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement
 ) {
-  const formElementsArray = getFormElements(aQuizCategory, aCurrentVal);
+  const formElementsArray = getFormElements(
+    aQuizCategory,
+    aCurrentVal,
+    aButtonSaveElm
+  );
   const formElements = formElementsArray[0] as string[];
   aDivElmsIndex1.innerHTML = String(formElements[0]);
   const categorySelectElm = aListDdElms[0].querySelector('select');
   categorySelectElm?.addEventListener('change', function (e) {
     const targetValue = (e.currentTarget as HTMLSelectElement).value;
     if (targetValue === 'add') {
-      goToCategoryToSetNewCategory(aSectionElms, 'quizList');
+      goToCategoryToSetNewCategory(
+        aSectionElms,
+        'quizList',
+        aButtonSaveElm,
+        aButtonCancelElm
+      );
     }
   });
 }
 
 export function getFormElements(
   aQuizCategory: Map<number, InputsCategory>,
-  aCurrentVal: Inputs
+  aCurrentVal: Inputs,
+  aButtonSaveElm: HTMLButtonElement
 ) {
   const formElements = [
-    `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category)}</select>`,
+    `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm)}</select>`,
     `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
     getTextArea(aCurrentVal.question, 'detailQuestion'),
     '',

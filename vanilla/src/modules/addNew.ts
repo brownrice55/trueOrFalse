@@ -225,7 +225,8 @@ export function saveQuizData(
           aModalForDeleteElms,
           aButtonCancelElm,
           aSectionElms,
-          aBsModal
+          aBsModal,
+          aButtonSaveElm
         );
       }
     }
@@ -272,7 +273,8 @@ export function saveQuizData(
       aCurrentValKeys,
       aBsModal,
       aSectionElms,
-      aButtonSaveElm
+      aButtonSaveElm,
+      aButtonCancelElm
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(

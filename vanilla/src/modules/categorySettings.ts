@@ -63,7 +63,8 @@ export function saveCategoryData(
   if (addNewCategorySelectElm) {
     addNewCategorySelectElm.innerHTML = getCategoryOptions(
       aQuizCategory,
-      'unspecified'
+      'unspecified',
+      aButtonSaveElm
     );
   }
 
@@ -79,7 +80,9 @@ export function saveCategoryData(
         currentVal as Inputs,
         aSectionElms,
         listDdElms as NodeListOf<HTMLElement>,
-        divElms[1]
+        divElms[1],
+        aButtonSaveElm,
+        aButtonCancelElm
       );
     }
     aButtonSaveElm.dataset.key = '';
@@ -90,7 +93,8 @@ export function saveCategoryData(
       aModalForDeleteElms,
       aButtonCancelElm,
       aSectionElms,
-      aBsModal
+      aBsModal,
+      aButtonSaveElm
     );
   }
   // update quiz category select end

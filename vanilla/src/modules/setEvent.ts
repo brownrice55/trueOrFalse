@@ -50,7 +50,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
         aModalForDeleteElms as modalForDeleteElmsType,
         aButtonCancelElm as HTMLButtonElement,
         aSectionElms,
-        aBsModal
+        aBsModal,
+        aButtonSaveElm
       );
     } else if (
       modalForDeleteDivElm &&
@@ -71,7 +72,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aModalForDeleteElms,
           aButtonCancelElm as HTMLButtonElement,
           aSectionElms,
-          aBsModal
+          aBsModal,
+          aButtonSaveElm
         );
 
         listDivElms[0].classList.remove('d-none');
@@ -86,7 +88,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aCurrentValKeys,
           aBsModal,
           aSectionElms,
-          aButtonSaveElm
+          aButtonSaveElm,
+          aButtonCancelElm as HTMLButtonElement
         );
       }
     }

@@ -121,7 +121,8 @@ setQuizList(
   sectionElms,
   currentValKeys,
   bsModal,
-  buttonSaveElm as HTMLButtonElement
+  buttonSaveElm as HTMLButtonElement,
+  buttonCancelElm as HTMLButtonElement
 );
 
 deleteDataThroughDeleteBtnInTheModal(
@@ -141,7 +142,8 @@ setCategoryInputs(
   modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
-  bsModal
+  bsModal,
+  buttonSaveElm as HTMLButtonElement
 );
 
 setAddNew(
