@@ -159,7 +159,6 @@ export function displayDetail(
           (addNewOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
               aCurrentVal.numberOfOptions,
-              false,
               addNewOptionInputsDivElm as HTMLElement
             );
         }
@@ -171,7 +170,6 @@ export function displayDetail(
           (addNewOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
               aCurrentVal.numberOfOptions,
-              true,
               addNewOptionInputsDivElm as HTMLElement
             );
         });

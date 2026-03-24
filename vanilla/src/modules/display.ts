@@ -18,9 +18,12 @@ import {
   getCategoryOptions,
   getTypeOptions,
   getPriorityOptions,
+  getFormElements,
+  getHTMLForOptionInputsOfSelection,
 } from './common/form';
 import { displayModalForPageTransition } from './common/modal';
 import type { Inputs } from '../types/inputs.type';
+import type { FormElementsIrregularIndex3Type } from '../types/formElementsIrregularIndex3.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
 import type { modalForPageTransitionElmsType } from '../types/modalForPageTransitionElms.type';
@@ -310,6 +313,16 @@ export function setAddNew(
     if (addNewPrioritySelectElm) {
       addNewPrioritySelectElm.innerHTML = getPriorityOptions('high');
     }
+
+    const formElementsArray = getFormElements(
+      aQuizCategory,
+      null,
+      aButtonSaveElm
+    );
+    const formElementsIrregularIndex3 =
+      formElementsArray[1] as FormElementsIrregularIndex3Type;
+    addNewTypeDivElms[0].innerHTML = formElementsIrregularIndex3['trueOrFalse'];
+    addNewTypeDivElms[1].innerHTML = formElementsIrregularIndex3['selection'];
   };
   setForm();
 
@@ -342,6 +355,12 @@ export function setAddNew(
     );
   };
   setFormForTypeSelection();
+  if (addNewOptionInputsDivElm) {
+    addNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
+      2,
+      addNewOptionInputsDivElm as HTMLElement
+    );
+  }
 
   setValidation(
     addNewTypeSelectElm as HTMLSelectElement,

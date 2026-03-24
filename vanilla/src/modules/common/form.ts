@@ -66,27 +66,20 @@ export function getPriorityOptions(aValue: string) {
 
 export function getHTMLForOptionInputsOfSelection(
   aNumber: number,
-  aIsDefault: boolean,
   aElm: HTMLElement
 ) {
   const checkboxElms = aElm.querySelectorAll('.js-addNewOptionsCheckbox');
   const inputTextElms = aElm.querySelectorAll('.js-addNewOptionsInputText');
   let temporaryValues: [boolean, string][] = [];
-  if (!aIsDefault) {
-    temporaryValues = [
-      [false, ''],
-      [false, ''],
-    ];
-  } else {
-    checkboxElms.forEach((elm, idx) => {
-      temporaryValues.push([
-        (elm as HTMLInputElement).dataset.checktemporary === 'true'
-          ? true
-          : false,
-        (inputTextElms[idx] as HTMLInputElement).dataset.texttemporary!,
-      ]);
-    });
-  }
+
+  checkboxElms.forEach((elm, idx) => {
+    temporaryValues.push([
+      (elm as HTMLInputElement).dataset.checktemporary === 'true'
+        ? true
+        : false,
+      (inputTextElms[idx] as HTMLInputElement).dataset.texttemporary!,
+    ]);
+  });
 
   let html = '';
   let checked = '';
@@ -223,18 +216,20 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
 
 export function getFormElements(
   aQuizCategory: Map<number, InputsCategory>,
-  aCurrentVal: Inputs,
+  aCurrentVal: Inputs | null,
   aButtonSaveElm: HTMLButtonElement
 ) {
-  const formElements = [
-    `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm)}</select>`,
-    `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
-    getTextArea(aCurrentVal.question, 'detailQuestion'),
-    '',
-    getTextArea(aCurrentVal.explanation, 'detailExplanation'),
-    `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
-    getTextArea(aCurrentVal.notes, 'detailNotes'),
-  ];
+  const formElements: string[] = aCurrentVal
+    ? [
+        `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm)}</select>`,
+        `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
+        getTextArea(aCurrentVal.question, 'detailQuestion'),
+        '',
+        getTextArea(aCurrentVal.explanation, 'detailExplanation'),
+        `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
+        getTextArea(aCurrentVal.notes, 'detailNotes'),
+      ]
+    : [''];
 
   const formElementsIrregularIndex3: FormElementsIrregularIndex3Type = {
     trueOrFalse: `<div class="form-check form-check-inline cursor-pointer my-3">

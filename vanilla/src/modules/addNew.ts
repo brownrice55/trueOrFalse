@@ -105,7 +105,6 @@ export function setOptionInputs(
 
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       number,
-      false,
       aAddNewOptionInputsDivElm
     );
 
@@ -248,7 +247,6 @@ export function saveQuizData(
     aAddNewOptionNumberSelectElm.value = '2';
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       2,
-      true,
       aAddNewOptionInputsDivElm
     );
     aAddNewPrioritySelectElm.value = 'high';
