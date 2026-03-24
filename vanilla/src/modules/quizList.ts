@@ -120,11 +120,9 @@ export function displayDetail(
       );
 
       if (idx === 3) {
-        divElms[1].innerHTML = String(
-          formElementsIrregularIndex3[
-            aCurrentVal.type as keyof FormElementsIrregularIndex3Type
-          ]
-        );
+        const divDivElms = divElms[1].querySelectorAll('div');
+        divDivElms[0].innerHTML = formElementsIrregularIndex3['trueOrFalse'];
+        divDivElms[1].innerHTML = formElementsIrregularIndex3['selection'];
 
         // trueOrFalse start
         const addNewAnswerRadioElms = document.querySelectorAll(
@@ -144,24 +142,30 @@ export function displayDetail(
         // trueOrFalse end
 
         // selection start
-        const addNewOptionNumberSelectElm = document.querySelector(
+        const addNewOptionNumberSelectElm = divElms[1].querySelector(
           '.js-addNewOptionNumberSelect'
         );
+
+        const numberOfOptions = aCurrentVal.numberOfOptions
+          ? aCurrentVal.numberOfOptions
+          : 2;
+
         if (addNewOptionNumberSelectElm) {
-          (addNewOptionNumberSelectElm as HTMLSelectElement).value = String(
-            aCurrentVal.numberOfOptions
-          );
+          (addNewOptionNumberSelectElm as HTMLSelectElement).value =
+            String(numberOfOptions);
         }
-        const addNewOptionInputsDivElm = document.querySelector(
+        const addNewOptionInputsDivElm = divElms[1].querySelector(
           '.js-addNewOptionInputsDiv'
         );
+
         if (addNewOptionInputsDivElm) {
           (addNewOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
-              aCurrentVal.numberOfOptions,
+              numberOfOptions,
               addNewOptionInputsDivElm as HTMLElement
             );
         }
+
         addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
           aCurrentVal.numberOfOptions = parseInt(
             (e.currentTarget as HTMLSelectElement).value,
@@ -174,6 +178,7 @@ export function displayDetail(
             );
         });
         // selection end
+
         // idx===3 end
       } else {
         if (idx === 0) {
@@ -188,6 +193,19 @@ export function displayDetail(
           );
         } else {
           divElms[1].innerHTML = formElements[idx];
+        }
+        if (idx === 1) {
+          const typeSelectElm = divElms[1].querySelector('select');
+          const answerDivElms = aListDdElms[3].querySelectorAll('div');
+          const answerDivDivElms = answerDivElms[1].querySelectorAll('div');
+          typeSelectElm?.addEventListener('change', function (e) {
+            const indices =
+              (e.currentTarget as HTMLSelectElement).value === 'trueOrFalse'
+                ? [0, 1]
+                : [1, 0];
+            answerDivDivElms[indices[0]].classList.remove('d-none');
+            answerDivDivElms[indices[1]].classList.add('d-none');
+          });
         }
       }
     }

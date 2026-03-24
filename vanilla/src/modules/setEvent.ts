@@ -108,6 +108,21 @@ export function deleteDataThroughDeleteBtnInTheModal(
   );
 }
 
+const hideOrShowDivElms = (
+  aIdx: number,
+  aDivElms: NodeListOf<HTMLElement>,
+  aDivIdx3Elms: NodeListOf<HTMLElement>,
+  aIsUnderEdit: boolean
+) => {
+  const indices = aIsUnderEdit ? [1, 0] : [0, 1];
+  aDivElms[indices[0]].classList.remove('d-none');
+  aDivElms[indices[1]].classList.add('d-none');
+  if (aIdx === 1) {
+    aDivIdx3Elms[indices[0]].classList.remove('d-none');
+    aDivIdx3Elms[indices[1]].classList.add('d-none');
+  }
+};
+
 export function editQuizData(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
@@ -123,6 +138,10 @@ export function editQuizData(
 
   aListEditBtnElms.forEach((elm, idx) => {
     const divElms = aListDdElms[idx].querySelectorAll('div');
+    let divIdx3Elms = null;
+    if (idx === 1) {
+      divIdx3Elms = aListDdElms[3].querySelectorAll('div');
+    }
     if (
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
       'true'
@@ -143,8 +162,12 @@ export function editQuizData(
 
         const targetBtnElm = e.currentTarget;
         if (isUnderEdit) {
-          divElms[0].classList.add('d-none');
-          divElms[1].classList.remove('d-none');
+          hideOrShowDivElms(
+            idx,
+            divElms,
+            divIdx3Elms as NodeListOf<HTMLElement>,
+            isUnderEdit
+          );
           elm.textContent = '上書きする';
 
           if (targetBtnElm) {
@@ -174,8 +197,13 @@ export function editQuizData(
           cancelBtnElm.addEventListener('click', function () {
             this.remove();
             cancelBtnElm = null;
-            divElms[0].classList.remove('d-none');
-            divElms[1].classList.add('d-none');
+            hideOrShowDivElms(
+              idx,
+              divElms,
+              divIdx3Elms as NodeListOf<HTMLElement>,
+              isUnderEdit
+            );
+
             elm.textContent = '編集する';
             isUnderEdit = false;
             setDisabledForListEditBtns(isUnderEdit);
@@ -240,8 +268,12 @@ export function editQuizData(
             aListDdElms,
             quizCategory
           );
-          divElms[0].classList.remove('d-none');
-          divElms[1].classList.add('d-none');
+          hideOrShowDivElms(
+            idx,
+            divElms,
+            divIdx3Elms as NodeListOf<HTMLElement>,
+            isUnderEdit
+          );
 
           // set buttons
           elm.textContent = '編集する';
