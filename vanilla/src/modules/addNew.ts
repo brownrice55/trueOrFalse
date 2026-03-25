@@ -105,7 +105,8 @@ export function setOptionInputs(
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       number,
       aAddNewOptionInputsDivElm,
-      'addnew'
+      'addnew',
+      null
     );
     setDisabled(
       aAddNewTypeSelectElm,
@@ -247,7 +248,8 @@ export function saveQuizData(
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       2,
       aAddNewOptionInputsDivElm,
-      'addnew'
+      'addnew',
+      null
     );
     aAddNewPrioritySelectElm.value = 'high';
 
@@ -287,9 +289,9 @@ export function saveQuizData(
 
 export function setDisabled(
   aAddNewTypeSelectElm: HTMLSelectElement,
-  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
+  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement> | null,
   aAddNewOptionInputsDivElm: HTMLElement,
-  aButtonAddNewElm: HTMLButtonElement,
+  aButtonAddNewElm: HTMLButtonElement | null,
   aElms: string,
   aEvent: string
 ) {
@@ -300,34 +302,38 @@ export function setDisabled(
     '.js-addNewOptionsInputText'
   );
 
-  const elms: NodeListOf<Element> =
+  const elms: NodeListOf<Element> | null =
     aElms === 'textarea'
       ? aAddNewTextAreaElms
       : aElms === 'checkbox'
         ? checkboxElms
         : inputTextElms;
 
-  for (const elm of elms) {
-    elm.addEventListener(aEvent, function () {
-      const type = aAddNewTypeSelectElm.value;
+  if (elms) {
+    for (const elm of elms) {
+      elm.addEventListener(aEvent, function () {
+        const type = aAddNewTypeSelectElm.value;
 
-      setValidationForDataEntry(
-        type,
-        aAddNewTextAreaElms,
-        aButtonAddNewElm,
-        aAddNewOptionInputsDivElm
-      );
+        if (aButtonAddNewElm && aAddNewTextAreaElms) {
+          setValidationForDataEntry(
+            type,
+            aAddNewTextAreaElms,
+            aButtonAddNewElm,
+            aAddNewOptionInputsDivElm
+          );
+        }
 
-      if (aElms === 'checkbox') {
-        (elm as HTMLInputElement).dataset.checktemporary = String(
-          (elm as HTMLInputElement).checked
-        );
-      } else if (aElms === 'inputText') {
-        (elm as HTMLInputElement).dataset.texttemporary = (
-          elm as HTMLInputElement
-        ).value;
-      }
-    });
+        if (aElms === 'checkbox') {
+          (elm as HTMLInputElement).dataset.checktemporary = String(
+            (elm as HTMLInputElement).checked
+          );
+        } else if (aElms === 'inputText') {
+          (elm as HTMLInputElement).dataset.texttemporary = (
+            elm as HTMLInputElement
+          ).value;
+        }
+      });
+    }
   }
 }
 

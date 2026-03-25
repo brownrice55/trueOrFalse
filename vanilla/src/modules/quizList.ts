@@ -6,7 +6,7 @@ import {
   setDivIndex1FormForQuizDetailIdx0Category,
   getFormElements,
 } from './common/form';
-// import { setDisabled } from './addNew';
+import { setDisabled } from './addNew';
 import { showModalForDelete } from './common/modal';
 import { resetEditQuizBtns } from './common/utils';
 import { getAccuracyRate } from './common/utils';
@@ -155,7 +155,8 @@ export function displayDetail(
             getHTMLForOptionInputsOfSelection(
               numberOfOptions,
               addNewOptionInputsDivElm as HTMLElement,
-              'quizlist'
+              'quizlist',
+              aCurrentVal
             );
         }
 
@@ -164,9 +165,28 @@ export function displayDetail(
             getHTMLForOptionInputsOfSelection(
               parseInt((e.currentTarget as HTMLSelectElement).value),
               addNewOptionInputsDivElm as HTMLElement,
-              'quizlist'
+              'quizlist',
+              null
             );
         });
+
+        const typeSelectElm = document.querySelector('.js-detailType');
+        setDisabled(
+          typeSelectElm as HTMLSelectElement,
+          null,
+          addNewOptionInputsDivElm as HTMLElement,
+          null,
+          'checkbox',
+          'click'
+        );
+        setDisabled(
+          typeSelectElm as HTMLSelectElement,
+          null,
+          addNewOptionInputsDivElm as HTMLElement,
+          null,
+          'inputText',
+          'keyup'
+        );
         //selection end
 
         // idx===3 end
@@ -262,7 +282,7 @@ export function displayList(
     liHtml += `<li class="my-3">
                 <button class="btn btn-primary btn-sm float-end js-listDetailButton" type="button" data-key="${idx}">詳細</button>
                 ${val.question}<br />
-                <span>正解率：${getAccuracyRate(val)}%</span>
+                <span>正解率：${getAccuracyRate(val)}</span>
               </li>`;
   });
   aListUlElm.innerHTML = liHtml;

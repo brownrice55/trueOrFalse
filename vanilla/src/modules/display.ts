@@ -364,7 +364,8 @@ export function setAddNew(
     addNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       2,
       addNewOptionInputsDivElm as HTMLElement,
-      'addnew'
+      'addnew',
+      null
     );
   }
 

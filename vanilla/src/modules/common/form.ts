@@ -67,20 +67,32 @@ export function getPriorityOptions(aValue: string) {
 export function getHTMLForOptionInputsOfSelection(
   aNumber: number,
   aElm: HTMLElement,
-  aPrefix: string
+  aPrefix: string,
+  aCurrentVal: Inputs | null
 ) {
-  const checkboxElms = aElm.querySelectorAll('.js-addNewOptionsCheckbox');
-  const inputTextElms = aElm.querySelectorAll('.js-addNewOptionsInputText');
+  const className = aPrefix === 'addnew' ? '.js-addNew' : '.js-listDl';
+  const checkboxElms = aElm.querySelectorAll(
+    className + ' .js-addNewOptionsCheckbox'
+  );
+  const inputTextElms = aElm.querySelectorAll(
+    className + ' .js-addNewOptionsInputText'
+  );
   let temporaryValues: [boolean, string][] = [];
 
-  checkboxElms.forEach((elm, idx) => {
-    temporaryValues.push([
-      (elm as HTMLInputElement).dataset.checktemporary === 'true'
-        ? true
-        : false,
-      (inputTextElms[idx] as HTMLInputElement).dataset.texttemporary!,
-    ]);
-  });
+  if (aCurrentVal) {
+    aCurrentVal.options.forEach((arr) => {
+      temporaryValues.push([arr[0] === true ? true : false, arr[1]]);
+    });
+  } else {
+    checkboxElms.forEach((elm, idx) => {
+      temporaryValues.push([
+        (elm as HTMLInputElement).dataset.checktemporary === 'true'
+          ? true
+          : false,
+        (inputTextElms[idx] as HTMLInputElement).dataset.texttemporary!,
+      ]);
+    });
+  }
 
   let html = '';
   let checked = '';
@@ -234,7 +246,7 @@ export function getFormElements(
   const formElements: string[] = aCurrentVal
     ? [
         `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm)}</select>`,
-        `<select class="form-select" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
+        `<select class="form-select js-detailType" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
         getTextArea(aCurrentVal.question, 'detailQuestion'),
         '',
         getTextArea(aCurrentVal.explanation, 'detailExplanation'),
