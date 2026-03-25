@@ -280,13 +280,13 @@ export function editQuizData(
           )
             ? getDataFromLocalStorage('quizCategory')
             : aQuizCategory;
-          if (idx === 3) {
+          if (idx === 1 || idx === 3) {
             if (currentVal.type === 'trueOrFalse') {
               const addNewAnswerRadioElms = document.querySelectorAll(
-                '.js-listDl.js-addNewAnswerRadio'
+                '.js-listDl .js-addNewAnswerRadio'
               );
               const checkedIndex =
-                (addNewAnswerRadioElms[0] as HTMLInputElement).checked == true
+                (addNewAnswerRadioElms[0] as HTMLInputElement).checked === true
                   ? 0
                   : 1;
               (
@@ -322,7 +322,8 @@ export function editQuizData(
               currentVal.options = array; //update
               currentVal.answer = 0; //default
             }
-          } else {
+          }
+          if (idx !== 3) {
             currentVal = getUpdatedCurrentVal(
               idx,
               currentVal as Inputs,

@@ -131,7 +131,8 @@ export function getEachValueForDivIndex0(
   aQuizCategory: Map<number, InputsCategory>
 ) {
   const currentValKey = aCurrentValKeys[aIdx];
-  if (aIdx === 3) {
+  let selctionAnswer = '';
+  if (aIdx === 1 || aIdx === 3) {
     let answerForSelection = '';
     if (aCurrentVal.type === 'selection') {
       aCurrentVal.options.forEach((arr) => {
@@ -143,12 +144,16 @@ export function getEachValueForDivIndex0(
         }
       });
     }
-    return String(
+    selctionAnswer = String(
       aCurrentVal.type === 'trueOrFalse'
         ? labelForQuestionAnswer[aCurrentVal.answer]
         : answerForSelection
     );
-  } else if (!aIdx || aIdx === 1 || aIdx === 5) {
+    if (aIdx === 3) {
+      return selctionAnswer;
+    }
+  }
+  if (!aIdx || aIdx === 1 || aIdx === 5) {
     let text = '';
     if (aIdx === 0) {
       // category
@@ -171,6 +176,10 @@ export function getEachValueForDivIndex0(
       text = String(
         labelForType[aCurrentVal[currentValKey] as keyof labelForTypeType]
       );
+      if (aCurrentVal.type === 'selection') {
+        const divIdx3Elms = document.querySelectorAll('.js-listDd__divIdx3');
+        divIdx3Elms[0].innerHTML = selctionAnswer;
+      }
     } else if (aIdx === 5) {
       // question
       text = String(
