@@ -113,15 +113,19 @@ const hideOrShowDivElms = (
   aDivElms: NodeListOf<HTMLElement>,
   aDivIdx3Elms: NodeListOf<HTMLElement>,
   aIsUnderEdit: boolean,
-  aCurrentValType: string
+  aCurrentValType: string,
+  aDivIdx3DivElms: NodeListOf<HTMLElement> | null
 ) => {
-  console.log({ aCurrentValType });
   const indices = aIsUnderEdit ? [1, 0] : [0, 1];
   aDivElms[indices[0]].classList.remove('d-none');
   aDivElms[indices[1]].classList.add('d-none');
-  if (aIdx === 1) {
+  if (aDivIdx3DivElms && aDivIdx3DivElms && aIdx === 1) {
     aDivIdx3Elms[indices[0]].classList.remove('d-none');
     aDivIdx3Elms[indices[1]].classList.add('d-none');
+
+    const typeIndices = aCurrentValType === 'trueOrFalse' ? [0, 1] : [1, 0];
+    aDivIdx3DivElms[typeIndices[0]].classList.remove('d-none');
+    aDivIdx3DivElms[typeIndices[1]].classList.add('d-none');
   }
 };
 
@@ -161,8 +165,10 @@ export function editQuizData(
   aListEditBtnElms.forEach((elm, idx) => {
     const divElms = aListDdElms[idx].querySelectorAll('div');
     let divIdx3Elms = null;
+    let divIdx3DivElms = null;
     if (idx === 1) {
       divIdx3Elms = aListDdElms[3].querySelectorAll('.js-listDd__divIdx3');
+      divIdx3DivElms = divIdx3Elms[1].querySelectorAll('div');
     }
     if (
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
@@ -189,7 +195,8 @@ export function editQuizData(
             divElms,
             divIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
-            currentVal!.type
+            currentVal!.type,
+            divIdx3DivElms as NodeListOf<HTMLElement>
           );
           elm.textContent = '上書きする';
 
@@ -226,7 +233,8 @@ export function editQuizData(
               divElms,
               divIdx3Elms as NodeListOf<HTMLElement>,
               isUnderEdit,
-              ''
+              '',
+              null
             );
 
             elm.textContent = '編集する';
@@ -337,7 +345,8 @@ export function editQuizData(
             divElms,
             divIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
-            ''
+            '',
+            null
           );
 
           // set buttons
