@@ -143,7 +143,7 @@ export function getEachValueForDivIndex0(
   aQuizCategory: Map<number, InputsCategory>
 ) {
   const currentValKey = aCurrentValKeys[aIdx];
-  let selctionAnswer = '';
+  let answerIdx3 = '';
   if (aIdx === 1 || aIdx === 3) {
     let answerForSelection = '';
     if (aCurrentVal.type === 'selection') {
@@ -156,13 +156,24 @@ export function getEachValueForDivIndex0(
         }
       });
     }
-    selctionAnswer = String(
+
+    const addNewAnswerRadioElms = document.querySelectorAll(
+      '.js-listDl .js-addNewAnswerRadio'
+    );
+
+    const radioCheckedIndex = addNewAnswerRadioElms.length
+      ? (addNewAnswerRadioElms[0] as HTMLInputElement).checked
+        ? 0
+        : 1
+      : aCurrentVal.answer;
+
+    answerIdx3 = String(
       aCurrentVal.type === 'trueOrFalse'
-        ? labelForQuestionAnswer[aCurrentVal.answer]
+        ? labelForQuestionAnswer[radioCheckedIndex]
         : answerForSelection
     );
     if (aIdx === 3) {
-      return selctionAnswer;
+      return answerIdx3;
     }
   }
   if (!aIdx || aIdx === 1 || aIdx === 5) {
@@ -188,10 +199,9 @@ export function getEachValueForDivIndex0(
       text = String(
         labelForType[aCurrentVal[currentValKey] as keyof labelForTypeType]
       );
-      if (aCurrentVal.type === 'selection') {
-        const divIdx3Elms = document.querySelectorAll('.js-listDd__divIdx3');
-        divIdx3Elms[0].innerHTML = selctionAnswer;
-      }
+
+      const divIdx3Elms = document.querySelectorAll('.js-listDd__divIdx3');
+      divIdx3Elms[0].innerHTML = answerIdx3;
     } else if (aIdx === 5) {
       // question
       text = String(
