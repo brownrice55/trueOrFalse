@@ -114,12 +114,12 @@ const hideOrShowDivElms = (
   aDivIdx3Elms: NodeListOf<HTMLElement>,
   aIsUnderEdit: boolean,
   aCurrentValType: string,
-  aDivIdx3DivElms: NodeListOf<HTMLElement> | null
+  aDivIdx3DivElms: NodeListOf<HTMLElement>
 ) => {
   const indices = aIsUnderEdit ? [1, 0] : [0, 1];
   aDivElms[indices[0]].classList.remove('d-none');
   aDivElms[indices[1]].classList.add('d-none');
-  if (aDivIdx3DivElms && aDivIdx3DivElms && aIdx === 1) {
+  if (aDivIdx3Elms && aDivIdx3DivElms && aIdx === 1) {
     aDivIdx3Elms[indices[0]].classList.remove('d-none');
     aDivIdx3Elms[indices[1]].classList.add('d-none');
 
@@ -234,7 +234,7 @@ export function editQuizData(
               divIdx3Elms as NodeListOf<HTMLElement>,
               isUnderEdit,
               '',
-              null
+              divIdx3DivElms as NodeListOf<HTMLElement>
             );
 
             elm.textContent = '編集する';
@@ -346,7 +346,7 @@ export function editQuizData(
             divIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
             '',
-            null
+            divIdx3DivElms as NodeListOf<HTMLElement>
           );
 
           // set buttons
