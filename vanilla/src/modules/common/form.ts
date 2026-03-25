@@ -66,7 +66,8 @@ export function getPriorityOptions(aValue: string) {
 
 export function getHTMLForOptionInputsOfSelection(
   aNumber: number,
-  aElm: HTMLElement
+  aElm: HTMLElement,
+  aPrefix: string
 ) {
   const checkboxElms = aElm.querySelectorAll('.js-addNewOptionsCheckbox');
   const inputTextElms = aElm.querySelectorAll('.js-addNewOptionsInputText');
@@ -93,12 +94,12 @@ export function getHTMLForOptionInputsOfSelection(
         temporaryValues[idx] && temporaryValues[idx][0] ? 'checked' : '';
       html += `<div class="input-group mb-3">
                 <div class="input-group-text">
-                  <input id="option${idx + 1}" 
+                  <input id="${aPrefix}-option${idx + 1}" 
                     class="js-addNewOptionsCheckbox form-check-input mt-0"
                     type="checkbox" ${checked} data-checktemporary="${temporaryValues[idx][0] ?? ''}"
                   />
                 </div>
-                <input id="option${idx + 1}-2"  type="text" class="js-addNewOptionsInputText form-control"
+                <input id="${aPrefix}-option${idx + 1}-2"  type="text" class="js-addNewOptionsInputText form-control"
                     value="${temporaryValues[idx][1] ?? ''}" data-texttemporary="${temporaryValues[idx][1] ?? ''}" />
               </div>`;
     });
@@ -196,7 +197,8 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
   const formElementsArray = getFormElements(
     aQuizCategory,
     aCurrentVal,
-    aButtonSaveElm
+    aButtonSaveElm,
+    'quizlist'
   );
   const formElements = formElementsArray[0] as string[];
   aDivElmsIndex1.innerHTML = String(formElements[0]);
@@ -217,7 +219,8 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
 export function getFormElements(
   aQuizCategory: Map<number, InputsCategory>,
   aCurrentVal: Inputs | null,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aPrefix: string
 ) {
   const formElements: string[] = aCurrentVal
     ? [
@@ -237,29 +240,30 @@ export function getFormElements(
             class="form-check-input js-addNewAnswerRadio"
             type="radio"
             name="answer"
-            id="answer0"
+            id="${aPrefix}-answer0"
             value="0"
+            checked
           />
-          <label class="form-check-label" for="answer0">まる</label>
+          <label class="form-check-label" for="${aPrefix}-answer0">まる</label>
         </div>
         <div class="form-check form-check-inline cursor-pointer">
           <input
             class="form-check-input js-addNewAnswerRadio"
             type="radio"
             name="answer"
-            id="answer1"
+            id="${aPrefix}-answer1"
             value="1"
           />
-          <label class="form-check-label" for="answer1">ばつ</label>
+          <label class="form-check-label" for="${aPrefix}-answer1">ばつ</label>
         </div>`,
     selection: `<div class="my-3">
-            <label for="numberOfOptions" class="form-label"
+            <label for="${aPrefix}-numberOfOptions" class="form-label"
               >選択肢の数</label
             >
             <select
               class="form-select js-addNewOptionNumberSelect"
               aria-label="numberOfOptions"
-              id="numberOfOptions"
+              id="${aPrefix}-numberOfOptions"
             >
               <option value="2">2</option>
               <option value="3">3</option>

@@ -6,7 +6,7 @@ import {
   setDivIndex1FormForQuizDetailIdx0Category,
   getFormElements,
 } from './common/form';
-
+// import { setDisabled } from './addNew';
 import { showModalForDelete } from './common/modal';
 import { resetEditQuizBtns } from './common/utils';
 import { getAccuracyRate } from './common/utils';
@@ -98,7 +98,8 @@ export function displayDetail(
   const formElementsArray = getFormElements(
     aQuizCategory,
     aCurrentVal,
-    aButtonSaveElm
+    aButtonSaveElm,
+    'quizlist'
   );
   const formElements = formElementsArray[0] as string[];
   const formElementsIrregularIndex3 =
@@ -124,24 +125,15 @@ export function displayDetail(
         divDivElms[0].innerHTML = formElementsIrregularIndex3['trueOrFalse'];
         divDivElms[1].innerHTML = formElementsIrregularIndex3['selection'];
 
-        // trueOrFalse start
         const addNewAnswerRadioElms = document.querySelectorAll(
           '.js-addNewAnswerRadio'
         );
         const checkedIndex = aCurrentVal.answer == 0 ? 0 : 1;
         (addNewAnswerRadioElms[checkedIndex] as HTMLInputElement).checked =
           true;
-
-        addNewAnswerRadioElms.forEach((elm) => {
-          elm.addEventListener('click', function (e) {
-            const targetElm = e.currentTarget as HTMLInputElement;
-            targetElm.checked = true;
-            aCurrentVal.answer = parseInt(targetElm.value, 10);
-          });
-        });
         // trueOrFalse end
 
-        // selection start
+        //selection start
         const addNewOptionNumberSelectElm = divElms[1].querySelector(
           '.js-addNewOptionNumberSelect'
         );
@@ -162,22 +154,20 @@ export function displayDetail(
           (addNewOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
               numberOfOptions,
-              addNewOptionInputsDivElm as HTMLElement
+              addNewOptionInputsDivElm as HTMLElement,
+              'quizlist'
             );
         }
 
         addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
-          aCurrentVal.numberOfOptions = parseInt(
-            (e.currentTarget as HTMLSelectElement).value,
-            10
-          );
           (addNewOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
-              aCurrentVal.numberOfOptions,
-              addNewOptionInputsDivElm as HTMLElement
+              parseInt((e.currentTarget as HTMLSelectElement).value),
+              addNewOptionInputsDivElm as HTMLElement,
+              'quizlist'
             );
         });
-        // selection end
+        //selection end
 
         // idx===3 end
       } else {

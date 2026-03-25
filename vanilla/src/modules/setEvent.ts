@@ -112,14 +112,35 @@ const hideOrShowDivElms = (
   aIdx: number,
   aDivElms: NodeListOf<HTMLElement>,
   aDivIdx3Elms: NodeListOf<HTMLElement>,
-  aIsUnderEdit: boolean
+  aIsUnderEdit: boolean,
+  aCurrentValType: string
 ) => {
+  console.log({ aCurrentValType });
   const indices = aIsUnderEdit ? [1, 0] : [0, 1];
   aDivElms[indices[0]].classList.remove('d-none');
   aDivElms[indices[1]].classList.add('d-none');
   if (aIdx === 1) {
     aDivIdx3Elms[indices[0]].classList.remove('d-none');
     aDivIdx3Elms[indices[1]].classList.add('d-none');
+  }
+};
+
+const resetIdx3Form = (aCurrentVal: Inputs) => {
+  // trueOrFalse
+  if (aCurrentVal.type === 'trueOrFalse') {
+    const addNewAnswerRadioElms = document.querySelectorAll(
+      '.js-addNewAnswerRadio'
+    );
+    const checkedIndex = aCurrentVal.answer === 0 ? 0 : 1;
+    (addNewAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
+
+    // const radioElms = aDivIdxElm.querySelectorAll('input');
+    // const radioIndices =
+    //   aCurrentVal && aCurrentVal[aCurrentValKeys[3]] === 0 ? [0, 1] : [1, 0];
+    // radioElms[radioIndices[0]].checked = true; //******** */
+    // radioElms[radioIndices[1]].checked = false; //******** */
+  } else {
+    // selection
   }
 };
 
@@ -135,12 +156,13 @@ export function editQuizData(
   let quizCategory = aQuizCategory;
   let isUnderEdit = false;
   let cancelBtnElm: HTMLButtonElement | null = null;
+  let currentVal: Inputs | undefined;
 
   aListEditBtnElms.forEach((elm, idx) => {
     const divElms = aListDdElms[idx].querySelectorAll('div');
     let divIdx3Elms = null;
     if (idx === 1) {
-      divIdx3Elms = aListDdElms[3].querySelectorAll('div');
+      divIdx3Elms = aListDdElms[3].querySelectorAll('.js-listDd__divIdx3');
     }
     if (
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
@@ -150,7 +172,7 @@ export function editQuizData(
         const key = parseInt(
           (aListDlElm.parentNode as HTMLElement).dataset.key ?? '1000'
         );
-        let currentVal = aQuizData.get(key);
+        currentVal = aQuizData.get(key);
         isUnderEdit = !isUnderEdit;
         if (elm.dataset.adjustment === 'true') {
           isUnderEdit = true;
@@ -166,7 +188,8 @@ export function editQuizData(
             idx,
             divElms,
             divIdx3Elms as NodeListOf<HTMLElement>,
-            isUnderEdit
+            isUnderEdit,
+            currentVal!.type
           );
           elm.textContent = '上書きする';
 
@@ -195,17 +218,18 @@ export function editQuizData(
 
           elm?.parentNode?.appendChild(cancelBtnElm);
           cancelBtnElm.addEventListener('click', function () {
+            isUnderEdit = false;
             this.remove();
             cancelBtnElm = null;
             hideOrShowDivElms(
               idx,
               divElms,
               divIdx3Elms as NodeListOf<HTMLElement>,
-              isUnderEdit
+              isUnderEdit,
+              ''
             );
 
             elm.textContent = '編集する';
-            isUnderEdit = false;
             setDisabledForListEditBtns(isUnderEdit);
             if (idx === 0 || idx === 1 || idx === 5) {
               const selectElm = divElms[1].querySelector('select');
@@ -226,15 +250,11 @@ export function editQuizData(
                   }
                 });
               }
+              if (idx === 1) {
+                resetIdx3Form(currentVal as Inputs);
+              }
             } else if (idx === 3) {
-              // trueOrFalse
-              const radioElms = divElms[1].querySelectorAll('input');
-              const radioIndex =
-                currentVal && currentVal[aCurrentValKeys[idx]] === 0
-                  ? [0, 1]
-                  : [1, 0];
-              radioElms[radioIndex[0]].checked = true; //******** */
-              radioElms[radioIndex[1]].checked = false; //******** */
+              resetIdx3Form(currentVal as Inputs);
             } else {
               const textareaElm = divElms[1].querySelector('textarea');
               if (textareaElm && currentVal) {
@@ -244,7 +264,7 @@ export function editQuizData(
               }
             }
           });
-        } else {
+        } else if (currentVal) {
           // when clicking save button
           // save a new value
           quizCategory = aButtonSaveElm.classList.contains(
@@ -252,12 +272,56 @@ export function editQuizData(
           )
             ? getDataFromLocalStorage('quizCategory')
             : aQuizCategory;
-          currentVal = getUpdatedCurrentVal(
-            idx,
-            currentVal as Inputs,
-            aCurrentValKeys[idx],
-            aListDdElms
-          );
+          if (idx === 3) {
+            if (currentVal.type === 'trueOrFalse') {
+              const addNewAnswerRadioElms = document.querySelectorAll(
+                '.js-listDl.js-addNewAnswerRadio'
+              );
+              const checkedIndex =
+                (addNewAnswerRadioElms[0] as HTMLInputElement).checked == true
+                  ? 0
+                  : 1;
+              (
+                addNewAnswerRadioElms[checkedIndex] as HTMLInputElement
+              ).checked = true;
+              currentVal.answer = checkedIndex; //update
+              currentVal.numberOfOptions = 2; //default
+              currentVal.options = [
+                [false, ''],
+                [false, ''],
+              ]; //default
+            } else {
+              const addNewOptionNumberSelectElm = document.querySelector(
+                '.js-listDl .js-addNewOptionNumberSelect'
+              );
+              currentVal.numberOfOptions = parseInt(
+                (addNewOptionNumberSelectElm as HTMLSelectElement).value
+              ); //update
+
+              const checkboxElms = document.querySelectorAll(
+                '.js-listDl .js-addNewOptionsCheckbox'
+              );
+              const inputTextElms = document.querySelectorAll(
+                '.js-listDl .js-addNewOptionsInputText'
+              );
+              let array: [boolean, string][] = [];
+              checkboxElms.forEach((elm, idx: number) => {
+                array.push([
+                  (elm as HTMLInputElement).checked,
+                  (inputTextElms[idx] as HTMLInputElement).value,
+                ]);
+              });
+              currentVal.options = array; //update
+              currentVal.answer = 0; //default
+            }
+          } else {
+            currentVal = getUpdatedCurrentVal(
+              idx,
+              currentVal as Inputs,
+              aCurrentValKeys[idx],
+              aListDdElms
+            );
+          }
           aQuizData.set(key, currentVal);
           localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
           // display an updated value
@@ -272,7 +336,8 @@ export function editQuizData(
             idx,
             divElms,
             divIdx3Elms as NodeListOf<HTMLElement>,
-            isUnderEdit
+            isUnderEdit,
+            ''
           );
 
           // set buttons

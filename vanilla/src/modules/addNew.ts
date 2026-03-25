@@ -102,12 +102,11 @@ export function setOptionInputs(
 ) {
   aAddNewOptionNumberSelectElm.addEventListener('change', function (e) {
     const number = parseInt((e.currentTarget as HTMLSelectElement).value, 10);
-
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       number,
-      aAddNewOptionInputsDivElm
+      aAddNewOptionInputsDivElm,
+      'addnew'
     );
-
     setDisabled(
       aAddNewTypeSelectElm,
       aAddNewTextAreaElms,
@@ -247,7 +246,8 @@ export function saveQuizData(
     aAddNewOptionNumberSelectElm.value = '2';
     aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       2,
-      aAddNewOptionInputsDivElm
+      aAddNewOptionInputsDivElm,
+      'addnew'
     );
     aAddNewPrioritySelectElm.value = 'high';
 
@@ -285,14 +285,14 @@ export function saveQuizData(
   });
 }
 
-const setDisabled = (
+export function setDisabled(
   aAddNewTypeSelectElm: HTMLSelectElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
   aAddNewOptionInputsDivElm: HTMLElement,
   aButtonAddNewElm: HTMLButtonElement,
   aElms: string,
   aEvent: string
-) => {
+) {
   const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
     '.js-addNewOptionsCheckbox'
   );
@@ -329,7 +329,7 @@ const setDisabled = (
       }
     });
   }
-};
+}
 
 export function setValidation(
   aAddNewTypeSelectElm: HTMLSelectElement,

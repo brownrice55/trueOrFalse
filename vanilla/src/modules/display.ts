@@ -317,7 +317,8 @@ export function setAddNew(
     const formElementsArray = getFormElements(
       aQuizCategory,
       null,
-      aButtonSaveElm
+      aButtonSaveElm,
+      'addnew'
     );
     const formElementsIrregularIndex3 =
       formElementsArray[1] as FormElementsIrregularIndex3Type;
@@ -326,16 +327,19 @@ export function setAddNew(
   };
   setForm();
 
-  const buttonAddNewElm = document.querySelector('.js-buttonAddNew');
-  const addNewTextAreaElms = document.querySelectorAll('.js-addNewTextArea');
+  const buttonAddNewElm = document.querySelector('.js-addNew .js-buttonAddNew');
+  const addNewTextAreaElms = document.querySelectorAll(
+    '.js-addNew .js-addNewTextArea'
+  );
   const addNewAnswerRadioElms = document.querySelectorAll(
-    '.js-addNewAnswerRadio'
+    '.js-addNew .js-addNewAnswerRadio'
+  );
+
+  const addNewOptionInputsDivElm = document.querySelector(
+    '.js-addNew .js-addNewOptionInputsDiv'
   );
   const addNewOptionNumberSelectElm = document.querySelector(
-    '.js-addNewOptionNumberSelect'
-  );
-  const addNewOptionInputsDivElm = document.querySelector(
-    '.js-addNewOptionInputsDiv'
+    '.js-addNew .js-addNewOptionNumberSelect'
   );
 
   const setFormForTypeSelection = () => {
@@ -355,10 +359,12 @@ export function setAddNew(
     );
   };
   setFormForTypeSelection();
+
   if (addNewOptionInputsDivElm) {
     addNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       2,
-      addNewOptionInputsDivElm as HTMLElement
+      addNewOptionInputsDivElm as HTMLElement,
+      'addnew'
     );
   }
 
