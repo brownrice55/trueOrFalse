@@ -93,7 +93,8 @@ export function displayDetail(
   aQuizCategory: Map<number, InputsCategory>,
   aSectionElms: NodeListOf<HTMLElement>,
   aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aListDtElms: NodeListOf<HTMLElement>
 ) {
   const formElementsArray = getFormElements(
     aQuizCategory,
@@ -219,6 +220,37 @@ export function displayDetail(
       }
     }
   });
+
+  // validation for 2 textareas
+  const textareaElms = document.querySelectorAll('.js-listDl .js-formTextarea');
+  let cancelBtnElm: HTMLButtonElement | null = null;
+  textareaElms.forEach((elm, idx) => {
+    elm.addEventListener('keyup', function (e: Event) {
+      const targetElm = e.currentTarget as HTMLTextAreaElement;
+      const dtIdx = !idx ? 2 : 4;
+      const buttonElm = aListDtElms[dtIdx].querySelector('button');
+      if (!cancelBtnElm && buttonElm) {
+        const buttons = (buttonElm.parentNode as HTMLElement).querySelectorAll(
+          'button'
+        );
+        cancelBtnElm = buttons[1];
+      }
+      if (buttonElm) {
+        if (targetElm && !targetElm.value) {
+          buttonElm.disabled = true;
+          targetElm.classList.add('border', 'border-danger', 'border-3');
+        } else {
+          buttonElm.disabled = false;
+          targetElm.classList.remove('border', 'border-danger', 'border-3');
+        }
+      }
+      const key = !idx ? 'question' : 'explanation';
+      if (cancelBtnElm) {
+        cancelBtnElm.disabled =
+          aCurrentVal[key] === targetElm.value ? true : false;
+      }
+    });
+  });
 }
 
 export function resetQuizDetail(
@@ -274,7 +306,8 @@ export function displayList(
   aBsModal: bootstrap.Modal,
   aSectionElms: NodeListOf<HTMLElement>,
   aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aListDtElms: NodeListOf<HTMLElement>
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -316,7 +349,8 @@ export function displayList(
           quizCategory,
           aSectionElms,
           aButtonSaveElm,
-          aButtonCancelElm
+          aButtonCancelElm,
+          aListDtElms
         );
       }
     });

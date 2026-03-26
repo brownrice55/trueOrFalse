@@ -152,7 +152,8 @@ export function saveQuizData(
   aSectionElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aListDtElms: NodeListOf<HTMLElement>
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -184,10 +185,7 @@ export function saveQuizData(
     if (newValue.type === 'trueOrFalse') {
       newValue.answer = aFormAnswerRadioElms[0].checked ? 0 : 1;
     } else {
-      newValue.numberOfOptions = parseInt(
-        aFormOptionNumberSelectElm.value,
-        10
-      );
+      newValue.numberOfOptions = parseInt(aFormOptionNumberSelectElm.value, 10);
 
       let array: [boolean, string][] = [];
       checkboxElms.forEach((elm, idx) => {
@@ -274,7 +272,8 @@ export function saveQuizData(
       aBsModal,
       aSectionElms,
       aButtonSaveElm,
-      aButtonCancelElm
+      aButtonCancelElm,
+      aListDtElms
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(
@@ -286,6 +285,10 @@ export function saveQuizData(
     );
   });
 }
+
+const setValidationForQuizDetailOfIdx3 = () => {
+  // *******
+};
 
 export function setDisabled(
   aAddNewTypeSelectElm: HTMLSelectElement,
@@ -321,6 +324,8 @@ export function setDisabled(
             aButtonAddNewElm,
             aFormOptionInputsDivElm
           );
+        } else {
+          setValidationForQuizDetailOfIdx3();
         }
 
         if (aElms === 'checkbox') {

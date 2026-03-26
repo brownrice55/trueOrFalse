@@ -20,7 +20,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
   aCurrentValKeys: (keyof Inputs)[],
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aListDtElms: NodeListOf<HTMLElement>
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const deleteButtonElm = aModalForDeleteElms.deleteButton;
@@ -89,7 +90,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aBsModal,
           aSectionElms,
           aButtonSaveElm,
-          aButtonCancelElm as HTMLButtonElement
+          aButtonCancelElm as HTMLButtonElement,
+          aListDtElms
         );
       }
     }

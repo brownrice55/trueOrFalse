@@ -49,7 +49,8 @@ export function getTypeOptions(aValue: string) {
 }
 
 export function getTextArea(aValue: string, aId: string) {
-  return `<textarea class="form-control" id="${aId}" rows="3">${aValue}</textarea>`;
+  const className = aId !== 'detailNotes' ? ' js-formTextarea' : '';
+  return `<textarea class="form-control${className}" id="${aId}" rows="3">${aValue}</textarea>`;
 }
 
 export function getPriorityOptions(aValue: string) {
