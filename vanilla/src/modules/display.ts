@@ -132,9 +132,11 @@ export function closeGlobalMenu(aGlobalNavElm: HTMLElement) {
   const hideMenus = (matches: boolean) => {
     if (matches) {
       document.addEventListener('click', function (e: MouseEvent) {
-        const target = e.target;
-        if (target instanceof Node) {
-          bsCollapse.hide();
+        if (aGlobalNavElm.classList.contains('show')) {
+          const target = e.target;
+          if (target instanceof Node) {
+            bsCollapse.hide();
+          }
         }
       });
     }
