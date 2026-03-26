@@ -17,7 +17,7 @@ const setValidationForDataEntry = (
   aType: string,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
   aButtonAddNewElm: HTMLButtonElement,
-  aAddNewOptionInputsDivElm: HTMLElement
+  aFormOptionInputsDivElm: HTMLElement
 ) => {
   const isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
   setAlertForInputField(
@@ -28,10 +28,10 @@ const setValidationForDataEntry = (
   aButtonAddNewElm.disabled = isInputed ? false : true;
 
   if (aType === 'selection') {
-    const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+    const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
       '.js-addNewOptionsCheckbox'
     );
-    const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+    const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
       '.js-addNewOptionsInputText'
     );
     const isChecked = [...checkboxElms].some(
@@ -76,7 +76,7 @@ export function switchType(
   aAddNewTypeDivElms: NodeListOf<HTMLElement>,
   aButtonAddNewElm: HTMLButtonElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
-  aAddNewOptionInputsDivElm: HTMLElement
+  aFormOptionInputsDivElm: HTMLElement
 ) {
   aAddNewTypeSelectElm.addEventListener('change', function (e) {
     const type = (e.currentTarget as HTMLInputElement).value;
@@ -88,30 +88,30 @@ export function switchType(
       type,
       aAddNewTextAreaElms,
       aButtonAddNewElm,
-      aAddNewOptionInputsDivElm
+      aFormOptionInputsDivElm
     );
   });
 }
 
 export function setOptionInputs(
-  aAddNewOptionNumberSelectElm: HTMLSelectElement,
-  aAddNewOptionInputsDivElm: HTMLElement,
+  aFormOptionNumberSelectElm: HTMLSelectElement,
+  aFormOptionInputsDivElm: HTMLElement,
   aAddNewTypeSelectElm: HTMLSelectElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
   aButtonAddNewElm: HTMLButtonElement
 ) {
-  aAddNewOptionNumberSelectElm.addEventListener('change', function (e) {
+  aFormOptionNumberSelectElm.addEventListener('change', function (e) {
     const number = parseInt((e.currentTarget as HTMLSelectElement).value, 10);
-    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
+    aFormOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       number,
-      aAddNewOptionInputsDivElm,
+      aFormOptionInputsDivElm,
       'addnew',
       null
     );
     setDisabled(
       aAddNewTypeSelectElm,
       aAddNewTextAreaElms,
-      aAddNewOptionInputsDivElm,
+      aFormOptionInputsDivElm,
       aButtonAddNewElm,
       'textarea',
       'keyup'
@@ -119,7 +119,7 @@ export function setOptionInputs(
     setDisabled(
       aAddNewTypeSelectElm,
       aAddNewTextAreaElms,
-      aAddNewOptionInputsDivElm,
+      aFormOptionInputsDivElm,
       aButtonAddNewElm,
       'checkbox',
       'click'
@@ -127,7 +127,7 @@ export function setOptionInputs(
     setDisabled(
       aAddNewTypeSelectElm,
       aAddNewTextAreaElms,
-      aAddNewOptionInputsDivElm,
+      aFormOptionInputsDivElm,
       aButtonAddNewElm,
       'inputText',
       'keyup'
@@ -143,9 +143,9 @@ export function saveQuizData(
   aAddNewTypeSelectElm: HTMLSelectElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
   aAddNewPrioritySelectElm: HTMLSelectElement,
-  aAddNewAnswerRadioElms: NodeListOf<HTMLInputElement>,
-  aAddNewOptionNumberSelectElm: HTMLSelectElement,
-  aAddNewOptionInputsDivElm: HTMLElement,
+  aFormAnswerRadioElms: NodeListOf<HTMLInputElement>,
+  aFormOptionNumberSelectElm: HTMLSelectElement,
+  aFormOptionInputsDivElm: HTMLElement,
   aAddNewTypeDivElms: NodeListOf<HTMLElement>,
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
@@ -174,18 +174,18 @@ export function saveQuizData(
     newValue.explanation = aAddNewTextAreaElms[1].value;
     newValue.priority = aAddNewPrioritySelectElm.value;
 
-    const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+    const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
       '.js-addNewOptionsCheckbox'
     );
-    const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+    const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
       '.js-addNewOptionsInputText'
     );
 
     if (newValue.type === 'trueOrFalse') {
-      newValue.answer = aAddNewAnswerRadioElms[0].checked ? 0 : 1;
+      newValue.answer = aFormAnswerRadioElms[0].checked ? 0 : 1;
     } else {
       newValue.numberOfOptions = parseInt(
-        aAddNewOptionNumberSelectElm.value,
+        aFormOptionNumberSelectElm.value,
         10
       );
 
@@ -242,12 +242,12 @@ export function saveQuizData(
     });
 
     aAddNewCategoryElm.value = 'unspecified';
-    aAddNewAnswerRadioElms[0].checked = true;
-    aAddNewAnswerRadioElms[1].checked = false;
-    aAddNewOptionNumberSelectElm.value = '2';
-    aAddNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
+    aFormAnswerRadioElms[0].checked = true;
+    aFormAnswerRadioElms[1].checked = false;
+    aFormOptionNumberSelectElm.value = '2';
+    aFormOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       2,
-      aAddNewOptionInputsDivElm,
+      aFormOptionInputsDivElm,
       'addnew',
       null
     );
@@ -290,15 +290,15 @@ export function saveQuizData(
 export function setDisabled(
   aAddNewTypeSelectElm: HTMLSelectElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement> | null,
-  aAddNewOptionInputsDivElm: HTMLElement,
+  aFormOptionInputsDivElm: HTMLElement,
   aButtonAddNewElm: HTMLButtonElement | null,
   aElms: string,
   aEvent: string
 ) {
-  const checkboxElms = aAddNewOptionInputsDivElm.querySelectorAll(
+  const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
     '.js-addNewOptionsCheckbox'
   );
-  const inputTextElms = aAddNewOptionInputsDivElm.querySelectorAll(
+  const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
     '.js-addNewOptionsInputText'
   );
 
@@ -319,7 +319,7 @@ export function setDisabled(
             type,
             aAddNewTextAreaElms,
             aButtonAddNewElm,
-            aAddNewOptionInputsDivElm
+            aFormOptionInputsDivElm
           );
         }
 
@@ -341,12 +341,12 @@ export function setValidation(
   aAddNewTypeSelectElm: HTMLSelectElement,
   aButtonAddNewElm: HTMLButtonElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
-  aAddNewOptionInputsDivElm: HTMLElement
+  aFormOptionInputsDivElm: HTMLElement
 ) {
   setDisabled(
     aAddNewTypeSelectElm,
     aAddNewTextAreaElms,
-    aAddNewOptionInputsDivElm,
+    aFormOptionInputsDivElm,
     aButtonAddNewElm,
     'textarea',
     'keyup'
@@ -354,7 +354,7 @@ export function setValidation(
   setDisabled(
     aAddNewTypeSelectElm,
     aAddNewTextAreaElms,
-    aAddNewOptionInputsDivElm,
+    aFormOptionInputsDivElm,
     aButtonAddNewElm,
     'checkbox',
     'click'
@@ -362,7 +362,7 @@ export function setValidation(
   setDisabled(
     aAddNewTypeSelectElm,
     aAddNewTextAreaElms,
-    aAddNewOptionInputsDivElm,
+    aFormOptionInputsDivElm,
     aButtonAddNewElm,
     'inputText',
     'keyup'

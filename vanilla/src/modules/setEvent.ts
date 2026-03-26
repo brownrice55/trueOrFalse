@@ -132,11 +132,11 @@ const hideOrShowDivElms = (
 const resetIdx3Form = (aCurrentVal: Inputs) => {
   // trueOrFalse
   if (aCurrentVal.type === 'trueOrFalse') {
-    const addNewAnswerRadioElms = document.querySelectorAll(
-      '.js-addNewAnswerRadio'
+    const formAnswerRadioElms = document.querySelectorAll(
+      '.js-formAnswerRadio'
     );
     const checkedIndex = aCurrentVal.answer === 0 ? 0 : 1;
-    (addNewAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
+    (formAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
 
     // const radioElms = aDivIdxElm.querySelectorAll('input');
     // const radioIndices =
@@ -282,16 +282,15 @@ export function editQuizData(
             : aQuizCategory;
           if (idx === 1 || idx === 3) {
             if (currentVal.type === 'trueOrFalse') {
-              const addNewAnswerRadioElms = document.querySelectorAll(
-                '.js-listDl .js-addNewAnswerRadio'
+              const formAnswerRadioElms = document.querySelectorAll(
+                '.js-listDl .js-formAnswerRadio'
               );
               const checkedIndex =
-                (addNewAnswerRadioElms[0] as HTMLInputElement).checked === true
+                (formAnswerRadioElms[0] as HTMLInputElement).checked === true
                   ? 0
                   : 1;
-              (
-                addNewAnswerRadioElms[checkedIndex] as HTMLInputElement
-              ).checked = true;
+              (formAnswerRadioElms[checkedIndex] as HTMLInputElement).checked =
+                true;
               currentVal.answer = checkedIndex; //update
               currentVal.numberOfOptions = 2; //default
               currentVal.options = [
@@ -299,11 +298,11 @@ export function editQuizData(
                 [false, ''],
               ]; //default
             } else {
-              const addNewOptionNumberSelectElm = document.querySelector(
-                '.js-listDl .js-addNewOptionNumberSelect'
+              const formOptionNumberSelectElm = document.querySelector(
+                '.js-listDl .js-formOptionNumberSelect'
               );
               currentVal.numberOfOptions = parseInt(
-                (addNewOptionNumberSelectElm as HTMLSelectElement).value
+                (formOptionNumberSelectElm as HTMLSelectElement).value
               ); //update
 
               const checkboxElms = document.querySelectorAll(

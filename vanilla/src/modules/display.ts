@@ -331,15 +331,15 @@ export function setAddNew(
   const addNewTextAreaElms = document.querySelectorAll(
     '.js-addNew .js-addNewTextArea'
   );
-  const addNewAnswerRadioElms = document.querySelectorAll(
-    '.js-addNew .js-addNewAnswerRadio'
+  const formAnswerRadioElms = document.querySelectorAll(
+    '.js-addNew .js-formAnswerRadio'
   );
 
-  const addNewOptionInputsDivElm = document.querySelector(
-    '.js-addNew .js-addNewOptionInputsDiv'
+  const formOptionInputsDivElm = document.querySelector(
+    '.js-addNew .js-formOptionInputsDiv'
   );
-  const addNewOptionNumberSelectElm = document.querySelector(
-    '.js-addNew .js-addNewOptionNumberSelect'
+  const formOptionNumberSelectElm = document.querySelector(
+    '.js-addNew .js-formOptionNumberSelect'
   );
 
   const setFormForTypeSelection = () => {
@@ -348,11 +348,11 @@ export function setAddNew(
       addNewTypeDivElms as NodeListOf<HTMLElement>,
       buttonAddNewElm as HTMLButtonElement,
       addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-      addNewOptionInputsDivElm as HTMLElement
+      formOptionInputsDivElm as HTMLElement
     );
     setOptionInputs(
-      addNewOptionNumberSelectElm as HTMLSelectElement,
-      addNewOptionInputsDivElm as HTMLElement,
+      formOptionNumberSelectElm as HTMLSelectElement,
+      formOptionInputsDivElm as HTMLElement,
       addNewTypeSelectElm as HTMLSelectElement,
       addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
       buttonAddNewElm as HTMLButtonElement
@@ -360,10 +360,10 @@ export function setAddNew(
   };
   setFormForTypeSelection();
 
-  if (addNewOptionInputsDivElm) {
-    addNewOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
+  if (formOptionInputsDivElm) {
+    formOptionInputsDivElm.innerHTML = getHTMLForOptionInputsOfSelection(
       2,
-      addNewOptionInputsDivElm as HTMLElement,
+      formOptionInputsDivElm as HTMLElement,
       'addnew',
       null
     );
@@ -373,7 +373,7 @@ export function setAddNew(
     addNewTypeSelectElm as HTMLSelectElement,
     buttonAddNewElm as HTMLButtonElement,
     addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-    addNewOptionInputsDivElm as HTMLElement
+    formOptionInputsDivElm as HTMLElement
   );
 
   saveQuizData(
@@ -384,9 +384,9 @@ export function setAddNew(
     addNewTypeSelectElm as HTMLSelectElement,
     addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
     addNewPrioritySelectElm as HTMLSelectElement,
-    addNewAnswerRadioElms as NodeListOf<HTMLInputElement>,
-    addNewOptionNumberSelectElm as HTMLSelectElement,
-    addNewOptionInputsDivElm as HTMLElement,
+    formAnswerRadioElms as NodeListOf<HTMLInputElement>,
+    formOptionNumberSelectElm as HTMLSelectElement,
+    formOptionInputsDivElm as HTMLElement,
     addNewTypeDivElms as NodeListOf<HTMLElement>,
     aModalForDeleteElms,
     aButtonCancelElm,

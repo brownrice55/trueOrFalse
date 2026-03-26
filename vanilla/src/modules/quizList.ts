@@ -33,21 +33,21 @@ export function getUpdatedCurrentVal<K extends keyof Inputs>(
     }
     if (aIdx === 1) {
       if (aCurrentVal.type === 'trueOrFalse') {
-        const addNewAnswerRadioElms = document.querySelectorAll(
-          '.js-addNewAnswerRadio'
+        const formAnswerRadioElms = document.querySelectorAll(
+          '.js-formAnswerRadio'
         );
 
-        aCurrentVal.answer = (addNewAnswerRadioElms[0] as HTMLInputElement)
+        aCurrentVal.answer = (formAnswerRadioElms[0] as HTMLInputElement)
           .checked
           ? 0
           : 1;
       } else {
         //selection
-        const addNewOptionNumberSelectElm = document.querySelector(
-          '.js-addNewOptionNumberSelect'
+        const formOptionNumberSelectElm = document.querySelector(
+          '.js-formOptionNumberSelect'
         );
         aCurrentVal.numberOfOptions = parseInt(
-          (addNewOptionNumberSelectElm as HTMLSelectElement).value,
+          (formOptionNumberSelectElm as HTMLSelectElement).value,
           10
         );
         const addNewOptionsCheckboxElms = document.querySelectorAll(
@@ -125,46 +125,45 @@ export function displayDetail(
         divDivElms[0].innerHTML = formElementsIrregularIndex3['trueOrFalse'];
         divDivElms[1].innerHTML = formElementsIrregularIndex3['selection'];
 
-        const addNewAnswerRadioElms = document.querySelectorAll(
-          '.js-addNewAnswerRadio'
+        const formAnswerRadioElms = document.querySelectorAll(
+          '.js-formAnswerRadio'
         );
         const checkedIndex = aCurrentVal.answer == 0 ? 0 : 1;
-        (addNewAnswerRadioElms[checkedIndex] as HTMLInputElement).checked =
-          true;
+        (formAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
         // trueOrFalse end
 
         //selection start
-        const addNewOptionNumberSelectElm = divElms[1].querySelector(
-          '.js-addNewOptionNumberSelect'
+        const formOptionNumberSelectElm = divElms[1].querySelector(
+          '.js-formOptionNumberSelect'
         );
 
         const numberOfOptions = aCurrentVal.numberOfOptions
           ? aCurrentVal.numberOfOptions
           : 2;
 
-        if (addNewOptionNumberSelectElm) {
-          (addNewOptionNumberSelectElm as HTMLSelectElement).value =
+        if (formOptionNumberSelectElm) {
+          (formOptionNumberSelectElm as HTMLSelectElement).value =
             String(numberOfOptions);
         }
-        const addNewOptionInputsDivElm = divElms[1].querySelector(
-          '.js-addNewOptionInputsDiv'
+        const formOptionInputsDivElm = divElms[1].querySelector(
+          '.js-formOptionInputsDiv'
         );
 
-        if (addNewOptionInputsDivElm) {
-          (addNewOptionInputsDivElm as HTMLElement).innerHTML =
+        if (formOptionInputsDivElm) {
+          (formOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
               numberOfOptions,
-              addNewOptionInputsDivElm as HTMLElement,
+              formOptionInputsDivElm as HTMLElement,
               'quizlist',
               aCurrentVal
             );
         }
 
-        addNewOptionNumberSelectElm?.addEventListener('change', function (e) {
-          (addNewOptionInputsDivElm as HTMLElement).innerHTML =
+        formOptionNumberSelectElm?.addEventListener('change', function (e) {
+          (formOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
               parseInt((e.currentTarget as HTMLSelectElement).value),
-              addNewOptionInputsDivElm as HTMLElement,
+              formOptionInputsDivElm as HTMLElement,
               'quizlist',
               null
             );
@@ -174,7 +173,7 @@ export function displayDetail(
         setDisabled(
           typeSelectElm as HTMLSelectElement,
           null,
-          addNewOptionInputsDivElm as HTMLElement,
+          formOptionInputsDivElm as HTMLElement,
           null,
           'checkbox',
           'click'
@@ -182,7 +181,7 @@ export function displayDetail(
         setDisabled(
           typeSelectElm as HTMLSelectElement,
           null,
-          addNewOptionInputsDivElm as HTMLElement,
+          formOptionInputsDivElm as HTMLElement,
           null,
           'inputText',
           'keyup'

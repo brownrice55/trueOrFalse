@@ -157,12 +157,12 @@ export function getEachValueForDivIndex0(
       });
     }
 
-    const addNewAnswerRadioElms = document.querySelectorAll(
-      '.js-listDl .js-addNewAnswerRadio'
+    const formAnswerRadioElms = document.querySelectorAll(
+      '.js-listDl .js-formAnswerRadio'
     );
 
-    const radioCheckedIndex = addNewAnswerRadioElms.length
-      ? (addNewAnswerRadioElms[0] as HTMLInputElement).checked
+    const radioCheckedIndex = formAnswerRadioElms.length
+      ? (formAnswerRadioElms[0] as HTMLInputElement).checked
         ? 0
         : 1
       : aCurrentVal.answer;
@@ -268,7 +268,7 @@ export function getFormElements(
   const formElementsIrregularIndex3: FormElementsIrregularIndex3Type = {
     trueOrFalse: `<div class="form-check form-check-inline cursor-pointer my-3">
           <input
-            class="form-check-input js-addNewAnswerRadio"
+            class="form-check-input js-formAnswerRadio"
             type="radio"
             name="answer"
             id="${aPrefix}-answer0"
@@ -279,7 +279,7 @@ export function getFormElements(
         </div>
         <div class="form-check form-check-inline cursor-pointer">
           <input
-            class="form-check-input js-addNewAnswerRadio"
+            class="form-check-input js-formAnswerRadio"
             type="radio"
             name="answer"
             id="${aPrefix}-answer1"
@@ -292,7 +292,7 @@ export function getFormElements(
               >選択肢の数</label
             >
             <select
-              class="form-select js-addNewOptionNumberSelect"
+              class="form-select js-formOptionNumberSelect"
               aria-label="numberOfOptions"
               id="${aPrefix}-numberOfOptions"
             >
@@ -310,7 +310,7 @@ export function getFormElements(
           <p>
             選択肢を入力して、正解の選択肢にチェックを入れてください。
           </p>
-          <div class="my-3 js-addNewOptionInputsDiv"></div>
+          <div class="my-3 js-formOptionInputsDiv"></div>
         </div>`,
   };
 
