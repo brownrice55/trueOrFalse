@@ -21,7 +21,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
-  aListDtElms: NodeListOf<HTMLElement>
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const deleteButtonElm = aModalForDeleteElms.deleteButton;
@@ -91,7 +92,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aSectionElms,
           aButtonSaveElm,
           aButtonCancelElm as HTMLButtonElement,
-          aListDtElms
+          aListDtElms,
+          aDivIdx3DivElms as NodeListOf<HTMLElement>
         );
       }
     }
@@ -156,7 +158,9 @@ export function editQuizData(
   aListDlElm: HTMLElement,
   aListDdElms: NodeListOf<HTMLElement>,
   aCurrentValKeys: (keyof Inputs)[],
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aDivIdx3Elms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>
 ) {
   let quizCategory = aQuizCategory;
   let isUnderEdit = false;
@@ -165,14 +169,6 @@ export function editQuizData(
 
   aListEditBtnElms.forEach((elm, idx) => {
     const divElms = aListDdElms[idx].querySelectorAll('div');
-    let divIdx3Elms = null;
-    let divIdx3DivElms = null;
-    if (idx === 1) {
-      divIdx3Elms = aListDdElms[3].querySelectorAll('.js-listDd__divIdx3');
-      divIdx3DivElms = divIdx3Elms[1].querySelectorAll(
-        '.js-listDd__divIdx3__div'
-      );
-    }
     if (
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
       'true'
@@ -196,10 +192,10 @@ export function editQuizData(
           hideOrShowDivElms(
             idx,
             divElms,
-            divIdx3Elms as NodeListOf<HTMLElement>,
+            aDivIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
             currentVal!.type,
-            divIdx3DivElms as NodeListOf<HTMLElement>
+            aDivIdx3DivElms as NodeListOf<HTMLElement>
           );
           elm.textContent = '上書きする';
 
@@ -234,10 +230,10 @@ export function editQuizData(
             hideOrShowDivElms(
               idx,
               divElms,
-              divIdx3Elms as NodeListOf<HTMLElement>,
+              aDivIdx3Elms as NodeListOf<HTMLElement>,
               isUnderEdit,
               '',
-              divIdx3DivElms as NodeListOf<HTMLElement>
+              aDivIdx3DivElms as NodeListOf<HTMLElement>
             );
 
             elm.textContent = '編集する';
@@ -346,10 +342,10 @@ export function editQuizData(
           hideOrShowDivElms(
             idx,
             divElms,
-            divIdx3Elms as NodeListOf<HTMLElement>,
+            aDivIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
             '',
-            divIdx3DivElms as NodeListOf<HTMLElement>
+            aDivIdx3DivElms as NodeListOf<HTMLElement>
           );
 
           // set buttons

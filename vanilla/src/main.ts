@@ -117,6 +117,11 @@ const buttonSaveElm =
 
 const listDlElm = document.querySelector('.js-listDl');
 const listDtElms = listDlElm?.querySelectorAll('dt');
+const listDdElms = document.querySelectorAll('.js-listDd');
+const divIdx3Elms = listDdElms[3].querySelectorAll('.js-listDd__divIdx3');
+const divIdx3DivElms = divIdx3Elms[1].querySelectorAll(
+  '.js-listDd__divIdx3__div'
+);
 
 setQuizList(
   quizData as Map<number, Inputs>,
@@ -127,7 +132,8 @@ setQuizList(
   bsModal,
   buttonSaveElm as HTMLButtonElement,
   buttonCancelElm as HTMLButtonElement,
-  listDtElms as NodeListOf<HTMLElement>
+  listDtElms as NodeListOf<HTMLElement>,
+  divIdx3DivElms as NodeListOf<HTMLElement>
 );
 
 deleteDataThroughDeleteBtnInTheModal(
@@ -139,7 +145,8 @@ deleteDataThroughDeleteBtnInTheModal(
   modalForDeleteElms as modalForDeleteElmsType,
   bsModal,
   buttonSaveElm as HTMLButtonElement,
-  listDtElms as NodeListOf<HTMLElement>
+  listDtElms as NodeListOf<HTMLElement>,
+  divIdx3DivElms as NodeListOf<HTMLElement>
 );
 
 setCategoryInputs(
@@ -161,10 +168,10 @@ setAddNew(
   currentValKeys,
   bsModal,
   buttonSaveElm as HTMLButtonElement,
-  listDtElms as NodeListOf<HTMLElement>
+  listDtElms as NodeListOf<HTMLElement>,
+  divIdx3DivElms as NodeListOf<HTMLElement>
 );
 
-const listDdElms = document.querySelectorAll('.js-listDd');
 const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
 
 editQuizData(
@@ -174,5 +181,7 @@ editQuizData(
   listDlElm as HTMLElement,
   listDdElms as NodeListOf<HTMLElement>,
   currentValKeys,
-  buttonSaveElm as HTMLButtonElement
+  buttonSaveElm as HTMLButtonElement,
+  divIdx3Elms as NodeListOf<HTMLElement>,
+  divIdx3DivElms as NodeListOf<HTMLElement>
 );

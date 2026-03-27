@@ -94,7 +94,8 @@ export function displayDetail(
   aSectionElms: NodeListOf<HTMLElement>,
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
-  aListDtElms: NodeListOf<HTMLElement>
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>
 ) {
   const formElementsArray = getFormElements(
     aQuizCategory,
@@ -206,19 +207,13 @@ export function displayDetail(
         }
         if (idx === 1) {
           const typeSelectElm = divElms[1].querySelector('select');
-          const answerDivElms = aListDdElms[3].querySelectorAll(
-            '.js-listDd__divIdx3'
-          );
-          const answerDivDivElms = answerDivElms[1].querySelectorAll(
-            '.js-listDd__divIdx3__div'
-          );
           typeSelectElm?.addEventListener('change', function (e) {
             const indices =
               (e.currentTarget as HTMLSelectElement).value === 'trueOrFalse'
                 ? [0, 1]
                 : [1, 0];
-            answerDivDivElms[indices[0]].classList.remove('d-none');
-            answerDivDivElms[indices[1]].classList.add('d-none');
+            aDivIdx3DivElms[indices[0]].classList.remove('d-none');
+            aDivIdx3DivElms[indices[1]].classList.add('d-none');
           });
         }
       }
@@ -311,7 +306,8 @@ export function displayList(
   aSectionElms: NodeListOf<HTMLElement>,
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
-  aListDtElms: NodeListOf<HTMLElement>
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -354,7 +350,8 @@ export function displayList(
           aSectionElms,
           aButtonSaveElm,
           aButtonCancelElm,
-          aListDtElms
+          aListDtElms,
+          aDivIdx3DivElms
         );
       }
     });
