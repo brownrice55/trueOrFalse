@@ -206,8 +206,12 @@ export function displayDetail(
         }
         if (idx === 1) {
           const typeSelectElm = divElms[1].querySelector('select');
-          const answerDivElms = aListDdElms[3].querySelectorAll('div');
-          const answerDivDivElms = answerDivElms[1].querySelectorAll('div');
+          const answerDivElms = aListDdElms[3].querySelectorAll(
+            '.js-listDd__divIdx3'
+          );
+          const answerDivDivElms = answerDivElms[1].querySelectorAll(
+            '.js-listDd__divIdx3__div'
+          );
           typeSelectElm?.addEventListener('change', function (e) {
             const indices =
               (e.currentTarget as HTMLSelectElement).value === 'trueOrFalse'

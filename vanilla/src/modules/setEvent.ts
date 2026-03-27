@@ -124,7 +124,6 @@ const hideOrShowDivElms = (
   if (aDivIdx3Elms && aDivIdx3DivElms && aIdx === 1) {
     aDivIdx3Elms[indices[0]].classList.remove('d-none');
     aDivIdx3Elms[indices[1]].classList.add('d-none');
-
     const typeIndices = aCurrentValType === 'trueOrFalse' ? [0, 1] : [1, 0];
     aDivIdx3DivElms[typeIndices[0]].classList.remove('d-none');
     aDivIdx3DivElms[typeIndices[1]].classList.add('d-none');
@@ -170,7 +169,9 @@ export function editQuizData(
     let divIdx3DivElms = null;
     if (idx === 1) {
       divIdx3Elms = aListDdElms[3].querySelectorAll('.js-listDd__divIdx3');
-      divIdx3DivElms = divIdx3Elms[1].querySelectorAll('div');
+      divIdx3DivElms = divIdx3Elms[1].querySelectorAll(
+        '.js-listDd__divIdx3__div'
+      );
     }
     if (
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==

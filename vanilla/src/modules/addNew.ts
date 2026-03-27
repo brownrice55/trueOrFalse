@@ -1,13 +1,10 @@
 import { displayList } from './quizList';
-import {
-  getInputValues,
-  setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
-} from './inputValidation';
 import { setCategoryInputs } from './display';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from './common/modal';
 import {
   getHTMLForOptionInputsOfSelection,
   setAlertForInputField,
+  setValidationForQuizDetailOfIdx3,
 } from './common/form';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
@@ -28,44 +25,18 @@ const setValidationForDataEntry = (
   aButtonAddNewElm.disabled = isInputed ? false : true;
 
   if (aType === 'selection') {
-    const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
-      '.js-formOptionsCheckbox'
+    const getDataAfterSettingsValidation = setValidationForQuizDetailOfIdx3(
+      aFormOptionInputsDivElm
     );
-    const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
-      '.js-formOptionsInputText'
-    );
-    const isChecked = [...checkboxElms].some(
-      (elm) => (elm as HTMLInputElement).checked
-    );
-    const isInputed2 = [...inputTextElms].every(
-      (elm) => (elm as HTMLInputElement).value
-    );
-
-    setAlertForInputField(
-      checkboxElms as NodeListOf<HTMLInputElement>,
-      isChecked,
-      'checkbox'
-    );
-
-    const inputValues: string[] = getInputValues(
-      inputTextElms as NodeListOf<HTMLInputElement>,
-      true
-    );
-    const duplicateValuesIndices =
-      setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices(
-        inputValues,
-        inputTextElms as NodeListOf<HTMLInputElement>
-      );
-    if (!duplicateValuesIndices.length) {
-      setAlertForInputField(
-        inputTextElms as NodeListOf<HTMLInputElement>,
-        isInputed2,
-        'inputText'
-      );
-    }
+    const isChecked = getDataAfterSettingsValidation[0];
+    const isInputed2 = getDataAfterSettingsValidation[1];
+    const duplicateValuesIndices = getDataAfterSettingsValidation[2];
 
     aButtonAddNewElm.disabled =
-      isInputed && isChecked && isInputed2 && !duplicateValuesIndices.length
+      isInputed &&
+      isChecked &&
+      isInputed2 &&
+      !(duplicateValuesIndices as number[]).length
         ? false
         : true;
   }
@@ -286,10 +257,6 @@ export function saveQuizData(
   });
 }
 
-const setValidationForQuizDetailOfIdx3 = () => {
-  // *******
-};
-
 export function setDisabled(
   aAddNewTypeSelectElm: HTMLSelectElement,
   aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement> | null,
@@ -325,7 +292,23 @@ export function setDisabled(
             aFormOptionInputsDivElm
           );
         } else {
-          setValidationForQuizDetailOfIdx3();
+          const getDataAfterSettingsValidation =
+            setValidationForQuizDetailOfIdx3(aFormOptionInputsDivElm);
+          const isChecked = getDataAfterSettingsValidation[0];
+          const isInputed = getDataAfterSettingsValidation[1];
+          const duplicateValuesIndices = getDataAfterSettingsValidation[2];
+
+          const listDlElm = document.querySelector('.js-listDl');
+          const listDtElms = listDlElm?.querySelectorAll('dt');
+          if (listDtElms) {
+            const buttonElms = listDtElms[1].querySelectorAll('button');
+            buttonElms[0].disabled =
+              isInputed &&
+              isChecked &&
+              !(duplicateValuesIndices as number[]).length
+                ? false
+                : true;
+          }
         }
 
         if (aElms === 'checkbox') {

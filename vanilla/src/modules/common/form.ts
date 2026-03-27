@@ -11,6 +11,10 @@ import {
   labelForPriority,
   labelForQuestionAnswer,
 } from './labels';
+import {
+  getInputValues,
+  setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
+} from '../inputValidation';
 import { goToCategoryToSetNewCategory } from './utils';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
@@ -319,4 +323,39 @@ export function getFormElements(
     formElements as string[],
     formElementsIrregularIndex3 as FormElementsIrregularIndex3Type,
   ];
+}
+
+export function setValidationForQuizDetailOfIdx3(aElm: HTMLElement) {
+  const checkboxElms = aElm.querySelectorAll('.js-formOptionsCheckbox');
+  const inputTextElms = aElm.querySelectorAll('.js-formOptionsInputText');
+  const isChecked = [...checkboxElms].some(
+    (elm) => (elm as HTMLInputElement).checked
+  );
+  const isInputed2 = [...inputTextElms].every(
+    (elm) => (elm as HTMLInputElement).value
+  );
+
+  setAlertForInputField(
+    checkboxElms as NodeListOf<HTMLInputElement>,
+    isChecked,
+    'checkbox'
+  );
+
+  const inputValues: string[] = getInputValues(
+    inputTextElms as NodeListOf<HTMLInputElement>,
+    true
+  );
+  const duplicateValuesIndices =
+    setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices(
+      inputValues,
+      inputTextElms as NodeListOf<HTMLInputElement>
+    );
+  if (!duplicateValuesIndices.length) {
+    setAlertForInputField(
+      inputTextElms as NodeListOf<HTMLInputElement>,
+      isInputed2,
+      'inputText'
+    );
+  }
+  return [isChecked, isInputed2, duplicateValuesIndices];
 }
