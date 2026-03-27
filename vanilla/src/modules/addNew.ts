@@ -29,10 +29,10 @@ const setValidationForDataEntry = (
 
   if (aType === 'selection') {
     const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
-      '.js-addNewOptionsCheckbox'
+      '.js-formOptionsCheckbox'
     );
     const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
-      '.js-addNewOptionsInputText'
+      '.js-formOptionsInputText'
     );
     const isChecked = [...checkboxElms].some(
       (elm) => (elm as HTMLInputElement).checked
@@ -176,10 +176,10 @@ export function saveQuizData(
     newValue.priority = aAddNewPrioritySelectElm.value;
 
     const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
-      '.js-addNewOptionsCheckbox'
+      '.js-formOptionsCheckbox'
     );
     const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
-      '.js-addNewOptionsInputText'
+      '.js-formOptionsInputText'
     );
 
     if (newValue.type === 'trueOrFalse') {
@@ -299,10 +299,10 @@ export function setDisabled(
   aEvent: string
 ) {
   const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
-    '.js-addNewOptionsCheckbox'
+    '.js-formOptionsCheckbox'
   );
   const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
-    '.js-addNewOptionsInputText'
+    '.js-formOptionsInputText'
   );
 
   const elms: NodeListOf<Element> | null =

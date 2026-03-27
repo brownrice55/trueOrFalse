@@ -73,10 +73,10 @@ export function getHTMLForOptionInputsOfSelection(
 ) {
   const className = aPrefix === 'addnew' ? '.js-addNew' : '.js-listDl';
   const checkboxElms = aElm.querySelectorAll(
-    className + ' .js-addNewOptionsCheckbox'
+    className + ' .js-formOptionsCheckbox'
   );
   const inputTextElms = aElm.querySelectorAll(
-    className + ' .js-addNewOptionsInputText'
+    className + ' .js-formOptionsInputText'
   );
   let temporaryValues: [boolean, string][] = [];
 
@@ -108,11 +108,11 @@ export function getHTMLForOptionInputsOfSelection(
       html += `<div class="input-group mb-3">
                 <div class="input-group-text">
                   <input id="${aPrefix}-option${idx + 1}" 
-                    class="js-addNewOptionsCheckbox form-check-input mt-0"
+                    class="js-formOptionsCheckbox form-check-input mt-0"
                     type="checkbox" ${checked} data-checktemporary="${temporaryValues[idx][0] ?? ''}"
                   />
                 </div>
-                <input id="${aPrefix}-option${idx + 1}-2"  type="text" class="js-addNewOptionsInputText form-control"
+                <input id="${aPrefix}-option${idx + 1}-2"  type="text" class="js-formOptionsInputText form-control"
                     value="${temporaryValues[idx][1] ?? ''}" data-texttemporary="${temporaryValues[idx][1] ?? ''}" />
               </div>`;
     });

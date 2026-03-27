@@ -50,19 +50,19 @@ export function getUpdatedCurrentVal<K extends keyof Inputs>(
           (formOptionNumberSelectElm as HTMLSelectElement).value,
           10
         );
-        const addNewOptionsCheckboxElms = document.querySelectorAll(
-          '.js-addNewOptionsCheckbox'
+        const formOptionsCheckboxElms = document.querySelectorAll(
+          '.js-formOptionsCheckbox'
         );
-        const addNewOptionsInputTextElms = document.querySelectorAll(
-          '.js-addNewOptionsInputText'
+        const formOptionsInputTextElms = document.querySelectorAll(
+          '.js-formOptionsInputText'
         );
         let newArray: [boolean, string][] = [];
         Array(aCurrentVal.numberOfOptions)
           .fill('')
           .forEach((_, idx) => {
             newArray.push([
-              (addNewOptionsCheckboxElms[idx] as HTMLInputElement).checked,
-              (addNewOptionsInputTextElms[idx] as HTMLInputElement).value,
+              (formOptionsCheckboxElms[idx] as HTMLInputElement).checked,
+              (formOptionsInputTextElms[idx] as HTMLInputElement).value,
             ]);
           });
         aCurrentVal.options = newArray;

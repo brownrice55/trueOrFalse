@@ -308,10 +308,10 @@ export function editQuizData(
               ); //update
 
               const checkboxElms = document.querySelectorAll(
-                '.js-listDl .js-addNewOptionsCheckbox'
+                '.js-listDl .js-formOptionsCheckbox'
               );
               const inputTextElms = document.querySelectorAll(
-                '.js-listDl .js-addNewOptionsInputText'
+                '.js-listDl .js-formOptionsInputText'
               );
               let array: [boolean, string][] = [];
               checkboxElms.forEach((elm, idx: number) => {
