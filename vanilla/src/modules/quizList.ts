@@ -151,6 +151,8 @@ export function displayDetail(
           '.js-formOptionInputsDiv'
         );
 
+        const typeSelectElm = document.querySelector('.js-detailType');
+
         if (formOptionInputsDivElm) {
           (formOptionInputsDivElm as HTMLElement).innerHTML =
             getHTMLForOptionInputsOfSelection(
@@ -159,6 +161,24 @@ export function displayDetail(
               'quizlist',
               aCurrentVal
             );
+          setDisabled(
+            typeSelectElm as HTMLSelectElement,
+            null,
+            formOptionInputsDivElm as HTMLElement,
+            null,
+            'checkbox',
+            'click',
+            aCurrentVal
+          );
+          setDisabled(
+            typeSelectElm as HTMLSelectElement,
+            null,
+            formOptionInputsDivElm as HTMLElement,
+            null,
+            'inputText',
+            'keyup',
+            aCurrentVal
+          );
         }
 
         formOptionNumberSelectElm?.addEventListener('change', function (e) {
@@ -169,25 +189,26 @@ export function displayDetail(
               'quizlist',
               null
             );
+          setDisabled(
+            typeSelectElm as HTMLSelectElement,
+            null,
+            formOptionInputsDivElm as HTMLElement,
+            null,
+            'checkbox',
+            'click',
+            aCurrentVal
+          );
+          setDisabled(
+            typeSelectElm as HTMLSelectElement,
+            null,
+            formOptionInputsDivElm as HTMLElement,
+            null,
+            'inputText',
+            'keyup',
+            aCurrentVal
+          );
         });
 
-        const typeSelectElm = document.querySelector('.js-detailType');
-        setDisabled(
-          typeSelectElm as HTMLSelectElement,
-          null,
-          formOptionInputsDivElm as HTMLElement,
-          null,
-          'checkbox',
-          'click'
-        );
-        setDisabled(
-          typeSelectElm as HTMLSelectElement,
-          null,
-          formOptionInputsDivElm as HTMLElement,
-          null,
-          'inputText',
-          'keyup'
-        );
         //selection end
 
         // idx===3 end

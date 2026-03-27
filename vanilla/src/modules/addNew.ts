@@ -85,7 +85,8 @@ export function setOptionInputs(
       aFormOptionInputsDivElm,
       aButtonAddNewElm,
       'textarea',
-      'keyup'
+      'keyup',
+      null
     );
     setDisabled(
       aAddNewTypeSelectElm,
@@ -93,7 +94,8 @@ export function setOptionInputs(
       aFormOptionInputsDivElm,
       aButtonAddNewElm,
       'checkbox',
-      'click'
+      'click',
+      null
     );
     setDisabled(
       aAddNewTypeSelectElm,
@@ -101,7 +103,8 @@ export function setOptionInputs(
       aFormOptionInputsDivElm,
       aButtonAddNewElm,
       'inputText',
-      'keyup'
+      'keyup',
+      null
     );
   });
 }
@@ -265,7 +268,8 @@ export function setDisabled(
   aFormOptionInputsDivElm: HTMLElement,
   aButtonAddNewElm: HTMLButtonElement | null,
   aElms: string,
-  aEvent: string
+  aEvent: string,
+  aCurrentVal: Inputs | null
 ) {
   const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
     '.js-formOptionsCheckbox'
@@ -299,12 +303,17 @@ export function setDisabled(
           const isChecked = getDataAfterSettingsValidation[0];
           const isInputed = getDataAfterSettingsValidation[1];
           const duplicateValuesIndices = getDataAfterSettingsValidation[2];
+          const numberOfOptions = getDataAfterSettingsValidation[3];
+          const options = getDataAfterSettingsValidation[4];
 
           const listDlElm = document.querySelector('.js-listDl');
           const listDtElms = listDlElm?.querySelectorAll('dt');
           if (listDtElms) {
             const buttonElms = listDtElms[1].querySelectorAll('button');
             buttonElms[0].disabled =
+              (aCurrentVal?.numberOfOptions !== numberOfOptions ||
+                JSON.stringify(aCurrentVal?.options) !==
+                  JSON.stringify(options)) &&
               isInputed &&
               isChecked &&
               !(duplicateValuesIndices as number[]).length
@@ -339,7 +348,8 @@ export function setValidation(
     aFormOptionInputsDivElm,
     aButtonAddNewElm,
     'textarea',
-    'keyup'
+    'keyup',
+    null
   );
   setDisabled(
     aAddNewTypeSelectElm,
@@ -347,7 +357,8 @@ export function setValidation(
     aFormOptionInputsDivElm,
     aButtonAddNewElm,
     'checkbox',
-    'click'
+    'click',
+    null
   );
   setDisabled(
     aAddNewTypeSelectElm,
@@ -355,6 +366,7 @@ export function setValidation(
     aFormOptionInputsDivElm,
     aButtonAddNewElm,
     'inputText',
-    'keyup'
+    'keyup',
+    null
   );
 }

@@ -357,5 +357,28 @@ export function setValidationForQuizDetailOfIdx3(aElm: HTMLElement) {
       'inputText'
     );
   }
-  return [isChecked, isInputed2, duplicateValuesIndices];
+
+  const formOptionNumberSelectElm = document.querySelector(
+    '.js-listDl .js-formOptionNumberSelect'
+  );
+  const numberOfOptions = parseInt(
+    (formOptionNumberSelectElm as HTMLSelectElement).value
+  );
+
+  let array: [boolean, string][] = [];
+  checkboxElms.forEach((elm, idx: number) => {
+    array.push([
+      (elm as HTMLInputElement).checked,
+      (inputTextElms[idx] as HTMLInputElement).value,
+    ]);
+  });
+  const options = array;
+
+  return [
+    isChecked,
+    isInputed2,
+    duplicateValuesIndices,
+    numberOfOptions,
+    options,
+  ];
 }
