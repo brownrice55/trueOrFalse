@@ -88,40 +88,40 @@ export function setDisabledForListEditBtns(aIsUnderEdit: boolean) {
 
 export function setIdx3PartOfQuizDetail(
   aCurrentVal: Inputs,
-  formOptionNumberSelectElm: HTMLSelectElement,
-  formOptionInputsDivElm: HTMLElement,
-  typeSelectElm: HTMLSelectElement
+  aFormOptionNumberSelectElm: HTMLSelectElement,
+  aFormOptionInputsDivElm: HTMLElement,
+  aDetailTypeElm: HTMLSelectElement
 ) {
   const numberOfOptions = aCurrentVal.numberOfOptions
     ? aCurrentVal.numberOfOptions
     : 2;
 
-  if (formOptionNumberSelectElm) {
-    (formOptionNumberSelectElm as HTMLSelectElement).value =
+  if (aFormOptionNumberSelectElm) {
+    (aFormOptionNumberSelectElm as HTMLSelectElement).value =
       String(numberOfOptions);
   }
 
-  if (formOptionInputsDivElm) {
-    (formOptionInputsDivElm as HTMLElement).innerHTML =
+  if (aFormOptionInputsDivElm) {
+    (aFormOptionInputsDivElm as HTMLElement).innerHTML =
       getHTMLForOptionInputsOfSelection(
         numberOfOptions,
-        formOptionInputsDivElm as HTMLElement,
+        aFormOptionInputsDivElm as HTMLElement,
         'quizlist',
         aCurrentVal
       );
     setDisabled(
-      typeSelectElm as HTMLSelectElement,
+      aDetailTypeElm as HTMLSelectElement,
       null,
-      formOptionInputsDivElm as HTMLElement,
+      aFormOptionInputsDivElm as HTMLElement,
       null,
       'checkbox',
       'click',
       aCurrentVal
     );
     setDisabled(
-      typeSelectElm as HTMLSelectElement,
+      aDetailTypeElm as HTMLSelectElement,
       null,
-      formOptionInputsDivElm as HTMLElement,
+      aFormOptionInputsDivElm as HTMLElement,
       null,
       'inputText',
       'keyup',
@@ -185,13 +185,13 @@ export function displayDetail(
         const formOptionInputsDivElm = divElms[1].querySelector(
           '.js-formOptionInputsDiv'
         );
-        const typeSelectElm = document.querySelector('.js-detailType');
+        const detailTypeElm = document.querySelector('.js-detailType');
 
         setIdx3PartOfQuizDetail(
           aCurrentVal,
           formOptionNumberSelectElm as HTMLSelectElement,
           formOptionInputsDivElm as HTMLElement,
-          typeSelectElm as HTMLSelectElement
+          detailTypeElm as HTMLSelectElement
         );
 
         formOptionNumberSelectElm?.addEventListener('change', function (e) {
@@ -203,7 +203,7 @@ export function displayDetail(
               null
             );
           setDisabled(
-            typeSelectElm as HTMLSelectElement,
+            detailTypeElm as HTMLSelectElement,
             null,
             formOptionInputsDivElm as HTMLElement,
             null,
@@ -212,7 +212,7 @@ export function displayDetail(
             aCurrentVal
           );
           setDisabled(
-            typeSelectElm as HTMLSelectElement,
+            detailTypeElm as HTMLSelectElement,
             null,
             formOptionInputsDivElm as HTMLElement,
             null,

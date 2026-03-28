@@ -146,12 +146,12 @@ const resetIdx3Form = (aCurrentVal: Inputs) => {
   const formOptionInputsDivElm = document.querySelector(
     '.js-listDl  .js-formOptionInputsDiv'
   );
-  const typeSelectElm = document.querySelector('.js-listDl  .js-detailType');
+  const detailTypeElm = document.querySelector('.js-listDl  .js-detailType');
   setIdx3PartOfQuizDetail(
     aCurrentVal,
     formOptionNumberSelectElm as HTMLSelectElement,
     formOptionInputsDivElm as HTMLElement,
-    typeSelectElm as HTMLSelectElement
+    detailTypeElm as HTMLSelectElement
   );
 };
 
