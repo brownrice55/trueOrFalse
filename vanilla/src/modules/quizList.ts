@@ -5,6 +5,7 @@ import {
   getEachValueForDivIndex0,
   setDivIndex1FormForQuizDetailIdx0Category,
   getFormElements,
+  setValidationForQuizDetailOfIdx3,
 } from './common/form';
 import { setDisabled } from './addNew';
 import { showModalForDelete } from './common/modal';
@@ -219,6 +220,9 @@ export function displayDetail(
             'inputText',
             'keyup',
             aCurrentVal
+          );
+          setValidationForQuizDetailOfIdx3(
+            formOptionInputsDivElm as HTMLElement
           );
         });
 
