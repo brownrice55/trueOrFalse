@@ -6,6 +6,7 @@ import {
   displayList,
   setDisabledForListEditBtns,
   getUpdatedCurrentVal,
+  setIdx3PartOfQuizDetail,
 } from './quizList';
 import { getEachValueForDivIndex0 } from './common/form';
 import type { Inputs } from '../types/inputs.type';
@@ -134,21 +135,24 @@ const hideOrShowDivElms = (
 
 const resetIdx3Form = (aCurrentVal: Inputs) => {
   // trueOrFalse
-  if (aCurrentVal.type === 'trueOrFalse') {
-    const formAnswerRadioElms = document.querySelectorAll(
-      '.js-formAnswerRadio'
-    );
-    const checkedIndex = aCurrentVal.answer === 0 ? 0 : 1;
-    (formAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
+  const formAnswerRadioElms = document.querySelectorAll('.js-formAnswerRadio');
+  const checkedIndex = aCurrentVal.answer === 0 ? 0 : 1;
+  (formAnswerRadioElms[checkedIndex] as HTMLInputElement).checked = true;
 
-    // const radioElms = aDivIdxElm.querySelectorAll('input');
-    // const radioIndices =
-    //   aCurrentVal && aCurrentVal[aCurrentValKeys[3]] === 0 ? [0, 1] : [1, 0];
-    // radioElms[radioIndices[0]].checked = true; //******** */
-    // radioElms[radioIndices[1]].checked = false; //******** */
-  } else {
-    // selection
-  }
+  // selection
+  const formOptionNumberSelectElm = document.querySelector(
+    '.js-listDl  .js-formOptionNumberSelect'
+  );
+  const formOptionInputsDivElm = document.querySelector(
+    '.js-listDl  .js-formOptionInputsDiv'
+  );
+  const typeSelectElm = document.querySelector('.js-listDl  .js-detailType');
+  setIdx3PartOfQuizDetail(
+    aCurrentVal,
+    formOptionNumberSelectElm as HTMLSelectElement,
+    formOptionInputsDivElm as HTMLElement,
+    typeSelectElm as HTMLSelectElement
+  );
 };
 
 export function editQuizData(

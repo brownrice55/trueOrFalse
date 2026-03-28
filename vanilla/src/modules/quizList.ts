@@ -86,6 +86,50 @@ export function setDisabledForListEditBtns(aIsUnderEdit: boolean) {
   });
 }
 
+export function setIdx3PartOfQuizDetail(
+  aCurrentVal: Inputs,
+  formOptionNumberSelectElm: HTMLSelectElement,
+  formOptionInputsDivElm: HTMLElement,
+  typeSelectElm: HTMLSelectElement
+) {
+  const numberOfOptions = aCurrentVal.numberOfOptions
+    ? aCurrentVal.numberOfOptions
+    : 2;
+
+  if (formOptionNumberSelectElm) {
+    (formOptionNumberSelectElm as HTMLSelectElement).value =
+      String(numberOfOptions);
+  }
+
+  if (formOptionInputsDivElm) {
+    (formOptionInputsDivElm as HTMLElement).innerHTML =
+      getHTMLForOptionInputsOfSelection(
+        numberOfOptions,
+        formOptionInputsDivElm as HTMLElement,
+        'quizlist',
+        aCurrentVal
+      );
+    setDisabled(
+      typeSelectElm as HTMLSelectElement,
+      null,
+      formOptionInputsDivElm as HTMLElement,
+      null,
+      'checkbox',
+      'click',
+      aCurrentVal
+    );
+    setDisabled(
+      typeSelectElm as HTMLSelectElement,
+      null,
+      formOptionInputsDivElm as HTMLElement,
+      null,
+      'inputText',
+      'keyup',
+      aCurrentVal
+    );
+  }
+}
+
 export function displayDetail(
   aCurrentVal: Inputs,
   aCurrentValKeys: (keyof Inputs)[],
@@ -138,48 +182,17 @@ export function displayDetail(
         const formOptionNumberSelectElm = divElms[1].querySelector(
           '.js-formOptionNumberSelect'
         );
-
-        const numberOfOptions = aCurrentVal.numberOfOptions
-          ? aCurrentVal.numberOfOptions
-          : 2;
-
-        if (formOptionNumberSelectElm) {
-          (formOptionNumberSelectElm as HTMLSelectElement).value =
-            String(numberOfOptions);
-        }
         const formOptionInputsDivElm = divElms[1].querySelector(
           '.js-formOptionInputsDiv'
         );
-
         const typeSelectElm = document.querySelector('.js-detailType');
 
-        if (formOptionInputsDivElm) {
-          (formOptionInputsDivElm as HTMLElement).innerHTML =
-            getHTMLForOptionInputsOfSelection(
-              numberOfOptions,
-              formOptionInputsDivElm as HTMLElement,
-              'quizlist',
-              aCurrentVal
-            );
-          setDisabled(
-            typeSelectElm as HTMLSelectElement,
-            null,
-            formOptionInputsDivElm as HTMLElement,
-            null,
-            'checkbox',
-            'click',
-            aCurrentVal
-          );
-          setDisabled(
-            typeSelectElm as HTMLSelectElement,
-            null,
-            formOptionInputsDivElm as HTMLElement,
-            null,
-            'inputText',
-            'keyup',
-            aCurrentVal
-          );
-        }
+        setIdx3PartOfQuizDetail(
+          aCurrentVal,
+          formOptionNumberSelectElm as HTMLSelectElement,
+          formOptionInputsDivElm as HTMLElement,
+          typeSelectElm as HTMLSelectElement
+        );
 
         formOptionNumberSelectElm?.addEventListener('change', function (e) {
           (formOptionInputsDivElm as HTMLElement).innerHTML =
