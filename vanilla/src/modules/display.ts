@@ -12,6 +12,7 @@ import {
   saveQuizData,
   setValidation,
 } from './addNew';
+import { setQuizStartForm } from './quizStart';
 import { goToCategoryToSetNewCategory } from './common/utils';
 import { getInputValues } from './inputValidation';
 import {
@@ -312,11 +313,12 @@ export function setAddNew(
       addNewCategorySelectElm.innerHTML = getCategoryOptions(
         aQuizCategory,
         'unspecified',
-        aButtonSaveElm
+        aButtonSaveElm,
+        true
       );
     }
     if (addNewTypeSelectElm) {
-      addNewTypeSelectElm.innerHTML = getTypeOptions('trueOrFalse');
+      addNewTypeSelectElm.innerHTML = getTypeOptions('trueOrFalse', false);
     }
     if (addNewPrioritySelectElm) {
       addNewPrioritySelectElm.innerHTML = getPriorityOptions('high');
@@ -424,4 +426,11 @@ export function setAddNew(
       );
     }
   });
+}
+
+export function setQuizStart(
+  aQuizCategory: Map<number, InputsCategory>,
+  aButtonSaveElm: HTMLButtonElement
+) {
+  setQuizStartForm(aQuizCategory, aButtonSaveElm);
 }

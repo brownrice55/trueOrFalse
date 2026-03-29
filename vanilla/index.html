@@ -52,7 +52,7 @@
             <div class="my-3">
               <label for="category-start" class="form-label">カテゴリー</label>
               <select
-                class="form-select"
+                class="form-select js-quizStartFormCategory"
                 aria-label="category"
                 id="category-start"
               >
@@ -61,11 +61,11 @@
             </div>
             <div class="my-3">
               <label for="type-start" class="form-label">クイズの種類</label>
-              <select class="form-select" aria-label="type" id="type-start">
-                <option value="all" selected>指定しない</option>
-                <option value="trueOrFalse">まるばつクイズ</option>
-                <option value="selection">選択問題</option>
-              </select>
+              <select
+                class="form-select js-quizStartFormType"
+                aria-label="type"
+                id="type-start"
+              ></select>
             </div>
             <div class="my-3">
               <label for="number" class="form-label">問題数</label>
@@ -84,7 +84,7 @@
                 <option value="random" selected>
                   指定しない（ランダムで表示）
                 </option>
-                <option value="highPriority">高いものから表示</option>
+                <option value="highPriority">優先順位が高いものから表示</option>
               </select>
             </div>
             <div class="my-3 text-center">

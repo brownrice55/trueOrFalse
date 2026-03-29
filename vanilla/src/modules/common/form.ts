@@ -19,7 +19,8 @@ import { goToCategoryToSetNewCategory } from './utils';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
   aValue: string,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aIsAddNeeded: boolean
 ) {
   if (aButtonSaveElm?.classList.contains('js-categoryNameIsUpdated')) {
     aQuizCategory = getDataFromLocalStorage('quizCategory');
@@ -37,7 +38,9 @@ export function getCategoryOptions(
       optionHTML2 += `<option value="${idx}"${selected}>${obj.categoryName}</option>`;
     }
   });
-  optionHTML2 += `<option value="add">カテゴリーを追加する</option>`;
+  if (aIsAddNeeded) {
+    optionHTML2 += `<option value="add">カテゴリーを追加する</option>`;
+  }
 
   selected = isSelected ? '' : ' selected';
   let optionHTML = `<option value="unspecified"${selected}>指定しない</option>`;
@@ -45,11 +48,18 @@ export function getCategoryOptions(
   return optionHTML + optionHTML2;
 }
 
-export function getTypeOptions(aValue: string) {
-  let selectedArray =
-    aValue === 'selection' ? ['', ' selected'] : [' selected', ''];
-  return `<option value="trueOrFalse"${selectedArray[0]}>まるばつクイズ</option>
+export function getTypeOptions(aValue: string, aIsUnspecifiedNeeded: boolean) {
+  let selectedArray = aIsUnspecifiedNeeded
+    ? ['', '']
+    : aValue === 'selection'
+      ? ['', ' selected']
+      : [' selected', ''];
+  let result = aIsUnspecifiedNeeded
+    ? `<option value="unspecified" selected>指定しない</option>`
+    : '';
+  result += `<option value="trueOrFalse"${selectedArray[0]}>まるばつクイズ</option>
           <option value="selection"${selectedArray[1]}>選択問題</option>`;
+  return result;
 }
 
 export function getTextArea(aValue: string, aId: string) {
@@ -260,8 +270,8 @@ export function getFormElements(
 ) {
   const formElements: string[] = aCurrentVal
     ? [
-        `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm)}</select>`,
-        `<select class="form-select js-detailType" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type)}</select>`,
+        `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm, true)}</select>`,
+        `<select class="form-select js-detailType" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type, false)}</select>`,
         getTextArea(aCurrentVal.question, 'detailQuestion'),
         '',
         getTextArea(aCurrentVal.explanation, 'detailExplanation'),

@@ -8,6 +8,7 @@ import {
   setCategoryInputs,
   setAddNew,
   setQuizList,
+  setQuizStart,
 } from './modules/display';
 import {
   deleteDataThroughDeleteBtnInTheModal,
@@ -185,3 +186,5 @@ editQuizData(
   divIdx3Elms as NodeListOf<HTMLElement>,
   divIdx3DivElms as NodeListOf<HTMLElement>
 );
+
+setQuizStart(quizCategory, buttonSaveElm as HTMLButtonElement);

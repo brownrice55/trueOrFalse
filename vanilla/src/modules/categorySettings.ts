@@ -64,7 +64,8 @@ export function saveCategoryData(
     addNewCategorySelectElm.innerHTML = getCategoryOptions(
       aQuizCategory,
       'unspecified',
-      aButtonSaveElm
+      aButtonSaveElm,
+      true
     );
   }
 
