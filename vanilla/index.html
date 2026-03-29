@@ -47,12 +47,12 @@
       </header>
       <main class="container">
         <section class="js-section pt-3">
-          <div class="js-quiz">
+          <div class="js-quizDiv">
             <h2 class="lead">クイズスタート</h2>
             <div class="my-3">
               <label for="category-start" class="form-label">カテゴリー</label>
               <select
-                class="form-select js-quizStartFormCategory"
+                class="form-select js-quizStartFormCategorySelect"
                 aria-label="category"
                 id="category-start"
               >
@@ -62,7 +62,7 @@
             <div class="my-3">
               <label for="type-start" class="form-label">クイズの種類</label>
               <select
-                class="form-select js-quizStartFormType"
+                class="form-select js-quizStartFormTypeSelect"
                 aria-label="type"
                 id="type-start"
               ></select>
@@ -88,14 +88,101 @@
               </select>
             </div>
             <div class="my-3 text-center">
-              <button type="submit" class="btn btn-primary px-4 py-2">
+              <button
+                type="submit"
+                class="btn btn-primary px-4 py-2 js-quizStartFormStartButton"
+                data-index="0"
+              >
                 スタート
               </button>
             </div>
           </div>
-          <div class="js-quiz"></div>
-          <div class="js-quiz"></div>
-          <div class="js-quiz"></div>
+          <div class="js-quizDiv d-none">
+            <p class="lead">Question</p>
+            <p>問題</p>
+            <div
+              class="js-quizDiv__question text-center"
+              data-type="trueOrFalse"
+            >
+              <button class="btn btn-primary px-4 py-2 me-3">まる</button>
+              <button class="btn btn-primary px-4 py-2">ばつ</button>
+            </div>
+            <div class="js-quizDiv__question d-none" data-type="selection">
+              <div class="text-center">
+                <button class="btn btn-primary px-4 py-2 me-3">選択肢１</button>
+                <button class="btn btn-primary px-4 py-2 me-3">選択肢２</button>
+                <button class="btn btn-primary px-4 py-2">選択肢３</button>
+              </div>
+              <div class="text-center mt-3">
+                <button class="btn btn-primary px-4 py-2 me-3">選択肢１</button>
+                <button class="btn btn-primary px-4 py-2 me-3">選択肢２</button>
+                <button class="btn btn-primary px-4 py-2">選択肢３</button>
+              </div>
+            </div>
+          </div>
+          <div class="js-quizDiv d-none">
+            <p class="lead">Answer</p>
+            <p>正解！答えは「まる」です。</p>
+            <p>
+              解説<br />
+              解説の文章が入ります。
+            </p>
+            <p>この問題の現在の正解率は「70%」です。</p>
+            <div class="my-3">
+              <label for="question" class="form-label"
+                >何かメモしておきたいことがあったら書いてください</label
+              >
+              <textarea
+                class="form-control js-quizStartNotesTextArea"
+                id="question"
+                rows="3"
+              ></textarea>
+            </div>
+            <div
+              class="text-center js-quizStartQuestionButtonAreaDiv"
+              data-type="trueOrFalse"
+            >
+              <button class="btn btn-primary px-4 py-2 me-3">
+                保存して終了する
+              </button>
+              <button class="btn btn-primary px-4 py-2">次の問題を解く</button>
+            </div>
+          </div>
+          <div class="js-quizDiv d-none">
+            <p>
+              お疲れ様でした。<br />
+              正解率　90％　でした。<br />
+              見直しをしましょう。
+            </p>
+
+            <div class="bg-secondary-subtle mb-4 p-4 pb-3">
+              <p>
+                問題1（不正解）<br />
+                問題の文章が入ります。<br />
+                答えが入ります。<br />
+                解説が入ります。解説が入ります。解説が入ります。<br />
+                メモが入ります。メモが入ります。メモが入ります。
+              </p>
+            </div>
+            <div class="bg-success-subtle mb-4 p-4 pb-3">
+              <p>
+                問題2（正解）<br />
+                問題の文章が入ります。<br />
+                答えが入ります。<br />
+                解説が入ります。解説が入ります。解説が入ります。<br />
+                メモが入ります。メモが入ります。メモが入ります。
+              </p>
+            </div>
+            <div class="bg-success-subtle mb-4 p-4 pb-3">
+              <p>
+                問題3（正解）<br />
+                問題の文章が入ります。<br />
+                答えが入ります。<br />
+                解説が入ります。解説が入ります。解説が入ります。<br />
+                メモが入ります。メモが入ります。メモが入ります。
+              </p>
+            </div>
+          </div>
         </section>
         <section class="js-section pt-3 position-relative">
           <button
@@ -370,10 +457,10 @@
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h1
+                <div
                   class="modal-title fs-5"
                   id="modalForSelectionWhatToDoNext"
-                ></h1>
+                ></div>
                 <button
                   type="button"
                   class="btn-close"
@@ -439,7 +526,7 @@
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5 js-titleH1"></h1>
+                <div class="modal-title fs-5 js-titleH1"></div>
                 <button
                   type="button"
                   class="btn-close"

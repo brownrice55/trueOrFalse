@@ -12,7 +12,11 @@ import {
   saveQuizData,
   setValidation,
 } from './addNew';
-import { setQuizStartForm } from './quizStart';
+import {
+  setQuizStartForm,
+  getQuizDataForPractice,
+  displayQuizQuestionAndAnswers,
+} from './quizStart';
 import { goToCategoryToSetNewCategory } from './common/utils';
 import { getInputValues } from './inputValidation';
 import {
@@ -429,8 +433,46 @@ export function setAddNew(
 }
 
 export function setQuizStart(
+  aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aButtonSaveElm: HTMLButtonElement
 ) {
-  setQuizStartForm(aQuizCategory, aButtonSaveElm);
+  const quizStartFormCategorySelectElm = document.querySelector(
+    '.js-quizStartFormCategorySelect'
+  );
+  const quizStartFormTypeSelectElm = document.querySelector(
+    '.js-quizStartFormTypeSelect'
+  );
+  setQuizStartForm(
+    aQuizCategory,
+    aButtonSaveElm,
+    quizStartFormCategorySelectElm as HTMLElement,
+    quizStartFormTypeSelectElm as HTMLElement
+  );
+
+  let quizDataForPractice: Inputs[];
+  const quizStartFormStartButtonElm = document.querySelector(
+    '.js-quizStartFormStartButton'
+  );
+  const quizDivElms = document.querySelectorAll('.js-quizDiv');
+  if (quizStartFormStartButtonElm) {
+    quizStartFormStartButtonElm.addEventListener('click', function (e) {
+      const targetElm = e.currentTarget as HTMLButtonElement;
+      let quizIndex: number = parseInt(targetElm.dataset.index ?? '0');
+      if (!quizIndex) {
+        quizDataForPractice = getQuizDataForPractice(
+          aQuizData,
+          (quizStartFormTypeSelectElm as HTMLSelectElement).value,
+          'random'
+        ) as Inputs[];
+      }
+
+      displayQuizQuestionAndAnswers(quizDataForPractice, quizIndex);
+      if (targetElm) {
+        targetElm.dataset.index = String(quizIndex + 1);
+      }
+      quizDivElms[0].classList.add('d-none');
+      quizDivElms[1].classList.remove('d-none');
+    });
+  }
 }

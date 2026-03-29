@@ -187,4 +187,4 @@ editQuizData(
   divIdx3DivElms as NodeListOf<HTMLElement>
 );
 
-setQuizStart(quizCategory, buttonSaveElm as HTMLButtonElement);
+setQuizStart(quizData, quizCategory, buttonSaveElm as HTMLButtonElement);
