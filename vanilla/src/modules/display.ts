@@ -15,7 +15,7 @@ import {
 import {
   setQuizStartForm,
   getQuizDataForPractice,
-  displayQuizQuestionAndAnswers,
+  displayQuizQuestion,
 } from './quizStart';
 import { goToCategoryToSetNewCategory } from './common/utils';
 import { getInputValues } from './inputValidation';
@@ -467,7 +467,11 @@ export function setQuizStart(
         ) as Inputs[];
       }
 
-      displayQuizQuestionAndAnswers(quizDataForPractice, quizIndex);
+      displayQuizQuestion(
+        quizDataForPractice,
+        quizIndex,
+        quizDivElms as NodeListOf<HTMLElement>
+      );
       if (targetElm) {
         targetElm.dataset.index = String(quizIndex + 1);
       }

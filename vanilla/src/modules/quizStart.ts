@@ -1,4 +1,9 @@
-import { getCategoryOptions, getTypeOptions } from './common/form';
+import {
+  getCategoryOptions,
+  getTypeOptions,
+  getAnswerOfSelectionForDisplay,
+} from './common/form';
+import { labelForQuestionAnswer } from './common/labels';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -61,9 +66,10 @@ export function getQuizDataForPractice(
   return currentVals;
 }
 
-export function displayQuizQuestionAndAnswers(
+export function displayQuizQuestion(
   aQuizDataForPractice: Inputs[],
-  aQuizIndex: number
+  aQuizIndex: number,
+  aQuizDivElms: NodeListOf<HTMLElement>
 ) {
   const currentQuzDataForPractice = aQuizDataForPractice[aQuizIndex];
   const quizStartQuestionElm = document.querySelector('.js-quizStartQuestion');
@@ -80,9 +86,9 @@ export function displayQuizQuestionAndAnswers(
     let cnt = 1;
     currentQuzDataForPractice.options.forEach((arr, idx) => {
       if (cnt % 3) {
-        result += `<button class="btn btn-primary px-4 py-2 me-3">${arr[1]}</button>`;
+        result += `<button class="btn btn-primary px-4 py-2 me-3" data-index="${idx}">${arr[1]}</button>`;
       } else {
-        result += `<button class="btn btn-primary px-4 py-2">${arr[1]}</button>`;
+        result += `<button class="btn btn-primary px-4 py-2" data-index="${idx}">${arr[1]}</button>`;
         result += `</div>`;
         if (currentQuzDataForPractice.options.length > idx + 1) {
           result += `<div class="text-center mt-3">`;
@@ -97,4 +103,60 @@ export function displayQuizQuestionAndAnswers(
     currentQuzDataForPractice.type === 'trueOrFalse' ? [0, 1] : [1, 0];
   quizQuestionBtnContDivElms[typeIndices[0]].classList.remove('d-none');
   quizQuestionBtnContDivElms[typeIndices[1]].classList.add('d-none');
+
+  if (currentQuzDataForPractice.type === 'trueOrFalse') {
+    const buttons = quizQuestionBtnContDivElms[0].querySelectorAll('button');
+    buttons.forEach((elm) => {
+      elm.addEventListener('click', function (e) {
+        const targetElm = e.currentTarget as HTMLButtonElement;
+        const index = parseInt(targetElm.dataset.index ?? '0');
+        displayQuizAnswers(index, currentQuzDataForPractice);
+        aQuizDivElms[1].classList.add('d-none');
+        aQuizDivElms[2].classList.remove('d-none');
+      });
+    });
+  }
 }
+
+const quizStartAnswerSpanElm = document.querySelector(
+  '.js-quizStartAnswerSpan'
+);
+const quizStartIsCorrectAnswerElm = document.querySelector(
+  '.js-quizStartIsCorrectAnswer'
+);
+const quizStartExplanationSpanElm = document.querySelector(
+  '.js-quizStartExplanationSpan'
+);
+const displayQuizAnswers = (
+  aIndex: number,
+  aCurrentQuzDataForPractice: Inputs
+) => {
+  const answerResult =
+    aCurrentQuzDataForPractice.type === 'trueOrFalse'
+      ? labelForQuestionAnswer[aCurrentQuzDataForPractice.answer]
+      : getAnswerOfSelectionForDisplay(aCurrentQuzDataForPractice);
+
+  if (quizStartAnswerSpanElm) {
+    quizStartAnswerSpanElm.innerHTML = answerResult;
+  }
+
+  let isCorrectAnswer = false;
+  if (aCurrentQuzDataForPractice.type === 'trueOrFalse') {
+    isCorrectAnswer = aIndex === aCurrentQuzDataForPractice.answer;
+  } else {
+    // checkbox*******
+  }
+  if (quizStartIsCorrectAnswerElm) {
+    quizStartIsCorrectAnswerElm.innerHTML = isCorrectAnswer
+      ? '正解！'
+      : '不正解！';
+  }
+  if (quizStartExplanationSpanElm) {
+    quizStartExplanationSpanElm.innerHTML =
+      aCurrentQuzDataForPractice.explanation;
+  }
+
+  //   numberOfAnswers
+
+  // numberOfCorrectAnswers
+};

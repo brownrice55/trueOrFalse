@@ -104,8 +104,12 @@
               class="js-quizQuestionBtnContDiv text-center"
               data-type="trueOrFalse"
             >
-              <button class="btn btn-primary px-4 py-2 me-3">まる</button>
-              <button class="btn btn-primary px-4 py-2">ばつ</button>
+              <button class="btn btn-primary px-4 py-2 me-3" data-index="0">
+                まる
+              </button>
+              <button class="btn btn-primary px-4 py-2" data-index="1">
+                ばつ
+              </button>
             </div>
             <div
               class="js-quizQuestionBtnContDiv d-none"
@@ -114,10 +118,15 @@
           </div>
           <div class="js-quizDiv d-none">
             <p class="lead">Answer</p>
-            <p>正解！答えは「まる」です。</p>
+            <p>
+              <span class="js-quizStartIsCorrectAnswer"></span>答えは「<span
+                class="js-quizStartAnswerSpan"
+              ></span
+              >」です。
+            </p>
             <p>
               解説<br />
-              解説の文章が入ります。
+              <span class="js-quizStartExplanationSpan"></span>
             </p>
             <p>この問題の現在の正解率は「70%」です。</p>
             <div class="my-3">

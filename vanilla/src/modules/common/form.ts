@@ -150,6 +150,19 @@ export function setAlertForInputField(
   });
 }
 
+export function getAnswerOfSelectionForDisplay(aCurrentVal: Inputs) {
+  let answerOfSelection = '';
+  aCurrentVal.options.forEach((arr) => {
+    if (arr[0]) {
+      if (answerOfSelection) {
+        answerOfSelection += '、';
+      }
+      answerOfSelection += arr[1];
+    }
+  });
+  return answerOfSelection;
+}
+
 export function getEachValueForDivIndex0(
   aIdx: number,
   aCurrentVal: Inputs,
@@ -160,17 +173,10 @@ export function getEachValueForDivIndex0(
   const currentValKey = aCurrentValKeys[aIdx];
   let answerIdx3 = '';
   if (aIdx === 1 || aIdx === 3) {
-    let answerForSelection = '';
-    if (aCurrentVal.type === 'selection') {
-      aCurrentVal.options.forEach((arr) => {
-        if (arr[0]) {
-          if (answerForSelection) {
-            answerForSelection += '、';
-          }
-          answerForSelection += arr[1];
-        }
-      });
-    }
+    const answerOfSelection =
+      aCurrentVal.type === 'selection'
+        ? getAnswerOfSelectionForDisplay(aCurrentVal)
+        : '';
 
     const formAnswerRadioElms = document.querySelectorAll(
       '.js-listDl .js-formAnswerRadio'
@@ -185,7 +191,7 @@ export function getEachValueForDivIndex0(
     answerIdx3 = String(
       aCurrentVal.type === 'trueOrFalse'
         ? labelForQuestionAnswer[radioCheckedIndex]
-        : answerForSelection
+        : answerOfSelection
     );
     if (aIdx === 3) {
       return answerIdx3;
