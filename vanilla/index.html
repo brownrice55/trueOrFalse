@@ -99,26 +99,18 @@
           </div>
           <div class="js-quizDiv d-none">
             <p class="lead">Question</p>
-            <p>問題</p>
+            <p class="js-quizStartQuestion">問題</p>
             <div
-              class="js-quizDiv__question text-center"
+              class="js-quizQuestionBtnContDiv text-center"
               data-type="trueOrFalse"
             >
               <button class="btn btn-primary px-4 py-2 me-3">まる</button>
               <button class="btn btn-primary px-4 py-2">ばつ</button>
             </div>
-            <div class="js-quizDiv__question d-none" data-type="selection">
-              <div class="text-center">
-                <button class="btn btn-primary px-4 py-2 me-3">選択肢１</button>
-                <button class="btn btn-primary px-4 py-2 me-3">選択肢２</button>
-                <button class="btn btn-primary px-4 py-2">選択肢３</button>
-              </div>
-              <div class="text-center mt-3">
-                <button class="btn btn-primary px-4 py-2 me-3">選択肢１</button>
-                <button class="btn btn-primary px-4 py-2 me-3">選択肢２</button>
-                <button class="btn btn-primary px-4 py-2">選択肢３</button>
-              </div>
-            </div>
+            <div
+              class="js-quizQuestionBtnContDiv d-none"
+              data-type="selection"
+            ></div>
           </div>
           <div class="js-quizDiv d-none">
             <p class="lead">Answer</p>

@@ -66,5 +66,35 @@ export function displayQuizQuestionAndAnswers(
   aQuizIndex: number
 ) {
   const currentQuzDataForPractice = aQuizDataForPractice[aQuizIndex];
-  console.log({ currentQuzDataForPractice });
+  const quizStartQuestionElm = document.querySelector('.js-quizStartQuestion');
+  if (quizStartQuestionElm) {
+    quizStartQuestionElm.innerHTML = currentQuzDataForPractice.question;
+  }
+
+  const quizQuestionBtnContDivElms = document.querySelectorAll(
+    '.js-quizQuestionBtnContDiv'
+  );
+
+  if (currentQuzDataForPractice.type === 'selection') {
+    let result = `<div class="text-center">`;
+    let cnt = 1;
+    currentQuzDataForPractice.options.forEach((arr, idx) => {
+      if (cnt % 3) {
+        result += `<button class="btn btn-primary px-4 py-2 me-3">${arr[1]}</button>`;
+      } else {
+        result += `<button class="btn btn-primary px-4 py-2">${arr[1]}</button>`;
+        result += `</div>`;
+        if (currentQuzDataForPractice.options.length > idx + 1) {
+          result += `<div class="text-center mt-3">`;
+        }
+      }
+      ++cnt;
+    });
+    quizQuestionBtnContDivElms[1].innerHTML = result;
+  }
+
+  const typeIndices =
+    currentQuzDataForPractice.type === 'trueOrFalse' ? [0, 1] : [1, 0];
+  quizQuestionBtnContDivElms[typeIndices[0]].classList.remove('d-none');
+  quizQuestionBtnContDivElms[typeIndices[1]].classList.add('d-none');
 }
