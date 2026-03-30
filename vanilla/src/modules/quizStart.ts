@@ -66,37 +66,39 @@ export function getQuizDataForPractice(
   return currentVals;
 }
 
+const quizStartQuestionElm = document.querySelector('.js-quizStartQuestion');
+const quizQuestionBtnContDivElms = document.querySelectorAll(
+  '.js-quizQuestionBtnContDiv'
+);
+
+const quizQuestionSelectionOptionsDivElm =
+  quizQuestionBtnContDivElms[1].querySelector('div');
+const quizQuestionSelectionOptionsButtonElm =
+  quizQuestionBtnContDivElms[1].querySelector('button');
+
 export function displayQuizQuestion(
   aQuizDataForPractice: Inputs[],
   aQuizIndex: number,
   aQuizDivElms: NodeListOf<HTMLElement>
 ) {
   const currentQuzDataForPractice = aQuizDataForPractice[aQuizIndex];
-  const quizStartQuestionElm = document.querySelector('.js-quizStartQuestion');
   if (quizStartQuestionElm) {
     quizStartQuestionElm.innerHTML = currentQuzDataForPractice.question;
   }
 
-  const quizQuestionBtnContDivElms = document.querySelectorAll(
-    '.js-quizQuestionBtnContDiv'
-  );
-
   if (currentQuzDataForPractice.type === 'selection') {
-    let result = `<div class="text-center">`;
-    let cnt = 1;
+    let result = '';
     currentQuzDataForPractice.options.forEach((arr, idx) => {
-      if (cnt % 3) {
-        result += `<button class="btn btn-primary px-4 py-2 me-3" data-index="${idx}">${arr[1]}</button>`;
-      } else {
-        result += `<button class="btn btn-primary px-4 py-2" data-index="${idx}">${arr[1]}</button>`;
-        result += `</div>`;
-        if (currentQuzDataForPractice.options.length > idx + 1) {
-          result += `<div class="text-center mt-3">`;
-        }
-      }
-      ++cnt;
+      result += `<div class="form-check form-check-inline mb-3 my-3">
+          <input class="form-check-input" type="checkbox" value="" id="quizStartSelectionOption-${idx}" data-value="${arr[1]}">
+          <label class="form-check-label" for="quizStartSelectionOption-${idx}">
+          ${arr[1]}
+          </label>
+        </div>`;
     });
-    quizQuestionBtnContDivElms[1].innerHTML = result;
+    if (quizQuestionSelectionOptionsDivElm) {
+      quizQuestionSelectionOptionsDivElm.innerHTML = result;
+    }
   }
 
   const typeIndices =
@@ -110,11 +112,27 @@ export function displayQuizQuestion(
       elm.addEventListener('click', function (e) {
         const targetElm = e.currentTarget as HTMLButtonElement;
         const index = parseInt(targetElm.dataset.index ?? '0');
-        displayQuizAnswers(index, currentQuzDataForPractice);
+        displayQuizAnswers(index, currentQuzDataForPractice, null);
         aQuizDivElms[1].classList.add('d-none');
         aQuizDivElms[2].classList.remove('d-none');
       });
     });
+  } else {
+    quizQuestionSelectionOptionsButtonElm?.addEventListener(
+      'click',
+      function () {
+        const checkboxElms =
+          quizQuestionSelectionOptionsDivElm?.querySelectorAll('input');
+        let values: [boolean, string][] = [];
+        checkboxElms?.forEach((elm) => {
+          values.push([elm.checked, String(elm.dataset.value)]);
+        });
+
+        displayQuizAnswers(null, currentQuzDataForPractice, values);
+        aQuizDivElms[1].classList.add('d-none');
+        aQuizDivElms[2].classList.remove('d-none');
+      }
+    );
   }
 }
 
@@ -128,8 +146,9 @@ const quizStartExplanationSpanElm = document.querySelector(
   '.js-quizStartExplanationSpan'
 );
 const displayQuizAnswers = (
-  aIndex: number,
-  aCurrentQuzDataForPractice: Inputs
+  aIndex: number | null,
+  aCurrentQuzDataForPractice: Inputs,
+  aVlues: [boolean, string][] | null
 ) => {
   const answerResult =
     aCurrentQuzDataForPractice.type === 'trueOrFalse'
@@ -140,12 +159,12 @@ const displayQuizAnswers = (
     quizStartAnswerSpanElm.innerHTML = answerResult;
   }
 
-  let isCorrectAnswer = false;
-  if (aCurrentQuzDataForPractice.type === 'trueOrFalse') {
-    isCorrectAnswer = aIndex === aCurrentQuzDataForPractice.answer;
-  } else {
-    // checkbox*******
-  }
+  const isCorrectAnswer =
+    aCurrentQuzDataForPractice.type === 'trueOrFalse'
+      ? aIndex === aCurrentQuzDataForPractice.answer
+      : JSON.stringify(aVlues) ===
+        JSON.stringify(aCurrentQuzDataForPractice.options);
+
   if (quizStartIsCorrectAnswerElm) {
     quizStartIsCorrectAnswerElm.innerHTML = isCorrectAnswer
       ? '正解！'
