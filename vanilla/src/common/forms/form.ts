@@ -10,12 +10,12 @@ import {
   labelForType,
   labelForPriority,
   labelForQuestionAnswer,
-} from './labels';
+} from '../labels/labels';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
 } from '../inputValidation';
-import { goToCategoryToSetNewCategory } from './utils';
+import { goToCategoryToSetNewCategory } from '../utils';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
   aValue: string,

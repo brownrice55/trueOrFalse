@@ -2,8 +2,8 @@ import {
   getCategoryOptions,
   getTypeOptions,
   getAnswerOfSelectionForDisplay,
-} from './common/form';
-import { labelForQuestionAnswer } from './common/labels';
+} from '../common/forms/form';
+import { labelForQuestionAnswer } from '../common/labels/labels';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 

@@ -1,6 +1,6 @@
 import './style.scss';
 import * as bootstrap from 'bootstrap';
-import { getDataFromLocalStorage } from './modules/dataManagement';
+import { getDataFromLocalStorage } from './common/dataManagement';
 import {
   setupDisplay,
   switchPage,
@@ -9,11 +9,11 @@ import {
   setAddNew,
   setQuizList,
   setQuizStart,
-} from './modules/display';
+} from './display';
 import {
   deleteDataThroughDeleteBtnInTheModal,
   editQuizData,
-} from './modules/setEvent';
+} from './quizList/setEvent';
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
 import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';

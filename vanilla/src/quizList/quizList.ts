@@ -1,16 +1,16 @@
-import { setCategoryInputs } from './display';
-import { getDataFromLocalStorage } from './dataManagement';
+import { setCategoryInputs } from '../display';
+import { getDataFromLocalStorage } from '../common/dataManagement';
 import {
   getHTMLForOptionInputsOfSelection,
   getEachValueForDivIndex0,
   setDivIndex1FormForQuizDetailIdx0Category,
   getFormElements,
   setValidationForQuizDetailOfIdx3,
-} from './common/form';
-import { setDisabled } from './addNew';
-import { showModalForDelete } from './common/modal';
-import { resetEditQuizBtns } from './common/utils';
-import { getAccuracyRate } from './common/utils';
+} from '../common/forms/form';
+import { setDisabled } from '../addNew/addNew';
+import { showModalForDelete } from '../common/modals/modal';
+import { resetEditQuizBtns } from '../common/utils';
+import { getAccuracyRate } from '../common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';

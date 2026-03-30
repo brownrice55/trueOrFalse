@@ -1,37 +1,37 @@
 import { Collapse } from 'bootstrap';
-import { displayList } from './quizList';
+import { displayList } from './quizList/quizList';
 import {
   saveCategoryData,
   setButtonDisabledForCategory,
   editOrDeleteCategoryName,
   addCategoryInput,
-} from './categorySettings';
+} from './categorySettings/categorySettings';
 import {
   switchType,
   setOptionInputs,
   saveQuizData,
   setValidation,
-} from './addNew';
+} from './addNew/addNew';
 import {
   setQuizStartForm,
   getQuizDataForPractice,
   displayQuizQuestion,
-} from './quizStart';
+} from './quizStart/quizStart';
 import { goToCategoryToSetNewCategory } from './common/utils';
-import { getInputValues } from './inputValidation';
+import { getInputValues } from './common/inputValidation';
 import {
   getCategoryOptions,
   getTypeOptions,
   getPriorityOptions,
   getFormElements,
   getHTMLForOptionInputsOfSelection,
-} from './common/form';
-import { displayModalForPageTransition } from './common/modal';
-import type { Inputs } from '../types/inputs.type';
-import type { FormElementsIrregularIndex3Type } from '../types/formElementsIrregularIndex3.type';
-import type { InputsCategory } from '../types/inputsCategory.type';
-import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
-import type { modalForPageTransitionElmsType } from '../types/modalForPageTransitionElms.type';
+} from './common/forms/form';
+import { displayModalForPageTransition } from './common/modals/modal';
+import type { Inputs } from './types/inputs.type';
+import type { FormElementsIrregularIndex3Type } from './types/formElementsIrregularIndex3.type';
+import type { InputsCategory } from './types/inputsCategory.type';
+import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';
+import type { modalForPageTransitionElmsType } from './types/modalForPageTransitionElms.type';
 
 export function displayPage(
   aIndex: number,

@@ -1,7 +1,7 @@
 import * as bootstrap from 'bootstrap';
-import { displayPage } from '../display';
-import { resetCategoryForm } from '../categorySettings';
-import { resetEditQuizBtns } from './utils';
+import { displayPage } from '../../display';
+import { resetCategoryForm } from '../../categorySettings/categorySettings';
+import { resetEditQuizBtns } from '../utils';
 import type { modalForDeleteElmsType } from '../../types/modalForDeleteElms.type';
 import type { modalForPageTransitionElmsType } from '../../types/modalForPageTransitionElms.type';
 

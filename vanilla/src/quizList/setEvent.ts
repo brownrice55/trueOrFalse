@@ -1,14 +1,14 @@
 import * as bootstrap from 'bootstrap';
-import { getDataFromLocalStorage } from './dataManagement';
-import { setCategoryInputs } from './display';
+import { getDataFromLocalStorage } from '../common/dataManagement';
+import { setCategoryInputs } from '../display';
 import {
   resetIsActiveInTheCategoryData,
   displayList,
   setDisabledForListEditBtns,
   getUpdatedCurrentVal,
   setIdx3PartOfQuizDetail,
-} from './quizList';
-import { getEachValueForDivIndex0 } from './common/form';
+} from '../quizList/quizList';
+import { getEachValueForDivIndex0 } from '../common/forms/form';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';

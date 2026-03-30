@@ -1,5 +1,5 @@
 import { switchPage } from '../display';
-import type { Inputs } from '../../types/inputs.type';
+import type { Inputs } from '../types/inputs.type';
 
 export function getAccuracyRate(aVal: Inputs) {
   return (

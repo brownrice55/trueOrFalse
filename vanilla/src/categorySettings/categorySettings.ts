@@ -1,18 +1,18 @@
 import type { Listener } from '../types/listener.type';
-import { setCategoryInputs } from './display';
+import { setCategoryInputs } from '../display';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
-} from './inputValidation';
+} from '../common/inputValidation';
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData,
   showModalForDelete,
-} from './common/modal';
+} from '../common/modals/modal';
 import {
   getCategoryOptions,
   setDivIndex1FormForQuizDetailIdx0Category,
-} from './common/form';
+} from '../common/forms/form';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';

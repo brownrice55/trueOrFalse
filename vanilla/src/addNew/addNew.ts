@@ -1,11 +1,11 @@
-import { displayList } from './quizList';
-import { setCategoryInputs } from './display';
-import { displayModalToSelectWhatToDoNextAfterSavingData } from './common/modal';
+import { displayList } from '../quizList/quizList';
+import { setCategoryInputs } from '../display';
+import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
 import {
   getHTMLForOptionInputsOfSelection,
   setAlertForInputField,
   setValidationForQuizDetailOfIdx3,
-} from './common/form';
+} from '../common/forms/form';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
