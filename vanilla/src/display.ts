@@ -31,6 +31,7 @@ import { displayModalForPageTransition } from './common/modals/modal';
 import type { Inputs } from './types/inputs.type';
 import type { FormElementsIrregularIndex3Type } from './types/formElementsIrregularIndex3.type';
 import type { InputsCategory } from './types/inputsCategory.type';
+import type { InputsForResult } from './types/inputsForResult.type';
 import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';
 import type { modalForPageTransitionElmsType } from './types/modalForPageTransitionElms.type';
 
@@ -455,7 +456,7 @@ export function setQuizStart(
     quizStartFormTypeSelectElm as HTMLElement
   );
 
-  let quizDataForPractice: Inputs[];
+  let quizDataForPractice: Map<number, InputsForResult> = new Map();
   const quizStartFormStartButtonElm = document.querySelector(
     '.js-quizStartFormStartButton'
   );
@@ -467,7 +468,7 @@ export function setQuizStart(
         aQuizData,
         (quizStartFormTypeSelectElm as HTMLSelectElement).value,
         'random'
-      ) as Inputs[];
+      ) as Map<number, InputsForResult>;
 
       displayQuizQuestion(
         quizDataForPractice,
@@ -484,6 +485,7 @@ export function setQuizStart(
   if (quizStartQuestionButtonElms) {
     quizStartQuestionButtonElms.forEach((elm, idx) => {
       elm.addEventListener('click', function () {
+        // save notes ***** later
         if (idx === 1) {
           displayQuizQuestion(
             quizDataForPractice,
@@ -497,7 +499,7 @@ export function setQuizStart(
           quizDivElms[2].classList.add('d-none');
         } else {
           // go to the result page
-          displayResult(quizDataForPractice as Inputs[], quizIndex, aQuizData);
+          displayResult();
           quizDivElms[2].classList.add('d-none');
           quizDivElms[3].classList.remove('d-none');
         }

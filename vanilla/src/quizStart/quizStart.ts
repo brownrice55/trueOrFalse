@@ -5,8 +5,10 @@ import {
 } from '../common/forms/form';
 import { labelForQuestionAnswer } from '../common/labels/labels';
 import { getAccuracyRate } from '../common/utils';
+import { getDataFromLocalStorage } from '../common/dataManagement';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
+import type { InputsForResult } from '../types/inputsForResult.type';
 
 export function setQuizStartForm(
   aQuizCategory: Map<number, InputsCategory>,
@@ -44,9 +46,15 @@ const getRandomIndexArray = function (aLength: number) {
 const getCurrentVals = (aQuizData: Map<number, Inputs>) => {
   const keys = [...aQuizData.keys()];
   const randomIndices = getRandomIndexArray(keys.length);
-  let currentVals: Inputs[] = [];
+  let currentVals: Map<number, InputsForResult> = new Map();
   keys.forEach((_, idx) => {
-    currentVals.push(aQuizData.get(keys[randomIndices[idx]]) as Inputs);
+    const currentVal = aQuizData.get(
+      keys[randomIndices[idx]]
+    ) as InputsForResult;
+    if (currentVal) {
+      currentVal.isCorrectAnswer = false;
+      currentVals.set(idx, currentVal);
+    }
   });
   return currentVals;
 };
@@ -79,18 +87,21 @@ const quizQuestionSelectionOptionsButtonElm =
   quizQuestionBtnContDivElms[1].querySelector('button');
 
 export function displayQuizQuestion(
-  aQuizDataForPractice: Inputs[],
+  aQuizDataForPractice: Map<number, InputsForResult>,
   aQuizIndex: number,
   aQuizDivElms: NodeListOf<HTMLElement>,
   aQuizData: Map<number, Inputs>,
   aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
 ) {
-  const currentQuzDataForPractice = aQuizDataForPractice[aQuizIndex];
-  if (quizStartQuestionElm) {
+  const currentQuzDataForPractice = aQuizDataForPractice.get(aQuizIndex);
+  if (quizStartQuestionElm && currentQuzDataForPractice) {
     quizStartQuestionElm.innerHTML = currentQuzDataForPractice.question;
   }
 
-  if (currentQuzDataForPractice.type === 'selection') {
+  if (
+    currentQuzDataForPractice &&
+    currentQuzDataForPractice.type === 'selection'
+  ) {
     let result = '';
     currentQuzDataForPractice.options.forEach((arr, idx) => {
       result += `<div class="form-check form-check-inline mb-3 my-3">
@@ -106,11 +117,17 @@ export function displayQuizQuestion(
   }
 
   const typeIndices =
-    currentQuzDataForPractice.type === 'trueOrFalse' ? [0, 1] : [1, 0];
+    currentQuzDataForPractice &&
+    currentQuzDataForPractice.type === 'trueOrFalse'
+      ? [0, 1]
+      : [1, 0];
   quizQuestionBtnContDivElms[typeIndices[0]].classList.remove('d-none');
   quizQuestionBtnContDivElms[typeIndices[1]].classList.add('d-none');
 
-  if (currentQuzDataForPractice.type === 'trueOrFalse') {
+  if (
+    currentQuzDataForPractice &&
+    currentQuzDataForPractice.type === 'trueOrFalse'
+  ) {
     const buttons = quizQuestionBtnContDivElms[0].querySelectorAll('button');
     buttons.forEach((elm) => {
       elm.addEventListener('click', function (e) {
@@ -124,7 +141,7 @@ export function displayQuizQuestion(
           null,
           aQuizData,
           aQuizIndex,
-          aQuizDataForPractice.length,
+          aQuizDataForPractice,
           aQuizStartQuestionButtonElms
         );
         aQuizDivElms[1].classList.add('d-none');
@@ -144,11 +161,11 @@ export function displayQuizQuestion(
 
         displayQuizAnswers(
           null,
-          currentQuzDataForPractice,
+          currentQuzDataForPractice as InputsForResult,
           values,
           aQuizData,
           aQuizIndex,
-          aQuizDataForPractice.length,
+          aQuizDataForPractice,
           aQuizStartQuestionButtonElms
         );
         aQuizDivElms[1].classList.add('d-none');
@@ -173,11 +190,11 @@ const quizStartAccuracyRateSpanElm = document.querySelector(
 
 const displayQuizAnswers = (
   aAnswerOfTrueOrFalseBtnIdx: number | null,
-  aCurrentQuizDataForPractice: Inputs,
+  aCurrentQuizDataForPractice: InputsForResult,
   aVlues: [boolean, string][] | null,
   aQuizData: Map<number, Inputs>,
   aQuizIndex: number,
-  aQuizDataForPracticeLength: number,
+  aQuizDataForPractice: Map<number, InputsForResult>,
   aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
 ) => {
   const answerResult =
@@ -205,41 +222,65 @@ const displayQuizAnswers = (
       aCurrentQuizDataForPractice.explanation;
   }
 
-  if (aQuizIndex + 1 === aQuizDataForPracticeLength) {
+  if (aQuizIndex + 1 === aQuizDataForPractice.size) {
     aQuizStartQuestionButtonElms[1].classList.add('d-none');
   } else {
     aQuizStartQuestionButtonElms[1].classList.remove('d-none');
   }
-
-  aCurrentQuizDataForPractice.numberOfAnswers += 1;
-  if (isCorrectAnswer) {
-    aCurrentQuizDataForPractice.numberOfCorrectAnswers += 1;
-  }
-  if (quizStartAccuracyRateSpanElm) {
-    quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(
-      aCurrentQuizDataForPractice
-    );
-  }
+  aCurrentQuizDataForPractice.isCorrectAnswer = isCorrectAnswer;
 
   // update numberOfAnswers and numberOfCorrectAnswers to original data
   const id = aCurrentQuizDataForPractice.id;
   const originalVal = aQuizData.get(id);
   if (originalVal) {
-    originalVal.numberOfAnswers = aCurrentQuizDataForPractice.numberOfAnswers;
-    originalVal.numberOfCorrectAnswers =
-      aCurrentQuizDataForPractice.numberOfCorrectAnswers;
+    originalVal.numberOfAnswers += 1;
+    originalVal.numberOfCorrectAnswers += 1;
     aQuizData.set(id, originalVal);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+
+    if (quizStartAccuracyRateSpanElm) {
+      quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(originalVal);
+    }
+
+    localStorage.setItem(
+      'quizDataForPractice',
+      JSON.stringify([...aQuizDataForPractice])
+    );
   }
 };
 
-export function displayResult(
-  aQuizDataForPractice: Inputs[],
-  aQuizIndex: number,
-  aQuizData: Map<number, Inputs>
-) {
-  console.log({ aQuizDataForPractice });
-  console.log({ aQuizIndex });
-  console.log({ aQuizData });
-  // notes
+export function displayResult() {
+  const quizDataForPractice = getDataFromLocalStorage('quizDataForPractice');
+
+  let result = '';
+  let numberOfCorrectAnswers = 0;
+  quizDataForPractice.forEach((val, idx) => {
+    result += `<div class="${
+      val.isCorrectAnswer ? 'bg-success-subtle' : 'bg-secondary-subtle'
+    } mb-4 p-4 pb-3">
+              <p>
+                問題${idx + 1}（${val.isCorrectAnswer ? '正解' : '不正解'}）<br />
+                ${val.question}<br />
+                ${val.answer}<br />
+                ${val.explanation}
+                ${val.notes ? '<br />' + val.notes : ''}
+              </p>
+            </div>`;
+    if (val.isCorrectAnswer) {
+      ++numberOfCorrectAnswers;
+    }
+  });
+  const quizStartResultElm = document.querySelector('.js-quizStartResult');
+  if (quizStartResultElm) {
+    quizStartResultElm.innerHTML = result;
+  }
+
+  const quizStartAccuracyRateResultSpanElm = document.querySelector(
+    '.js-quizStartAccuracyRateResultSpan'
+  );
+  if (quizStartAccuracyRateResultSpanElm) {
+    quizStartAccuracyRateResultSpanElm.innerHTML = String(
+      Math.round((numberOfCorrectAnswers / quizDataForPractice.size) * 100)
+    );
+  }
 }
