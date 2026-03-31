@@ -132,6 +132,7 @@ export function saveQuizData(
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
+      id: 0,
       category: '',
       type: '',
       question: '',
@@ -178,6 +179,7 @@ export function saveQuizData(
     const newId: number = aQuizData.size
       ? keysArray[keysArray.length - 1] + 1
       : 1;
+    newValue.id = newId;
 
     aQuizData.set(newId, newValue);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));

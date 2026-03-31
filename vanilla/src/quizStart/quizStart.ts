@@ -4,6 +4,7 @@ import {
   getAnswerOfSelectionForDisplay,
 } from '../common/forms/form';
 import { labelForQuestionAnswer } from '../common/labels/labels';
+import { getAccuracyRate } from '../common/utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
 
@@ -79,7 +80,8 @@ const quizQuestionSelectionOptionsButtonElm =
 export function displayQuizQuestion(
   aQuizDataForPractice: Inputs[],
   aQuizIndex: number,
-  aQuizDivElms: NodeListOf<HTMLElement>
+  aQuizDivElms: NodeListOf<HTMLElement>,
+  aQuizData: Map<number, Inputs>
 ) {
   const currentQuzDataForPractice = aQuizDataForPractice[aQuizIndex];
   if (quizStartQuestionElm) {
@@ -112,7 +114,7 @@ export function displayQuizQuestion(
       elm.addEventListener('click', function (e) {
         const targetElm = e.currentTarget as HTMLButtonElement;
         const index = parseInt(targetElm.dataset.index ?? '0');
-        displayQuizAnswers(index, currentQuzDataForPractice, null);
+        displayQuizAnswers(index, currentQuzDataForPractice, null, aQuizData);
         aQuizDivElms[1].classList.add('d-none');
         aQuizDivElms[2].classList.remove('d-none');
       });
@@ -128,7 +130,7 @@ export function displayQuizQuestion(
           values.push([elm.checked, String(elm.dataset.value)]);
         });
 
-        displayQuizAnswers(null, currentQuzDataForPractice, values);
+        displayQuizAnswers(null, currentQuzDataForPractice, values, aQuizData);
         aQuizDivElms[1].classList.add('d-none');
         aQuizDivElms[2].classList.remove('d-none');
       }
@@ -145,10 +147,15 @@ const quizStartIsCorrectAnswerElm = document.querySelector(
 const quizStartExplanationSpanElm = document.querySelector(
   '.js-quizStartExplanationSpan'
 );
+const quizStartAccuracyRateSpanElm = document.querySelector(
+  '.js-quizStartAccuracyRateSpan'
+);
+
 const displayQuizAnswers = (
   aIndex: number | null,
   aCurrentQuzDataForPractice: Inputs,
-  aVlues: [boolean, string][] | null
+  aVlues: [boolean, string][] | null,
+  aQuizData: Map<number, Inputs>
 ) => {
   const answerResult =
     aCurrentQuzDataForPractice.type === 'trueOrFalse'
@@ -175,7 +182,24 @@ const displayQuizAnswers = (
       aCurrentQuzDataForPractice.explanation;
   }
 
-  //   numberOfAnswers
+  aCurrentQuzDataForPractice.numberOfAnswers += 1;
+  if (isCorrectAnswer) {
+    aCurrentQuzDataForPractice.numberOfCorrectAnswers += 1;
+  }
+  if (quizStartAccuracyRateSpanElm) {
+    quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(
+      aCurrentQuzDataForPractice
+    );
+  }
 
-  // numberOfCorrectAnswers
+  // update numberOfAnswers and numberOfCorrectAnswers to original data
+  const id = aCurrentQuzDataForPractice.id;
+  const originalVal = aQuizData.get(id);
+  if (originalVal) {
+    originalVal.numberOfAnswers = aCurrentQuzDataForPractice.numberOfAnswers;
+    originalVal.numberOfCorrectAnswers =
+      aCurrentQuzDataForPractice.numberOfCorrectAnswers;
+    aQuizData.set(id, originalVal);
+    localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+  }
 };

@@ -1,4 +1,5 @@
 export type Inputs = {
+  id: number;
   category: string;
   type: string;
   question: string;

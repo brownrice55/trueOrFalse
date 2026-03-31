@@ -470,7 +470,8 @@ export function setQuizStart(
       displayQuizQuestion(
         quizDataForPractice,
         quizIndex,
-        quizDivElms as NodeListOf<HTMLElement>
+        quizDivElms as NodeListOf<HTMLElement>,
+        aQuizData
       );
       if (targetElm) {
         targetElm.dataset.index = String(quizIndex + 1);
