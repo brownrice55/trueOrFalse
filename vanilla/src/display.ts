@@ -16,6 +16,7 @@ import {
   setQuizStartForm,
   getQuizDataForPractice,
   displayQuizQuestion,
+  displayResult,
 } from './quizStart/quizStart';
 import { goToCategoryToSetNewCategory } from './common/utils';
 import { getInputValues } from './common/inputValidation';
@@ -443,6 +444,10 @@ export function setQuizStart(
   const quizStartFormTypeSelectElm = document.querySelector(
     '.js-quizStartFormTypeSelect'
   );
+  const quizStartQuestionButtonElms = document.querySelectorAll(
+    '.js-quizStartQuestionButtonAreaDiv button'
+  );
+
   setQuizStartForm(
     aQuizCategory,
     aButtonSaveElm,
@@ -455,29 +460,48 @@ export function setQuizStart(
     '.js-quizStartFormStartButton'
   );
   const quizDivElms = document.querySelectorAll('.js-quizDiv');
+  let quizIndex: number = 0;
   if (quizStartFormStartButtonElm) {
-    quizStartFormStartButtonElm.addEventListener('click', function (e) {
-      const targetElm = e.currentTarget as HTMLButtonElement;
-      let quizIndex: number = parseInt(targetElm.dataset.index ?? '0');
-      if (!quizIndex) {
-        quizDataForPractice = getQuizDataForPractice(
-          aQuizData,
-          (quizStartFormTypeSelectElm as HTMLSelectElement).value,
-          'random'
-        ) as Inputs[];
-      }
+    quizStartFormStartButtonElm.addEventListener('click', function () {
+      quizDataForPractice = getQuizDataForPractice(
+        aQuizData,
+        (quizStartFormTypeSelectElm as HTMLSelectElement).value,
+        'random'
+      ) as Inputs[];
 
       displayQuizQuestion(
         quizDataForPractice,
         quizIndex,
         quizDivElms as NodeListOf<HTMLElement>,
-        aQuizData
+        aQuizData,
+        quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
       );
-      if (targetElm) {
-        targetElm.dataset.index = String(quizIndex + 1);
-      }
       quizDivElms[0].classList.add('d-none');
       quizDivElms[1].classList.remove('d-none');
+    });
+  }
+
+  if (quizStartQuestionButtonElms) {
+    quizStartQuestionButtonElms.forEach((elm, idx) => {
+      elm.addEventListener('click', function () {
+        if (idx === 1) {
+          displayQuizQuestion(
+            quizDataForPractice,
+            quizIndex + 1,
+            quizDivElms as NodeListOf<HTMLElement>,
+            aQuizData,
+            quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
+          );
+          quizDivElms[0].classList.add('d-none');
+          quizDivElms[1].classList.remove('d-none');
+          quizDivElms[2].classList.add('d-none');
+        } else {
+          // go to the result page
+          displayResult(quizDataForPractice as Inputs[], quizIndex, aQuizData);
+          quizDivElms[2].classList.add('d-none');
+          quizDivElms[3].classList.remove('d-none');
+        }
+      });
     });
   }
 }

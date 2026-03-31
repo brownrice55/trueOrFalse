@@ -64,6 +64,7 @@ export function getQuizDataForPractice(
       currentVals = getCurrentVals(aQuizData);
     }
   }
+  currentVals = getCurrentVals(aQuizData); //temp
   return currentVals;
 }
 
@@ -81,7 +82,8 @@ export function displayQuizQuestion(
   aQuizDataForPractice: Inputs[],
   aQuizIndex: number,
   aQuizDivElms: NodeListOf<HTMLElement>,
-  aQuizData: Map<number, Inputs>
+  aQuizData: Map<number, Inputs>,
+  aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
 ) {
   const currentQuzDataForPractice = aQuizDataForPractice[aQuizIndex];
   if (quizStartQuestionElm) {
@@ -93,7 +95,7 @@ export function displayQuizQuestion(
     currentQuzDataForPractice.options.forEach((arr, idx) => {
       result += `<div class="form-check form-check-inline mb-3 my-3">
           <input class="form-check-input" type="checkbox" value="" id="quizStartSelectionOption-${idx}" data-value="${arr[1]}">
-          <label class="form-check-label" for="quizStartSelectionOption-${idx}">
+          <label class="form-check-label cursor-pointer" for="quizStartSelectionOption-${idx}">
           ${arr[1]}
           </label>
         </div>`;
@@ -113,8 +115,18 @@ export function displayQuizQuestion(
     buttons.forEach((elm) => {
       elm.addEventListener('click', function (e) {
         const targetElm = e.currentTarget as HTMLButtonElement;
-        const index = parseInt(targetElm.dataset.index ?? '0');
-        displayQuizAnswers(index, currentQuzDataForPractice, null, aQuizData);
+        const answerOfTrueOrFalseBtnIdx = parseInt(
+          targetElm.dataset.index ?? '0'
+        );
+        displayQuizAnswers(
+          answerOfTrueOrFalseBtnIdx,
+          currentQuzDataForPractice,
+          null,
+          aQuizData,
+          aQuizIndex,
+          aQuizDataForPractice.length,
+          aQuizStartQuestionButtonElms
+        );
         aQuizDivElms[1].classList.add('d-none');
         aQuizDivElms[2].classList.remove('d-none');
       });
@@ -130,7 +142,15 @@ export function displayQuizQuestion(
           values.push([elm.checked, String(elm.dataset.value)]);
         });
 
-        displayQuizAnswers(null, currentQuzDataForPractice, values, aQuizData);
+        displayQuizAnswers(
+          null,
+          currentQuzDataForPractice,
+          values,
+          aQuizData,
+          aQuizIndex,
+          aQuizDataForPractice.length,
+          aQuizStartQuestionButtonElms
+        );
         aQuizDivElms[1].classList.add('d-none');
         aQuizDivElms[2].classList.remove('d-none');
       }
@@ -152,25 +172,28 @@ const quizStartAccuracyRateSpanElm = document.querySelector(
 );
 
 const displayQuizAnswers = (
-  aIndex: number | null,
-  aCurrentQuzDataForPractice: Inputs,
+  aAnswerOfTrueOrFalseBtnIdx: number | null,
+  aCurrentQuizDataForPractice: Inputs,
   aVlues: [boolean, string][] | null,
-  aQuizData: Map<number, Inputs>
+  aQuizData: Map<number, Inputs>,
+  aQuizIndex: number,
+  aQuizDataForPracticeLength: number,
+  aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
 ) => {
   const answerResult =
-    aCurrentQuzDataForPractice.type === 'trueOrFalse'
-      ? labelForQuestionAnswer[aCurrentQuzDataForPractice.answer]
-      : getAnswerOfSelectionForDisplay(aCurrentQuzDataForPractice);
+    aCurrentQuizDataForPractice.type === 'trueOrFalse'
+      ? labelForQuestionAnswer[aCurrentQuizDataForPractice.answer]
+      : getAnswerOfSelectionForDisplay(aCurrentQuizDataForPractice);
 
   if (quizStartAnswerSpanElm) {
     quizStartAnswerSpanElm.innerHTML = answerResult;
   }
 
   const isCorrectAnswer =
-    aCurrentQuzDataForPractice.type === 'trueOrFalse'
-      ? aIndex === aCurrentQuzDataForPractice.answer
+    aCurrentQuizDataForPractice.type === 'trueOrFalse'
+      ? aAnswerOfTrueOrFalseBtnIdx === aCurrentQuizDataForPractice.answer
       : JSON.stringify(aVlues) ===
-        JSON.stringify(aCurrentQuzDataForPractice.options);
+        JSON.stringify(aCurrentQuizDataForPractice.options);
 
   if (quizStartIsCorrectAnswerElm) {
     quizStartIsCorrectAnswerElm.innerHTML = isCorrectAnswer
@@ -179,27 +202,44 @@ const displayQuizAnswers = (
   }
   if (quizStartExplanationSpanElm) {
     quizStartExplanationSpanElm.innerHTML =
-      aCurrentQuzDataForPractice.explanation;
+      aCurrentQuizDataForPractice.explanation;
   }
 
-  aCurrentQuzDataForPractice.numberOfAnswers += 1;
+  if (aQuizIndex + 1 === aQuizDataForPracticeLength) {
+    aQuizStartQuestionButtonElms[1].classList.add('d-none');
+  } else {
+    aQuizStartQuestionButtonElms[1].classList.remove('d-none');
+  }
+
+  aCurrentQuizDataForPractice.numberOfAnswers += 1;
   if (isCorrectAnswer) {
-    aCurrentQuzDataForPractice.numberOfCorrectAnswers += 1;
+    aCurrentQuizDataForPractice.numberOfCorrectAnswers += 1;
   }
   if (quizStartAccuracyRateSpanElm) {
     quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(
-      aCurrentQuzDataForPractice
+      aCurrentQuizDataForPractice
     );
   }
 
   // update numberOfAnswers and numberOfCorrectAnswers to original data
-  const id = aCurrentQuzDataForPractice.id;
+  const id = aCurrentQuizDataForPractice.id;
   const originalVal = aQuizData.get(id);
   if (originalVal) {
-    originalVal.numberOfAnswers = aCurrentQuzDataForPractice.numberOfAnswers;
+    originalVal.numberOfAnswers = aCurrentQuizDataForPractice.numberOfAnswers;
     originalVal.numberOfCorrectAnswers =
-      aCurrentQuzDataForPractice.numberOfCorrectAnswers;
+      aCurrentQuizDataForPractice.numberOfCorrectAnswers;
     aQuizData.set(id, originalVal);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
   }
 };
+
+export function displayResult(
+  aQuizDataForPractice: Inputs[],
+  aQuizIndex: number,
+  aQuizData: Map<number, Inputs>
+) {
+  console.log({ aQuizDataForPractice });
+  console.log({ aQuizIndex });
+  console.log({ aQuizData });
+  // notes
+}
