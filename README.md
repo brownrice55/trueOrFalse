@@ -72,6 +72,64 @@
 
 <p>上記はデータを保存した後に表示される選択画面。</p>
 
+### ディレクトリ構成
+
+src/
+│ main.ts
+│ style.scss
+├── quizStart/
+│ └── display.ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+├── quizList/
+│ └── display.ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+├── addNew/
+│ └── display.ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+├── categorySettings/
+│ └── display.ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+│ └── .ts
+├── common/
+│ └── .ts
+│ └── .ts
+│ └── form
+│ 　　　└── .ts
+│ 　　　└── .ts
+│ 　　　└── .ts
+│ └── labels
+│ 　　　└── .ts
+│ 　　　└── .ts
+│ 　　　└── .ts
+│ └── modals
+│ 　　　└── .ts
+│ 　　　└── .ts
+│ 　　　└── .ts
+├── types/
+│ └── inputs.type.ts
+│ └── inputsCategory.type.ts
+│ └── labels.type.ts
+│ └── listener.type.ts
+│ └── listenerForShowModalForDelete.type.ts
+│ └── modalForDeleteElms.type.ts
+│ └── modalForPageTransitionElms.type.ts
+│ └── formElementsIrregularIndex3.type.ts
+
 ### モーダルの種類
 
 #### 関数名：showModalForDelete
