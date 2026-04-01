@@ -177,7 +177,7 @@ export function editQuizData(
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
       'true'
     ) {
-      elm.addEventListener('click', function (e) {
+      elm.addEventListener('click', function () {
         const key = parseInt(
           (aListDlElm.parentNode as HTMLElement).dataset.key ?? '1000'
         );
@@ -191,7 +191,6 @@ export function editQuizData(
         }
         setDisabledForListEditBtns(isUnderEdit);
 
-        const targetBtnElm = e.currentTarget;
         if (isUnderEdit) {
           hideOrShowDivElms(
             idx,
@@ -202,10 +201,7 @@ export function editQuizData(
             aDivIdx3DivElms as NodeListOf<HTMLElement>
           );
           elm.textContent = '上書きする';
-
-          if (targetBtnElm) {
-            (targetBtnElm as HTMLButtonElement).disabled = false;
-          }
+          elm.disabled = true;
 
           const cancelBtnElms = document.querySelectorAll('.btn-secondary');
           if (cancelBtnElms) {

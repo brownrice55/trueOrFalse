@@ -261,33 +261,33 @@ export function displayDetail(
     }
   });
 
-  // validation for 2 textareas
+  // validation for 3 textareas
   const textareaElms = document.querySelectorAll('.js-listDl .js-formTextarea');
-  let cancelBtnElm: HTMLButtonElement | null = null;
   textareaElms.forEach((elm, idx) => {
     elm.addEventListener('keyup', function (e: Event) {
-      const targetElm = e.currentTarget as HTMLTextAreaElement;
-      const dtIdx = !idx ? 2 : 4;
+      const targetTextAreaElm = e.currentTarget as HTMLTextAreaElement;
+      const dtIdx = (idx + 1) * 2;
       const buttonElm = aListDtElms[dtIdx].querySelector('button');
-      if (!cancelBtnElm && buttonElm) {
-        const buttons = (buttonElm.parentNode as HTMLElement).querySelectorAll(
-          'button'
-        );
-        cancelBtnElm = buttons[1];
-      }
       if (buttonElm) {
-        if (targetElm && !targetElm.value) {
+        if (targetTextAreaElm && !targetTextAreaElm.value) {
           buttonElm.disabled = true;
-          targetElm.classList.add('border', 'border-danger', 'border-3');
+          targetTextAreaElm.classList.add(
+            'border',
+            'border-danger',
+            'border-3'
+          );
         } else {
           buttonElm.disabled = false;
-          targetElm.classList.remove('border', 'border-danger', 'border-3');
+          targetTextAreaElm.classList.remove(
+            'border',
+            'border-danger',
+            'border-3'
+          );
         }
-      }
-      const key = !idx ? 'question' : 'explanation';
-      if (cancelBtnElm) {
-        cancelBtnElm.disabled =
-          aCurrentVal[key] === targetElm.value ? true : false;
+        const key = !idx ? 'question' : idx === 1 ? 'explanation' : 'notes';
+        if (aCurrentVal[key] === targetTextAreaElm.value) {
+          buttonElm.disabled = true;
+        }
       }
     });
   });

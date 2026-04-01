@@ -13,7 +13,11 @@ import {
   displayQuizQuestion,
   displayResult,
 } from './quizStart/quizStart';
-import { setValidation, getInputValues } from './common/forms/validation';
+import {
+  setValidation,
+  getInputValues,
+  setValidationForDataEntry,
+} from './common/forms/validation';
 import { goToCategoryToSetNewCategory } from './common/utils';
 import {
   getCategoryOptions,
@@ -426,6 +430,15 @@ export function setAddNew(
         aButtonCancelElm
       );
     }
+  });
+
+  formOptionNumberSelectElm?.addEventListener('change', function () {
+    setValidationForDataEntry(
+      'selection',
+      addNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
+      buttonAddNewElm as HTMLButtonElement,
+      formOptionInputsDivElm as HTMLElement
+    );
   });
 }
 
