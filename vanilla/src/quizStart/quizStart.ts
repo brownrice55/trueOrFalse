@@ -191,7 +191,7 @@ const quizStartAccuracyRateSpanElm = document.querySelector(
 const displayQuizAnswers = (
   aAnswerOfTrueOrFalseBtnIdx: number | null,
   aCurrentQuizDataForPractice: InputsForResult,
-  aVlues: [boolean, string][] | null,
+  aValues: [boolean, string][] | null,
   aQuizData: Map<number, Inputs>,
   aQuizIndex: number,
   aQuizDataForPractice: Map<number, InputsForResult>,
@@ -209,7 +209,7 @@ const displayQuizAnswers = (
   const isCorrectAnswer =
     aCurrentQuizDataForPractice.type === 'trueOrFalse'
       ? aAnswerOfTrueOrFalseBtnIdx === aCurrentQuizDataForPractice.answer
-      : JSON.stringify(aVlues) ===
+      : JSON.stringify(aValues) ===
         JSON.stringify(aCurrentQuizDataForPractice.options);
 
   if (quizStartIsCorrectAnswerElm) {

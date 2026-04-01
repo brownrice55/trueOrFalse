@@ -377,9 +377,10 @@ export function setValidationForQuizDetailOfIdx3(aElm: HTMLElement) {
   const formOptionNumberSelectElm = document.querySelector(
     '.js-listDl .js-formOptionNumberSelect'
   );
-  const numberOfOptions = parseInt(
-    (formOptionNumberSelectElm as HTMLSelectElement).value
-  );
+
+  const numberOfOptions = formOptionNumberSelectElm
+    ? parseInt((formOptionNumberSelectElm as HTMLSelectElement).value)
+    : 2;
 
   let array: [boolean, string][] = [];
   checkboxElms.forEach((elm, idx: number) => {
