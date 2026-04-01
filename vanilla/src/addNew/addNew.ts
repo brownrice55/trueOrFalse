@@ -1,46 +1,14 @@
 import { displayList } from '../quizList/quizList';
 import { setCategoryInputs } from '../display';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
+import { getHTMLForOptionInputsOfSelection } from '../common/forms/form';
 import {
-  getHTMLForOptionInputsOfSelection,
-  setAlertForInputField,
-  setValidationForQuizDetailOfIdx3,
-} from '../common/forms/form';
+  setDisabled,
+  setValidationForDataEntry,
+} from '../common/forms/validation';
 import type { InputsCategory } from '../types/inputsCategory.type';
 import type { Inputs } from '../types/inputs.type';
 import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
-
-const setValidationForDataEntry = (
-  aType: string,
-  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
-  aButtonAddNewElm: HTMLButtonElement,
-  aFormOptionInputsDivElm: HTMLElement
-) => {
-  const isInputed = [...aAddNewTextAreaElms].every((elm) => elm.value);
-  setAlertForInputField(
-    aAddNewTextAreaElms as NodeListOf<HTMLTextAreaElement>,
-    isInputed,
-    'textarea'
-  );
-  aButtonAddNewElm.disabled = isInputed ? false : true;
-
-  if (aType === 'selection') {
-    const getDataAfterSettingsValidation = setValidationForQuizDetailOfIdx3(
-      aFormOptionInputsDivElm
-    );
-    const isChecked = getDataAfterSettingsValidation[0];
-    const isInputed2 = getDataAfterSettingsValidation[1];
-    const duplicateValuesIndices = getDataAfterSettingsValidation[2];
-
-    aButtonAddNewElm.disabled =
-      isInputed &&
-      isChecked &&
-      isInputed2 &&
-      !(duplicateValuesIndices as number[]).length
-        ? false
-        : true;
-  }
-};
 
 export function switchType(
   aAddNewTypeSelectElm: HTMLElement,
@@ -262,113 +230,4 @@ export function saveQuizData(
       aSectionElms
     );
   });
-}
-
-export function setDisabled(
-  aAddNewTypeSelectElm: HTMLSelectElement,
-  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement> | null,
-  aFormOptionInputsDivElm: HTMLElement,
-  aButtonAddNewElm: HTMLButtonElement | null,
-  aElms: string,
-  aEvent: string,
-  aCurrentVal: Inputs | null
-) {
-  const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
-    '.js-formOptionsCheckbox'
-  );
-  const inputTextElms = aFormOptionInputsDivElm.querySelectorAll(
-    '.js-formOptionsInputText'
-  );
-
-  const elms: NodeListOf<Element> | null =
-    aElms === 'textarea'
-      ? aAddNewTextAreaElms
-      : aElms === 'checkbox'
-        ? checkboxElms
-        : inputTextElms;
-
-  if (elms) {
-    for (const elm of elms) {
-      elm.addEventListener(aEvent, function () {
-        const type = aAddNewTypeSelectElm.value;
-
-        if (aButtonAddNewElm && aAddNewTextAreaElms) {
-          setValidationForDataEntry(
-            type,
-            aAddNewTextAreaElms,
-            aButtonAddNewElm,
-            aFormOptionInputsDivElm
-          );
-        } else {
-          const getDataAfterSettingsValidation =
-            setValidationForQuizDetailOfIdx3(aFormOptionInputsDivElm);
-          const isChecked = getDataAfterSettingsValidation[0];
-          const isInputed = getDataAfterSettingsValidation[1];
-          const duplicateValuesIndices = getDataAfterSettingsValidation[2];
-          const numberOfOptions = getDataAfterSettingsValidation[3];
-          const options = getDataAfterSettingsValidation[4];
-
-          const listDlElm = document.querySelector('.js-listDl');
-          const listDtElms = listDlElm?.querySelectorAll('dt');
-          if (listDtElms) {
-            const buttonElms = listDtElms[1].querySelectorAll('button');
-            buttonElms[0].disabled =
-              (aCurrentVal?.numberOfOptions !== numberOfOptions ||
-                JSON.stringify(aCurrentVal?.options) !==
-                  JSON.stringify(options)) &&
-              isInputed &&
-              isChecked &&
-              !(duplicateValuesIndices as number[]).length
-                ? false
-                : true;
-          }
-        }
-
-        if (aElms === 'checkbox') {
-          (elm as HTMLInputElement).dataset.checktemporary = String(
-            (elm as HTMLInputElement).checked
-          );
-        } else if (aElms === 'inputText') {
-          (elm as HTMLInputElement).dataset.texttemporary = (
-            elm as HTMLInputElement
-          ).value;
-        }
-      });
-    }
-  }
-}
-
-export function setValidation(
-  aAddNewTypeSelectElm: HTMLSelectElement,
-  aButtonAddNewElm: HTMLButtonElement,
-  aAddNewTextAreaElms: NodeListOf<HTMLTextAreaElement>,
-  aFormOptionInputsDivElm: HTMLElement
-) {
-  setDisabled(
-    aAddNewTypeSelectElm,
-    aAddNewTextAreaElms,
-    aFormOptionInputsDivElm,
-    aButtonAddNewElm,
-    'textarea',
-    'keyup',
-    null
-  );
-  setDisabled(
-    aAddNewTypeSelectElm,
-    aAddNewTextAreaElms,
-    aFormOptionInputsDivElm,
-    aButtonAddNewElm,
-    'checkbox',
-    'click',
-    null
-  );
-  setDisabled(
-    aAddNewTypeSelectElm,
-    aAddNewTextAreaElms,
-    aFormOptionInputsDivElm,
-    aButtonAddNewElm,
-    'inputText',
-    'keyup',
-    null
-  );
 }

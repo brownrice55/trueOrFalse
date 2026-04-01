@@ -3,7 +3,7 @@ import { setCategoryInputs } from '../display';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
-} from '../common/inputValidation';
+} from '../common/forms/validation';
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData,

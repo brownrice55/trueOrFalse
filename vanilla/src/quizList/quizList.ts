@@ -5,9 +5,11 @@ import {
   getEachValueForDivIndex0,
   setDivIndex1FormForQuizDetailIdx0Category,
   getFormElements,
-  setValidationForQuizDetailOfIdx3,
 } from '../common/forms/form';
-import { setDisabled } from '../addNew/addNew';
+import {
+  setDisabled,
+  setValidationForQuizDetailOfIdx3,
+} from '../common/forms/validation';
 import { showModalForDelete } from '../common/modals/modal';
 import { resetEditQuizBtns } from '../common/utils';
 import { getAccuracyRate } from '../common/utils';
@@ -222,7 +224,8 @@ export function displayDetail(
             aCurrentVal
           );
           setValidationForQuizDetailOfIdx3(
-            formOptionInputsDivElm as HTMLElement
+            formOptionInputsDivElm as HTMLElement,
+            'quizList'
           );
         });
 
@@ -287,35 +290,6 @@ export function displayDetail(
           aCurrentVal[key] === targetElm.value ? true : false;
       }
     });
-  });
-}
-
-export function resetQuizDetail(
-  aElm: HTMLButtonElement,
-  aIdx: number,
-  aCurrentVal: Inputs,
-  aQuizCategory: Map<number, InputsCategory>,
-  aListDdElms: NodeListOf<HTMLElement>,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
-  aListEditBtnElms: NodeListOf<HTMLButtonElement>
-) {
-  let isUnderEdit = false;
-  setDisabledForListEditBtns(isUnderEdit);
-  aElm.textContent = '編集する';
-
-  if (aIdx === 3 || aIdx === 7) {
-    // ******
-    console.log(aQuizCategory);
-    console.log(aCurrentVal);
-    console.log(aCurrentValKeys);
-    console.log(aListDdElms);
-    console.log(aSectionElms);
-  } else {
-    // ******
-  }
-  aListEditBtnElms.forEach((elm) => {
-    elm.dataset.adjustment = 'true';
   });
 }
 

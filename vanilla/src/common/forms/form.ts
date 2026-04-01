@@ -11,10 +11,6 @@ import {
   labelForPriority,
   labelForQuestionAnswer,
 } from '../labels/labels';
-import {
-  getInputValues,
-  setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
-} from '../inputValidation';
 import { goToCategoryToSetNewCategory } from '../utils';
 export function getCategoryOptions(
   aQuizCategory: Map<number, InputsCategory>,
@@ -131,23 +127,6 @@ export function getHTMLForOptionInputsOfSelection(
               </div>`;
     });
   return html;
-}
-
-export function setAlertForInputField(
-  aElms: NodeListOf<Element>,
-  aIsInputed: boolean,
-  aType: string
-) {
-  aElms.forEach((elm) => {
-    const targetValue =
-      aType === 'checkbox'
-        ? (elm as HTMLInputElement).checked
-        : (elm as HTMLInputElement | HTMLTextAreaElement).value;
-    elm.classList.remove('border', 'border-danger', 'border-3');
-    if (!targetValue && !aIsInputed) {
-      elm.classList.add('border', 'border-danger', 'border-3');
-    }
-  });
 }
 
 export function getAnswerOfSelectionForDisplay(aCurrentVal: Inputs) {
@@ -338,64 +317,5 @@ export function getFormElements(
   return [
     formElements as string[],
     formElementsIrregularIndex3 as FormElementsIrregularIndex3Type,
-  ];
-}
-
-export function setValidationForQuizDetailOfIdx3(aElm: HTMLElement) {
-  const checkboxElms = aElm.querySelectorAll('.js-formOptionsCheckbox');
-  const inputTextElms = aElm.querySelectorAll('.js-formOptionsInputText');
-  const isChecked = [...checkboxElms].some(
-    (elm) => (elm as HTMLInputElement).checked
-  );
-  const isInputed2 = [...inputTextElms].every(
-    (elm) => (elm as HTMLInputElement).value
-  );
-
-  setAlertForInputField(
-    checkboxElms as NodeListOf<HTMLInputElement>,
-    isChecked,
-    'checkbox'
-  );
-
-  const inputValues: string[] = getInputValues(
-    inputTextElms as NodeListOf<HTMLInputElement>,
-    true
-  );
-  const duplicateValuesIndices =
-    setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices(
-      inputValues,
-      inputTextElms as NodeListOf<HTMLInputElement>
-    );
-  if (!duplicateValuesIndices.length) {
-    setAlertForInputField(
-      inputTextElms as NodeListOf<HTMLInputElement>,
-      isInputed2,
-      'inputText'
-    );
-  }
-
-  const formOptionNumberSelectElm = document.querySelector(
-    '.js-listDl .js-formOptionNumberSelect'
-  );
-
-  const numberOfOptions = formOptionNumberSelectElm
-    ? parseInt((formOptionNumberSelectElm as HTMLSelectElement).value)
-    : 2;
-
-  let array: [boolean, string][] = [];
-  checkboxElms.forEach((elm, idx: number) => {
-    array.push([
-      (elm as HTMLInputElement).checked,
-      (inputTextElms[idx] as HTMLInputElement).value,
-    ]);
-  });
-  const options = array;
-
-  return [
-    isChecked,
-    isInputed2,
-    duplicateValuesIndices,
-    numberOfOptions,
-    options,
   ];
 }

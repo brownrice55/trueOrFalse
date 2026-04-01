@@ -6,20 +6,15 @@ import {
   editOrDeleteCategoryName,
   addCategoryInput,
 } from './categorySettings/categorySettings';
-import {
-  switchType,
-  setOptionInputs,
-  saveQuizData,
-  setValidation,
-} from './addNew/addNew';
+import { switchType, setOptionInputs, saveQuizData } from './addNew/addNew';
 import {
   setQuizStartForm,
   getQuizDataForPractice,
   displayQuizQuestion,
   displayResult,
 } from './quizStart/quizStart';
+import { setValidation, getInputValues } from './common/forms/validation';
 import { goToCategoryToSetNewCategory } from './common/utils';
-import { getInputValues } from './common/inputValidation';
 import {
   getCategoryOptions,
   getTypeOptions,
