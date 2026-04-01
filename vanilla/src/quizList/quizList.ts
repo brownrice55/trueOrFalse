@@ -291,6 +291,23 @@ export function displayDetail(
       }
     });
   });
+
+  // validation for 2 selects
+  const selectElms = document.querySelectorAll('.js-listDl .js-formSelect');
+  const selectElmIndices = [0, 5];
+  const keyIndices = ['category', 'priority'];
+  selectElms.forEach((elm, idx) => {
+    elm.addEventListener('change', function (e: Event) {
+      const targetSelectElm = e.currentTarget as HTMLTextAreaElement;
+      const dtIdx = selectElmIndices[idx];
+      const buttonElm = aListDtElms[dtIdx].querySelector('button');
+      if (buttonElm) {
+        const key = keyIndices[idx];
+        buttonElm.disabled =
+          aCurrentVal[key as keyof Inputs] === targetSelectElm.value;
+      }
+    });
+  });
 }
 
 const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {

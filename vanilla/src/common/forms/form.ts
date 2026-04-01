@@ -254,12 +254,12 @@ export function getFormElements(
 ) {
   const formElements: string[] = aCurrentVal
     ? [
-        `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm, true)}</select>`,
+        `<select class="form-select js-formSelect" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm, true)}</select>`,
         `<select class="form-select js-detailType" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type, false)}</select>`,
         getTextArea(aCurrentVal.question, 'detailQuestion'),
         '',
         getTextArea(aCurrentVal.explanation, 'detailExplanation'),
-        `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
+        `<select class="form-select js-formSelect" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
         getTextArea(aCurrentVal.notes, 'detailNotes'),
       ]
     : [''];
