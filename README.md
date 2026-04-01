@@ -74,6 +74,7 @@
 
 ### ディレクトリ構成
 
+```
 src/
 │ main.ts
 │ display.ts
@@ -106,6 +107,7 @@ src/
 │ └── modalForDeleteElms.type.ts
 │ └── modalForPageTransitionElms.type.ts
 │ └── formElementsIrregularIndex3.type.ts
+```
 
 ### モーダルの種類
 
