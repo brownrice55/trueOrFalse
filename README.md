@@ -76,53 +76,30 @@
 
 src/
 │ main.ts
+│ display.ts
 │ style.scss
 ├── quizStart/
-│ └── display.ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
+│ └── quizStart.ts
 ├── quizList/
-│ └── display.ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
+│ └── quizList.ts
 ├── addNew/
-│ └── display.ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
+│ └── addNew.ts
 ├── categorySettings/
-│ └── display.ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
-│ └── .ts
+│ └── categorySettings.ts
 ├── common/
-│ └── .ts
-│ └── .ts
-│ └── form
-│ 　　　└── .ts
-│ 　　　└── .ts
-│ 　　　└── .ts
+│ └── dataManagement.ts
+│ └── utils.ts
+│ └── forms
+│ 　　　└── form.ts
+│ 　　　└── validation.ts
 │ └── labels
-│ 　　　└── .ts
-│ 　　　└── .ts
-│ 　　　└── .ts
+│ 　　　└── labels.ts
 │ └── modals
-│ 　　　└── .ts
-│ 　　　└── .ts
-│ 　　　└── .ts
+│ 　　　└── modal.ts
 ├── types/
 │ └── inputs.type.ts
 │ └── inputsCategory.type.ts
+│ └── inputsForResult.type.ts
 │ └── labels.type.ts
 │ └── listener.type.ts
 │ └── listenerForShowModalForDelete.type.ts
