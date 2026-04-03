@@ -7,10 +7,7 @@ import {
   setDivIndex1FormForQuizDetailIdx0Category,
   getFormElements,
 } from '../common/forms/form';
-import {
-  setDisabled,
-  setValidationForQuizDetailOfIdx3,
-} from '../common/forms/validation';
+import { setDisabled } from '../common/forms/validation';
 import { showModalForDelete } from '../common/modals/modal';
 import { resetEditQuizBtns } from '../common/utils';
 import { getAccuracyRate } from '../common/utils';
@@ -90,6 +87,40 @@ export function setDisabledForListEditBtns(aIsUnderEdit: boolean) {
   });
 }
 
+const setValidationForIdx3SelectionPartOfQuizDetail = (
+  aNumberOfOptions: number,
+  aFormOptionInputsDivElm: HTMLElement,
+  aType: string,
+  aCurrentVal: Inputs | null,
+  aDetailTypeElm: HTMLSelectElement | null
+) => {
+  (aFormOptionInputsDivElm as HTMLElement).innerHTML =
+    getHTMLForOptionInputsOfSelection(
+      aNumberOfOptions,
+      aFormOptionInputsDivElm as HTMLElement,
+      aType,
+      aCurrentVal
+    );
+  setDisabled(
+    aDetailTypeElm as HTMLSelectElement,
+    null,
+    aFormOptionInputsDivElm as HTMLElement,
+    null,
+    'checkbox',
+    'click',
+    aCurrentVal
+  );
+  setDisabled(
+    aDetailTypeElm as HTMLSelectElement,
+    null,
+    aFormOptionInputsDivElm as HTMLElement,
+    null,
+    'inputText',
+    'keyup',
+    aCurrentVal
+  );
+};
+
 export function setIdx3SelectionPartOfQuizDetailAndValidation(
   aCurrentVal: Inputs,
   aFormOptionNumberSelectElm: HTMLSelectElement,
@@ -106,30 +137,12 @@ export function setIdx3SelectionPartOfQuizDetailAndValidation(
   }
 
   if (aFormOptionInputsDivElm) {
-    (aFormOptionInputsDivElm as HTMLElement).innerHTML =
-      getHTMLForOptionInputsOfSelection(
-        numberOfOptions,
-        aFormOptionInputsDivElm as HTMLElement,
-        'quizlist',
-        aCurrentVal
-      );
-    setDisabled(
-      aDetailTypeElm as HTMLSelectElement,
-      null,
+    setValidationForIdx3SelectionPartOfQuizDetail(
+      numberOfOptions,
       aFormOptionInputsDivElm as HTMLElement,
-      null,
-      'checkbox',
-      'click',
-      aCurrentVal
-    );
-    setDisabled(
-      aDetailTypeElm as HTMLSelectElement,
-      null,
-      aFormOptionInputsDivElm as HTMLElement,
-      null,
-      'inputText',
-      'keyup',
-      aCurrentVal
+      'quizlist',
+      aCurrentVal,
+      aDetailTypeElm
     );
   }
 }
@@ -204,38 +217,14 @@ export function displayDetail(
         );
 
         formOptionNumberSelectElm?.addEventListener('change', function (e) {
-          (formOptionInputsDivElm as HTMLElement).innerHTML =
-            getHTMLForOptionInputsOfSelection(
-              parseInt((e.currentTarget as HTMLSelectElement).value),
-              formOptionInputsDivElm as HTMLElement,
-              'quizlist',
-              null
-            );
-          // * validation for selection
-          setDisabled(
-            detailTypeElm as HTMLSelectElement,
-            null,
+          setValidationForIdx3SelectionPartOfQuizDetail(
+            parseInt((e.currentTarget as HTMLSelectElement).value),
             formOptionInputsDivElm as HTMLElement,
+            'quizlist',
             null,
-            'checkbox',
-            'click',
-            aCurrentVal
-          );
-          setDisabled(
-            detailTypeElm as HTMLSelectElement,
-            null,
-            formOptionInputsDivElm as HTMLElement,
-            null,
-            'inputText',
-            'keyup',
-            aCurrentVal
-          );
-          setValidationForQuizDetailOfIdx3(
-            formOptionInputsDivElm as HTMLElement,
-            'quizList'
+            detailTypeElm
           );
         });
-
         //selection end
 
         // idx===3 end

@@ -105,15 +105,18 @@ export function getHTMLForOptionInputsOfSelection(
   }
 
   let html = '';
-  let checked = '';
   Array(aNumber)
     .fill('')
     .forEach((_, idx) => {
       if (!temporaryValues[idx]) {
         temporaryValues[idx] = [false, ''];
       }
-      checked =
+      const checked =
         temporaryValues[idx] && temporaryValues[idx][0] ? 'checked' : '';
+      const alertClassName =
+        temporaryValues[idx] && temporaryValues[idx][1]
+          ? ''
+          : ' border border-danger border-3';
       html += `<div class="input-group mb-3">
                 <div class="input-group-text">
                   <input id="${aPrefix}-option${idx + 1}" 
@@ -121,7 +124,7 @@ export function getHTMLForOptionInputsOfSelection(
                     type="checkbox" ${checked} data-checktemporary="${temporaryValues[idx][0] ?? ''}"
                   />
                 </div>
-                <input id="${aPrefix}-option${idx + 1}-2"  type="text" class="js-formOptionsInputText form-control"
+                <input id="${aPrefix}-option${idx + 1}-2"  type="text" class="js-formOptionsInputText form-control${alertClassName}"
                     value="${temporaryValues[idx][1] ?? ''}" data-texttemporary="${temporaryValues[idx][1] ?? ''}" />
               </div>`;
     });
