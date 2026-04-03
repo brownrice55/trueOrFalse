@@ -6,7 +6,7 @@ import {
   displayList,
   setDisabledForListEditBtns,
   getUpdatedCurrentVal,
-  setIdx3PartOfQuizDetail,
+  setIdx3SelectionPartOfQuizDetailAndValidation,
 } from '../quizList/quizList';
 import { getEachValueForDivIndex0 } from '../common/forms/form';
 import type { Inputs } from '../types/inputs.type';
@@ -133,7 +133,7 @@ const hideOrShowDivElms = (
   }
 };
 
-const resetIdx3Form = (aCurrentVal: Inputs) => {
+export function resetIdx3Form(aCurrentVal: Inputs) {
   // trueOrFalse
   const formAnswerRadioElms = document.querySelectorAll('.js-formAnswerRadio');
   const checkedIndex = aCurrentVal.answer === 0 ? 0 : 1;
@@ -147,13 +147,13 @@ const resetIdx3Form = (aCurrentVal: Inputs) => {
     '.js-listDl  .js-formOptionInputsDiv'
   );
   const detailTypeElm = document.querySelector('.js-listDl  .js-detailType');
-  setIdx3PartOfQuizDetail(
+  setIdx3SelectionPartOfQuizDetailAndValidation(
     aCurrentVal,
     formOptionNumberSelectElm as HTMLSelectElement,
     formOptionInputsDivElm as HTMLElement,
     detailTypeElm as HTMLSelectElement
   );
-};
+}
 
 export function editQuizData(
   aQuizData: Map<number, Inputs>,
@@ -192,6 +192,7 @@ export function editQuizData(
         setDisabledForListEditBtns(isUnderEdit);
 
         if (isUnderEdit) {
+          resetIdx3Form(currentVal as Inputs);
           hideOrShowDivElms(
             idx,
             divElms,
@@ -232,7 +233,7 @@ export function editQuizData(
               divElms,
               aDivIdx3Elms as NodeListOf<HTMLElement>,
               isUnderEdit,
-              '',
+              currentVal!.type,
               aDivIdx3DivElms as NodeListOf<HTMLElement>
             );
 
@@ -261,7 +262,7 @@ export function editQuizData(
                 resetIdx3Form(currentVal as Inputs);
               }
             } else if (idx === 3) {
-              resetIdx3Form(currentVal as Inputs);
+              // resetIdx3Form(currentVal as Inputs);
             } else {
               const textareaElm = divElms[1].querySelector('textarea');
               if (textareaElm && currentVal) {
@@ -344,7 +345,7 @@ export function editQuizData(
             divElms,
             aDivIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
-            '',
+            currentVal!.type,
             aDivIdx3DivElms as NodeListOf<HTMLElement>
           );
 

@@ -4,6 +4,10 @@
 $colorBg: #fff;
 body {
   background: $colorBg;
+  color: #ccc;
+}
+button {
+  color: #ccc !important;
 }
 
 .section {

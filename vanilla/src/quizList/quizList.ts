@@ -1,4 +1,5 @@
 import { setCategoryInputs } from '../display';
+import { resetIdx3Form } from './setEvent';
 import { getDataFromLocalStorage } from '../common/dataManagement';
 import {
   getHTMLForOptionInputsOfSelection,
@@ -89,7 +90,7 @@ export function setDisabledForListEditBtns(aIsUnderEdit: boolean) {
   });
 }
 
-export function setIdx3PartOfQuizDetail(
+export function setIdx3SelectionPartOfQuizDetailAndValidation(
   aCurrentVal: Inputs,
   aFormOptionNumberSelectElm: HTMLSelectElement,
   aFormOptionInputsDivElm: HTMLElement,
@@ -154,6 +155,8 @@ export function displayDetail(
   const formElementsIrregularIndex3 =
     formElementsArray[1] as FormElementsIrregularIndex3Type;
 
+  let detailTypeElm: HTMLSelectElement | null = null;
+
   aCurrentValKeys.forEach((_, idx: number) => {
     const divElms = aListDdElms[idx].querySelectorAll('div');
 
@@ -174,6 +177,7 @@ export function displayDetail(
         divDivElms[0].innerHTML = formElementsIrregularIndex3['trueOrFalse'];
         divDivElms[1].innerHTML = formElementsIrregularIndex3['selection'];
 
+        // trueOrFalse start
         const formAnswerRadioElms = document.querySelectorAll(
           '.js-formAnswerRadio'
         );
@@ -188,9 +192,11 @@ export function displayDetail(
         const formOptionInputsDivElm = divElms[1].querySelector(
           '.js-formOptionInputsDiv'
         );
-        const detailTypeElm = document.querySelector('.js-detailType');
 
-        setIdx3PartOfQuizDetail(
+        detailTypeElm = document.querySelector<HTMLSelectElement>(
+          '.js-listDl .js-detailType'
+        );
+        setIdx3SelectionPartOfQuizDetailAndValidation(
           aCurrentVal,
           formOptionNumberSelectElm as HTMLSelectElement,
           formOptionInputsDivElm as HTMLElement,
@@ -205,6 +211,7 @@ export function displayDetail(
               'quizlist',
               null
             );
+          // * validation for selection
           setDisabled(
             detailTypeElm as HTMLSelectElement,
             null,
@@ -305,6 +312,47 @@ export function displayDetail(
         const key = keyIndices[idx];
         buttonElm.disabled =
           aCurrentVal[key as keyof Inputs] === targetSelectElm.value;
+      }
+    });
+  });
+
+  // validation for idx1 & idx3
+  // idx1
+
+  const editButton1Elm = aListDtElms[1].querySelector('button');
+  const editButton3Elm = aListDtElms[3].querySelector('button');
+  let targetSelectElm = null;
+  let isTypeChanged = false;
+  detailTypeElm = document.querySelector<HTMLSelectElement>(
+    '.js-listDl .js-detailType'
+  );
+  if (detailTypeElm !== null) {
+    detailTypeElm.addEventListener('change', function (e: Event) {
+      resetIdx3Form(aCurrentVal);
+      targetSelectElm = e.currentTarget as HTMLTextAreaElement;
+      if (editButton1Elm) {
+        isTypeChanged = aCurrentVal.type !== targetSelectElm.value;
+        editButton1Elm.disabled = !isTypeChanged;
+      }
+    });
+  }
+
+  // idx3
+  const formAnswerRadioElms = document.querySelectorAll(
+    '.js-listDl .js-formAnswerRadio'
+  );
+  formAnswerRadioElms.forEach((elm) => {
+    elm.addEventListener('click', function (e) {
+      if (!isTypeChanged) {
+        const targetEditBtnElm =
+          editButton1Elm?.textContent === '上書きする'
+            ? editButton1Elm
+            : editButton3Elm;
+        const targetRadioElm = e.currentTarget as HTMLInputElement;
+        if (targetEditBtnElm) {
+          targetEditBtnElm.disabled =
+            aCurrentVal.answer === parseInt(targetRadioElm.value);
+        }
       }
     });
   });
