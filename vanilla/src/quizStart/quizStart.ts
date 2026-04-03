@@ -48,12 +48,34 @@ const getCurrentVals = (aQuizData: Map<number, Inputs>) => {
   const randomIndices = getRandomIndexArray(keys.length);
   let currentVals: Map<number, InputsForResult> = new Map();
   keys.forEach((_, idx) => {
-    const currentVal = aQuizData.get(
-      keys[randomIndices[idx]]
-    ) as InputsForResult;
+    const currentVal = aQuizData.get(keys[randomIndices[idx]]) as Inputs;
+    const newVal: InputsForResult = {
+      id: 0,
+      type: '',
+      question: '',
+      answer: 0,
+      numberOfOptions: 0,
+      options: [[false, '']],
+      explanation: '',
+      notes: '',
+      isCorrectAnswer: false,
+      answerForDisplay: '',
+    };
     if (currentVal) {
-      currentVal.isCorrectAnswer = false;
-      currentVals.set(idx, currentVal);
+      newVal.id = currentVal.id;
+      newVal.question = currentVal.question;
+      newVal.type = currentVal.type;
+      newVal.answer = currentVal.answer;
+      newVal.numberOfOptions = currentVal.numberOfOptions;
+      newVal.options = currentVal.options;
+      newVal.answerForDisplay =
+        currentVal.type === 'trueOrFalse'
+          ? labelForQuestionAnswer[currentVal.answer]
+          : getAnswerOfSelectionForDisplay(currentVal);
+      newVal.explanation = currentVal.explanation;
+      newVal.notes = currentVal.notes;
+      newVal.isCorrectAnswer = false;
+      currentVals.set(idx, newVal);
     }
   });
   return currentVals;
@@ -142,13 +164,9 @@ export function displayQuizAnswers(
   aQuizDataForPractice: Map<number, InputsForResult>,
   aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
 ) {
-  const answerResult =
-    aCurrentQuizDataForPractice.type === 'trueOrFalse'
-      ? labelForQuestionAnswer[aCurrentQuizDataForPractice.answer]
-      : getAnswerOfSelectionForDisplay(aCurrentQuizDataForPractice);
-
   if (quizStartAnswerSpanElm) {
-    quizStartAnswerSpanElm.innerHTML = answerResult;
+    quizStartAnswerSpanElm.innerHTML =
+      aCurrentQuizDataForPractice.answerForDisplay;
   }
 
   const isCorrectAnswer =
@@ -207,7 +225,7 @@ export function displayQuizResult() {
               <p>
                 問題${idx + 1}（${val.isCorrectAnswer ? '正解' : '不正解'}）<br />
                 ${val.question}<br />
-                ${val.answer}<br />
+                ${val.answerForDisplay}<br />
                 ${val.explanation}
                 ${val.notes ? '<br />' + val.notes : ''}
               </p>
