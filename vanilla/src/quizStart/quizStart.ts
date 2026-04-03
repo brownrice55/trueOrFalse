@@ -93,17 +93,17 @@ export function displayQuizQuestion(
   aQuizData: Map<number, Inputs>,
   aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
 ) {
-  const currentQuzDataForPractice = aQuizDataForPractice.get(aQuizIndex);
-  if (quizStartQuestionElm && currentQuzDataForPractice) {
-    quizStartQuestionElm.innerHTML = currentQuzDataForPractice.question;
+  const currentQuizDataForPractice = aQuizDataForPractice.get(aQuizIndex);
+  if (quizStartQuestionElm && currentQuizDataForPractice) {
+    quizStartQuestionElm.innerHTML = currentQuizDataForPractice.question;
   }
 
   if (
-    currentQuzDataForPractice &&
-    currentQuzDataForPractice.type === 'selection'
+    currentQuizDataForPractice &&
+    currentQuizDataForPractice.type === 'selection'
   ) {
     let result = '';
-    currentQuzDataForPractice.options.forEach((arr, idx) => {
+    currentQuizDataForPractice.options.forEach((arr, idx) => {
       result += `<div class="form-check form-check-inline mb-3 my-3">
           <input class="form-check-input" type="checkbox" value="" id="quizStartSelectionOption-${idx}" data-value="${arr[1]}">
           <label class="form-check-label cursor-pointer" for="quizStartSelectionOption-${idx}">
@@ -117,16 +117,16 @@ export function displayQuizQuestion(
   }
 
   const typeIndices =
-    currentQuzDataForPractice &&
-    currentQuzDataForPractice.type === 'trueOrFalse'
+    currentQuizDataForPractice &&
+    currentQuizDataForPractice.type === 'trueOrFalse'
       ? [0, 1]
       : [1, 0];
   quizQuestionBtnContDivElms[typeIndices[0]].classList.remove('d-none');
   quizQuestionBtnContDivElms[typeIndices[1]].classList.add('d-none');
 
   if (
-    currentQuzDataForPractice &&
-    currentQuzDataForPractice.type === 'trueOrFalse'
+    currentQuizDataForPractice &&
+    currentQuizDataForPractice.type === 'trueOrFalse'
   ) {
     const buttons = quizQuestionBtnContDivElms[0].querySelectorAll('button');
     buttons.forEach((elm) => {
@@ -137,7 +137,7 @@ export function displayQuizQuestion(
         );
         displayQuizAnswers(
           answerOfTrueOrFalseBtnIdx,
-          currentQuzDataForPractice,
+          currentQuizDataForPractice,
           null,
           aQuizData,
           aQuizIndex,
@@ -161,7 +161,7 @@ export function displayQuizQuestion(
 
         displayQuizAnswers(
           null,
-          currentQuzDataForPractice as InputsForResult,
+          currentQuizDataForPractice as InputsForResult,
           values,
           aQuizData,
           aQuizIndex,
@@ -249,7 +249,7 @@ const displayQuizAnswers = (
   }
 };
 
-export function displayResult() {
+export function displayQuizResult() {
   const quizDataForPractice = getDataFromLocalStorage('quizDataForPractice');
 
   let result = '';

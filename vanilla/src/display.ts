@@ -11,7 +11,7 @@ import {
   setQuizStartForm,
   getQuizDataForPractice,
   displayQuizQuestion,
-  displayResult,
+  displayQuizResult,
 } from './quizStart/quizStart';
 import {
   setValidation,
@@ -495,6 +495,7 @@ export function setQuizStart(
       elm.addEventListener('click', function () {
         // save notes ***** later
         if (idx === 1) {
+          // when clicking the '次の問題を解く' button
           displayQuizQuestion(
             quizDataForPractice,
             quizIndex + 1,
@@ -506,8 +507,9 @@ export function setQuizStart(
           quizDivElms[1].classList.remove('d-none');
           quizDivElms[2].classList.add('d-none');
         } else {
+          // when clicking the '終了する' button
           // go to the result page
-          displayResult();
+          displayQuizResult();
           quizDivElms[2].classList.add('d-none');
           quizDivElms[3].classList.remove('d-none');
         }
