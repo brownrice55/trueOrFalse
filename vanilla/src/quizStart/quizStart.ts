@@ -83,17 +83,10 @@ const quizQuestionBtnContDivElms = document.querySelectorAll(
 
 const quizQuestionSelectionOptionsDivElm =
   quizQuestionBtnContDivElms[1].querySelector('div');
-const quizQuestionSelectionOptionsButtonElm =
-  quizQuestionBtnContDivElms[1].querySelector('button');
 
 export function displayQuizQuestion(
-  aQuizDataForPractice: Map<number, InputsForResult>,
-  aQuizIndex: number,
-  aQuizDivElms: NodeListOf<HTMLElement>,
-  aQuizData: Map<number, Inputs>,
-  aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
+  currentQuizDataForPractice: InputsForResult
 ) {
-  const currentQuizDataForPractice = aQuizDataForPractice.get(aQuizIndex);
   if (quizStartQuestionElm && currentQuizDataForPractice) {
     quizStartQuestionElm.innerHTML = currentQuizDataForPractice.question;
   }
@@ -103,14 +96,16 @@ export function displayQuizQuestion(
     currentQuizDataForPractice.type === 'selection'
   ) {
     let result = '';
-    currentQuizDataForPractice.options.forEach((arr, idx) => {
-      result += `<div class="form-check form-check-inline mb-3 my-3">
+    currentQuizDataForPractice.options.forEach(
+      (arr: [boolean, string], idx: number) => {
+        result += `<div class="form-check form-check-inline mb-3 my-3">
           <input class="form-check-input" type="checkbox" value="" id="quizStartSelectionOption-${idx}" data-value="${arr[1]}">
           <label class="form-check-label cursor-pointer" for="quizStartSelectionOption-${idx}">
           ${arr[1]}
           </label>
         </div>`;
-    });
+      }
+    );
     if (quizQuestionSelectionOptionsDivElm) {
       quizQuestionSelectionOptionsDivElm.innerHTML = result;
     }
@@ -123,56 +118,6 @@ export function displayQuizQuestion(
       : [1, 0];
   quizQuestionBtnContDivElms[typeIndices[0]].classList.remove('d-none');
   quizQuestionBtnContDivElms[typeIndices[1]].classList.add('d-none');
-
-  if (
-    currentQuizDataForPractice &&
-    currentQuizDataForPractice.type === 'trueOrFalse'
-  ) {
-    const buttons = quizQuestionBtnContDivElms[0].querySelectorAll('button');
-    buttons.forEach((elm) => {
-      elm.addEventListener('click', function (e) {
-        const targetElm = e.currentTarget as HTMLButtonElement;
-        const answerOfTrueOrFalseBtnIdx = parseInt(
-          targetElm.dataset.index ?? '0'
-        );
-        displayQuizAnswers(
-          answerOfTrueOrFalseBtnIdx,
-          currentQuizDataForPractice,
-          null,
-          aQuizData,
-          aQuizIndex,
-          aQuizDataForPractice,
-          aQuizStartQuestionButtonElms
-        );
-        aQuizDivElms[1].classList.add('d-none');
-        aQuizDivElms[2].classList.remove('d-none');
-      });
-    });
-  } else {
-    quizQuestionSelectionOptionsButtonElm?.addEventListener(
-      'click',
-      function () {
-        const checkboxElms =
-          quizQuestionSelectionOptionsDivElm?.querySelectorAll('input');
-        let values: [boolean, string][] = [];
-        checkboxElms?.forEach((elm) => {
-          values.push([elm.checked, String(elm.dataset.value)]);
-        });
-
-        displayQuizAnswers(
-          null,
-          currentQuizDataForPractice as InputsForResult,
-          values,
-          aQuizData,
-          aQuizIndex,
-          aQuizDataForPractice,
-          aQuizStartQuestionButtonElms
-        );
-        aQuizDivElms[1].classList.add('d-none');
-        aQuizDivElms[2].classList.remove('d-none');
-      }
-    );
-  }
 }
 
 const quizStartAnswerSpanElm = document.querySelector(
@@ -188,7 +133,7 @@ const quizStartAccuracyRateSpanElm = document.querySelector(
   '.js-quizStartAccuracyRateSpan'
 );
 
-const displayQuizAnswers = (
+export function displayQuizAnswers(
   aAnswerOfTrueOrFalseBtnIdx: number | null,
   aCurrentQuizDataForPractice: InputsForResult,
   aValues: [boolean, string][] | null,
@@ -196,7 +141,7 @@ const displayQuizAnswers = (
   aQuizIndex: number,
   aQuizDataForPractice: Map<number, InputsForResult>,
   aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
-) => {
+) {
   const answerResult =
     aCurrentQuizDataForPractice.type === 'trueOrFalse'
       ? labelForQuestionAnswer[aCurrentQuizDataForPractice.answer]
@@ -221,7 +166,6 @@ const displayQuizAnswers = (
     quizStartExplanationSpanElm.innerHTML =
       aCurrentQuizDataForPractice.explanation;
   }
-
   if (aQuizIndex + 1 === aQuizDataForPractice.size) {
     aQuizStartQuestionButtonElms[1].classList.add('d-none');
   } else {
@@ -234,7 +178,9 @@ const displayQuizAnswers = (
   const originalVal = aQuizData.get(id);
   if (originalVal) {
     originalVal.numberOfAnswers += 1;
-    originalVal.numberOfCorrectAnswers += 1;
+    if (isCorrectAnswer) {
+      originalVal.numberOfCorrectAnswers += 1;
+    }
     aQuizData.set(id, originalVal);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
@@ -247,7 +193,7 @@ const displayQuizAnswers = (
       JSON.stringify([...aQuizDataForPractice])
     );
   }
-};
+}
 
 export function displayQuizResult() {
   const quizDataForPractice = getDataFromLocalStorage('quizDataForPractice');

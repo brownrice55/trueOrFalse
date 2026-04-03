@@ -11,6 +11,7 @@ import {
   setQuizStartForm,
   getQuizDataForPractice,
   displayQuizQuestion,
+  displayQuizAnswers,
   displayQuizResult,
 } from './quizStart/quizStart';
 import {
@@ -470,6 +471,7 @@ export function setQuizStart(
   );
   const quizDivElms = document.querySelectorAll('.js-quizDiv');
   let quizIndex: number = 0;
+  let currentQuizDataForPractice: InputsForResult | undefined = undefined;
   if (quizStartFormStartButtonElm) {
     quizStartFormStartButtonElm.addEventListener('click', function () {
       quizDataForPractice = getQuizDataForPractice(
@@ -478,13 +480,11 @@ export function setQuizStart(
         'random'
       ) as Map<number, InputsForResult>;
 
-      displayQuizQuestion(
-        quizDataForPractice,
-        quizIndex,
-        quizDivElms as NodeListOf<HTMLElement>,
-        aQuizData,
-        quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
-      );
+      currentQuizDataForPractice = quizDataForPractice.get(
+        quizIndex
+      ) as InputsForResult;
+
+      displayQuizQuestion(currentQuizDataForPractice as InputsForResult);
       quizDivElms[0].classList.add('d-none');
       quizDivElms[1].classList.remove('d-none');
     });
@@ -496,13 +496,9 @@ export function setQuizStart(
         // save notes ***** later
         if (idx === 1) {
           // when clicking the '次の問題を解く' button
-          displayQuizQuestion(
-            quizDataForPractice,
-            quizIndex + 1,
-            quizDivElms as NodeListOf<HTMLElement>,
-            aQuizData,
-            quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
-          );
+          ++quizIndex;
+          currentQuizDataForPractice = quizDataForPractice.get(quizIndex);
+          displayQuizQuestion(currentQuizDataForPractice as InputsForResult);
           quizDivElms[0].classList.add('d-none');
           quizDivElms[1].classList.remove('d-none');
           quizDivElms[2].classList.add('d-none');
@@ -516,4 +512,56 @@ export function setQuizStart(
       });
     });
   }
+
+  // display answers
+  // when clicking the 'まる' button or the 'ばつ' button for trueOrFalse
+
+  const quizQuestionBtnContDivElms = document.querySelectorAll(
+    '.js-quizQuestionBtnContDiv'
+  );
+  const buttons = quizQuestionBtnContDivElms[0].querySelectorAll('button');
+  buttons.forEach((elm) => {
+    elm.addEventListener('click', function (e) {
+      const targetElm = e.currentTarget as HTMLButtonElement;
+      const answerOfTrueOrFalseBtnIdx = parseInt(
+        targetElm.dataset.index ?? '0'
+      );
+      displayQuizAnswers(
+        answerOfTrueOrFalseBtnIdx,
+        currentQuizDataForPractice as InputsForResult,
+        null,
+        aQuizData,
+        quizIndex,
+        quizDataForPractice,
+        quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
+      );
+      quizDivElms[1].classList.add('d-none');
+      quizDivElms[2].classList.remove('d-none');
+    });
+  });
+
+  // when clicking the '答えを確認する' button for selection
+  const quizQuestionSelectionOptionsDivElm =
+    quizQuestionBtnContDivElms[1].querySelector('div');
+  const quizQuestionSelectionOptionsButtonElm =
+    quizQuestionBtnContDivElms[1].querySelector('button');
+  quizQuestionSelectionOptionsButtonElm?.addEventListener('click', function () {
+    const checkboxElms =
+      quizQuestionSelectionOptionsDivElm?.querySelectorAll('input');
+    let values: [boolean, string][] = [];
+    checkboxElms?.forEach((elm) => {
+      values.push([elm.checked, String(elm.dataset.value)]);
+    });
+    displayQuizAnswers(
+      null,
+      currentQuizDataForPractice as InputsForResult,
+      values,
+      aQuizData,
+      quizIndex,
+      quizDataForPractice,
+      quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
+    );
+    quizDivElms[1].classList.add('d-none');
+    quizDivElms[2].classList.remove('d-none');
+  });
 }
