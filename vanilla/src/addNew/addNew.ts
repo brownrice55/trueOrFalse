@@ -112,6 +112,7 @@ export function saveQuizData(
       notes: '',
       numberOfCorrectAnswers: 0,
       numberOfAnswers: 0,
+      areCorrectAnswers: [],
     };
     newValue.category = aAddNewCategoryElm.value;
     newValue.type = aAddNewTypeSelectElm.value;

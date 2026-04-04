@@ -201,6 +201,9 @@ export function displayQuizAnswers(
     if (isCorrectAnswer) {
       originalVal.numberOfCorrectAnswers += 1;
     }
+    let areCorrectAnswers = originalVal.areCorrectAnswers ?? [];
+    areCorrectAnswers.push(isCorrectAnswer);
+    originalVal.areCorrectAnswers = areCorrectAnswers;
     aQuizData.set(id, originalVal);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 

@@ -257,6 +257,23 @@ export function displayDetail(
     }
   });
 
+  // display the result of practice
+  let result = '<div class="d-flex flex-row mb-3 justify-content-center">';
+  aCurrentVal.areCorrectAnswers.forEach((val, idx) => {
+    result += `<div class="p-1 border">${val ? '正解' : '不正解'}</div>`;
+    if (idx === 9) {
+      result +=
+        '</div><div class="d-flex flex-row mb-3 justify-content-center">';
+    }
+  });
+  result += '</div>';
+  const areCorrectAnswersDivElm = document.querySelector(
+    '.js-areCorrectAnswersDiv'
+  );
+  if (areCorrectAnswersDivElm) {
+    areCorrectAnswersDivElm.innerHTML = result;
+  }
+
   // validation for 3 textareas
   const textareaElms = document.querySelectorAll('.js-listDl .js-formTextarea');
   textareaElms.forEach((elm, idx) => {

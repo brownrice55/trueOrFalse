@@ -11,4 +11,5 @@ export type Inputs = {
   notes: string;
   numberOfCorrectAnswers: number;
   numberOfAnswers: number;
+  areCorrectAnswers: boolean[];
 };

@@ -470,10 +470,11 @@ export function setQuizStart(
     '.js-quizStartFormStartButton'
   );
   const quizDivElms = document.querySelectorAll('.js-quizDiv');
-  let quizIndex: number = 0;
+  let quizIndex: number;
   let currentQuizDataForPractice: InputsForResult | undefined = undefined;
   if (quizStartFormStartButtonElm) {
     quizStartFormStartButtonElm.addEventListener('click', function () {
+      quizIndex = 0;
       quizDataForPractice = getQuizDataForPractice(
         aQuizData,
         (quizStartFormTypeSelectElm as HTMLSelectElement).value,
