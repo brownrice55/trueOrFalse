@@ -567,4 +567,11 @@ export function setQuizStart(
     quizDivElms[1].classList.add('d-none');
     quizDivElms[2].classList.remove('d-none');
   });
+
+  // end
+  const quizStartEndElm = document.querySelector('.js-quizStartEnd');
+  quizStartEndElm?.addEventListener('click', function () {
+    quizDivElms[0].classList.remove('d-none');
+    quizDivElms[3].classList.add('d-none');
+  });
 }
