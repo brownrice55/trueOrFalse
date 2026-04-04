@@ -465,7 +465,7 @@ export function setQuizStart(
     quizStartFormTypeSelectElm as HTMLElement
   );
 
-  let quizDataForPractice: Map<number, InputsForResult> = new Map();
+  let quizDataForPractice: Map<number, InputsForResult> | null = null;
   const quizStartFormStartButtonElm = document.querySelector(
     '.js-quizStartFormStartButton'
   );
@@ -479,11 +479,9 @@ export function setQuizStart(
         (quizStartFormTypeSelectElm as HTMLSelectElement).value,
         'random'
       ) as Map<number, InputsForResult>;
-
       currentQuizDataForPractice = quizDataForPractice.get(
         quizIndex
       ) as InputsForResult;
-
       displayQuizQuestion(currentQuizDataForPractice as InputsForResult);
       quizDivElms[0].classList.add('d-none');
       quizDivElms[1].classList.remove('d-none');
@@ -493,11 +491,10 @@ export function setQuizStart(
   if (quizStartQuestionButtonElms) {
     quizStartQuestionButtonElms.forEach((elm, idx) => {
       elm.addEventListener('click', function () {
-        // save notes ***** later
         if (idx === 1) {
           // when clicking the '次の問題を解く' button
           ++quizIndex;
-          currentQuizDataForPractice = quizDataForPractice.get(quizIndex);
+          currentQuizDataForPractice = quizDataForPractice?.get(quizIndex);
           displayQuizQuestion(currentQuizDataForPractice as InputsForResult);
           quizDivElms[0].classList.add('d-none');
           quizDivElms[1].classList.remove('d-none');
@@ -519,6 +516,10 @@ export function setQuizStart(
   const quizQuestionBtnContDivElms = document.querySelectorAll(
     '.js-quizQuestionBtnContDiv'
   );
+  const quizStartNotesTextAreaElm = document.querySelector(
+    '.js-quizStartNotesTextArea'
+  );
+
   const buttons = quizQuestionBtnContDivElms[0].querySelectorAll('button');
   buttons.forEach((elm) => {
     elm.addEventListener('click', function (e) {
@@ -532,8 +533,9 @@ export function setQuizStart(
         null,
         aQuizData,
         quizIndex,
-        quizDataForPractice,
-        quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
+        quizDataForPractice as Map<number, InputsForResult>,
+        quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>,
+        quizStartNotesTextAreaElm as HTMLTextAreaElement
       );
       quizDivElms[1].classList.add('d-none');
       quizDivElms[2].classList.remove('d-none');
@@ -558,8 +560,9 @@ export function setQuizStart(
       values,
       aQuizData,
       quizIndex,
-      quizDataForPractice,
-      quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>
+      quizDataForPractice as Map<number, InputsForResult>,
+      quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>,
+      quizStartNotesTextAreaElm as HTMLTextAreaElement
     );
     quizDivElms[1].classList.add('d-none');
     quizDivElms[2].classList.remove('d-none');

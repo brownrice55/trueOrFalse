@@ -43,42 +43,30 @@ const getRandomIndexArray = function (aLength: number) {
   return array;
 };
 
-const getCurrentVals = (aQuizData: Map<number, Inputs>) => {
+const retrieveNecessaryData = (aQuizData: Map<number, Inputs>) => {
   const keys = [...aQuizData.keys()];
   const randomIndices = getRandomIndexArray(keys.length);
-  let currentVals: Map<number, InputsForResult> = new Map();
+  const necessaryData: Map<number, InputsForResult> = new Map();
   keys.forEach((_, idx) => {
     const currentVal = aQuizData.get(keys[randomIndices[idx]]) as Inputs;
     const newVal: InputsForResult = {
-      id: 0,
-      type: '',
-      question: '',
-      answer: 0,
-      numberOfOptions: 0,
-      options: [[false, '']],
-      explanation: '',
-      notes: '',
+      id: currentVal.id,
+      type: currentVal.type,
+      question: currentVal.question,
+      answer: currentVal.answer,
+      numberOfOptions: currentVal.numberOfOptions,
+      options: currentVal.options,
+      explanation: currentVal.explanation,
+      notes: currentVal.notes,
       isCorrectAnswer: false,
-      answerForDisplay: '',
-    };
-    if (currentVal) {
-      newVal.id = currentVal.id;
-      newVal.question = currentVal.question;
-      newVal.type = currentVal.type;
-      newVal.answer = currentVal.answer;
-      newVal.numberOfOptions = currentVal.numberOfOptions;
-      newVal.options = currentVal.options;
-      newVal.answerForDisplay =
+      answerForDisplay:
         currentVal.type === 'trueOrFalse'
           ? labelForQuestionAnswer[currentVal.answer]
-          : getAnswerOfSelectionForDisplay(currentVal);
-      newVal.explanation = currentVal.explanation;
-      newVal.notes = currentVal.notes;
-      newVal.isCorrectAnswer = false;
-      currentVals.set(idx, newVal);
-    }
+          : getAnswerOfSelectionForDisplay(currentVal),
+    };
+    necessaryData.set(idx, newVal);
   });
-  return currentVals;
+  return necessaryData;
 };
 
 export function getQuizDataForPractice(
@@ -86,16 +74,14 @@ export function getQuizDataForPractice(
   aType: string,
   aPriority: string
 ) {
-  let currentVals;
+  let quizDataForPractice;
   if (aType === 'TrueOrFalse') {
   } else if (aType === 'selection') {
   } else {
-    if (aPriority === 'random') {
-      currentVals = getCurrentVals(aQuizData);
-    }
   }
-  currentVals = getCurrentVals(aQuizData); //temp
-  return currentVals;
+  console.log(aPriority); //later
+  quizDataForPractice = retrieveNecessaryData(aQuizData); //temp
+  return quizDataForPractice;
 }
 
 const quizStartQuestionElm = document.querySelector('.js-quizStartQuestion');
@@ -107,18 +93,17 @@ const quizQuestionSelectionOptionsDivElm =
   quizQuestionBtnContDivElms[1].querySelector('div');
 
 export function displayQuizQuestion(
-  currentQuizDataForPractice: InputsForResult
+  aCurrentQuizDataForPractice: InputsForResult
 ) {
-  if (quizStartQuestionElm && currentQuizDataForPractice) {
-    quizStartQuestionElm.innerHTML = currentQuizDataForPractice.question;
+  if (quizStartQuestionElm && aCurrentQuizDataForPractice) {
+    quizStartQuestionElm.innerHTML = aCurrentQuizDataForPractice.question;
   }
-
   if (
-    currentQuizDataForPractice &&
-    currentQuizDataForPractice.type === 'selection'
+    aCurrentQuizDataForPractice &&
+    aCurrentQuizDataForPractice.type === 'selection'
   ) {
     let result = '';
-    currentQuizDataForPractice.options.forEach(
+    aCurrentQuizDataForPractice.options.forEach(
       (arr: [boolean, string], idx: number) => {
         result += `<div class="form-check form-check-inline mb-3 my-3">
           <input class="form-check-input" type="checkbox" value="" id="quizStartSelectionOption-${idx}" data-value="${arr[1]}">
@@ -134,8 +119,8 @@ export function displayQuizQuestion(
   }
 
   const typeIndices =
-    currentQuizDataForPractice &&
-    currentQuizDataForPractice.type === 'trueOrFalse'
+    aCurrentQuizDataForPractice &&
+    aCurrentQuizDataForPractice.type === 'trueOrFalse'
       ? [0, 1]
       : [1, 0];
   quizQuestionBtnContDivElms[typeIndices[0]].classList.remove('d-none');
@@ -162,7 +147,8 @@ export function displayQuizAnswers(
   aQuizData: Map<number, Inputs>,
   aQuizIndex: number,
   aQuizDataForPractice: Map<number, InputsForResult>,
-  aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>
+  aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>,
+  aQuizStartNotesTextAreaElm: HTMLTextAreaElement
 ) {
   if (quizStartAnswerSpanElm) {
     quizStartAnswerSpanElm.innerHTML =
@@ -189,12 +175,28 @@ export function displayQuizAnswers(
   } else {
     aQuizStartQuestionButtonElms[1].classList.remove('d-none');
   }
+
+  // save data start
   aCurrentQuizDataForPractice.isCorrectAnswer = isCorrectAnswer;
+  aCurrentQuizDataForPractice.notes = (
+    aQuizStartNotesTextAreaElm as HTMLTextAreaElement
+  ).value;
+  const keys = [...aQuizDataForPractice.keys()];
+  aQuizDataForPractice.set(keys[aQuizIndex], aCurrentQuizDataForPractice);
+  localStorage.setItem(
+    'quizDataForPractice',
+    JSON.stringify([...aQuizDataForPractice])
+  );
+  if (aQuizStartNotesTextAreaElm) {
+    (aQuizStartNotesTextAreaElm as HTMLTextAreaElement).value = '';
+  }
+  // save data end
 
   // update numberOfAnswers and numberOfCorrectAnswers to original data
   const id = aCurrentQuizDataForPractice.id;
   const originalVal = aQuizData.get(id);
   if (originalVal) {
+    originalVal.notes = aCurrentQuizDataForPractice.notes;
     originalVal.numberOfAnswers += 1;
     if (isCorrectAnswer) {
       originalVal.numberOfCorrectAnswers += 1;
@@ -205,11 +207,6 @@ export function displayQuizAnswers(
     if (quizStartAccuracyRateSpanElm) {
       quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(originalVal);
     }
-
-    localStorage.setItem(
-      'quizDataForPractice',
-      JSON.stringify([...aQuizDataForPractice])
-    );
   }
 }
 
