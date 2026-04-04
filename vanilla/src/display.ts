@@ -502,7 +502,7 @@ export function setQuizStart(
         } else {
           // when clicking the '終了する' button
           // go to the result page
-          displayQuizResult();
+          displayQuizResult(quizIndex);
           quizDivElms[2].classList.add('d-none');
           quizDivElms[3].classList.remove('d-none');
         }

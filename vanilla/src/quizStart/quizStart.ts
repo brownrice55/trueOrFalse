@@ -210,15 +210,16 @@ export function displayQuizAnswers(
   }
 }
 
-export function displayQuizResult() {
+export function displayQuizResult(aQuizIndex: number) {
   const quizDataForPractice = getDataFromLocalStorage('quizDataForPractice');
 
   let result = '';
   let numberOfCorrectAnswers = 0;
   quizDataForPractice.forEach((val, idx) => {
-    result += `<div class="${
-      val.isCorrectAnswer ? 'bg-success-subtle' : 'bg-secondary-subtle'
-    } mb-4 p-4 pb-3">
+    if (idx <= aQuizIndex) {
+      result += `<div class="${
+        val.isCorrectAnswer ? 'bg-success-subtle' : 'bg-secondary-subtle'
+      } mb-4 p-4 pb-3">
               <p>
                 問題${idx + 1}（${val.isCorrectAnswer ? '正解' : '不正解'}）<br />
                 ${val.question}<br />
@@ -227,8 +228,9 @@ export function displayQuizResult() {
                 ${val.notes ? '<br />' + val.notes : ''}
               </p>
             </div>`;
-    if (val.isCorrectAnswer) {
-      ++numberOfCorrectAnswers;
+      if (val.isCorrectAnswer) {
+        ++numberOfCorrectAnswers;
+      }
     }
   });
   const quizStartResultElm = document.querySelector('.js-quizStartResult');
