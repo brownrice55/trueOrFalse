@@ -170,46 +170,30 @@ export function displayQuizAnswers(
     quizStartExplanationSpanElm.innerHTML =
       aCurrentQuizDataForPractice.explanation;
   }
+  if (aQuizStartNotesTextAreaElm) {
+    (aQuizStartNotesTextAreaElm as HTMLTextAreaElement).innerHTML =
+      aCurrentQuizDataForPractice.notes;
+  }
+
   if (aQuizIndex + 1 === aQuizDataForPractice.size) {
     aQuizStartQuestionButtonElms[1].classList.add('d-none');
   } else {
     aQuizStartQuestionButtonElms[1].classList.remove('d-none');
   }
 
-  // save data start
-  aCurrentQuizDataForPractice.isCorrectAnswer = isCorrectAnswer;
-  aCurrentQuizDataForPractice.notes = (
-    aQuizStartNotesTextAreaElm as HTMLTextAreaElement
-  ).value;
-  const keys = [...aQuizDataForPractice.keys()];
-  aQuizDataForPractice.set(keys[aQuizIndex], aCurrentQuizDataForPractice);
-  localStorage.setItem(
-    'quizDataForPractice',
-    JSON.stringify([...aQuizDataForPractice])
-  );
-  if (aQuizStartNotesTextAreaElm) {
-    (aQuizStartNotesTextAreaElm as HTMLTextAreaElement).value = '';
-  }
-  // save data end
-
   // update numberOfAnswers and numberOfCorrectAnswers to original data
+  // reconsideration*****
   const id = aCurrentQuizDataForPractice.id;
   const originalVal = aQuizData.get(id);
-  if (originalVal) {
-    originalVal.notes = aCurrentQuizDataForPractice.notes;
-    originalVal.numberOfAnswers += 1;
-    if (isCorrectAnswer) {
-      originalVal.numberOfCorrectAnswers += 1;
-    }
+  if (isCorrectAnswer && originalVal) {
+    originalVal.numberOfCorrectAnswers += 1;
     let areCorrectAnswers = originalVal.areCorrectAnswers ?? [];
     areCorrectAnswers.push(isCorrectAnswer);
     originalVal.areCorrectAnswers = areCorrectAnswers;
-    aQuizData.set(id, originalVal);
-    localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
-
-    if (quizStartAccuracyRateSpanElm) {
-      quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(originalVal);
-    }
+  }
+  // reconsideration*****
+  if (quizStartAccuracyRateSpanElm && originalVal) {
+    quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(originalVal);
   }
 }
 
@@ -244,6 +228,7 @@ export function displayQuizResult(aQuizIndex: number) {
   const quizStartAccuracyRateResultSpanElm = document.querySelector(
     '.js-quizStartAccuracyRateResultSpan'
   );
+  // ******* fix
   if (quizStartAccuracyRateResultSpanElm) {
     quizStartAccuracyRateResultSpanElm.innerHTML = String(
       Math.round((numberOfCorrectAnswers / quizDataForPractice.size) * 100)

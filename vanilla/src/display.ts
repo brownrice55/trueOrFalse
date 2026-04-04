@@ -492,6 +492,45 @@ export function setQuizStart(
   if (quizStartQuestionButtonElms) {
     quizStartQuestionButtonElms.forEach((elm, idx) => {
       elm.addEventListener('click', function () {
+        // save data: isActive and notes start
+        const isCorrectAnswer =
+          (quizStartNotesTextAreaElm as HTMLTextAreaElement).dataset
+            .iscorrectanswer === 'true';
+        if (currentQuizDataForPractice && quizDataForPractice) {
+          currentQuizDataForPractice.isCorrectAnswer = isCorrectAnswer;
+          currentQuizDataForPractice.notes = (
+            quizStartNotesTextAreaElm as HTMLTextAreaElement
+          ).value;
+          const keys = [...quizDataForPractice.keys()];
+          quizDataForPractice.set(keys[quizIndex], currentQuizDataForPractice);
+          localStorage.setItem(
+            'quizDataForPractice',
+            JSON.stringify([...quizDataForPractice])
+          );
+        }
+        // save data: isActive and notes end
+
+        // update numberOfAnswers and numberOfCorrectAnswers to original data start
+        if (currentQuizDataForPractice) {
+          const id = currentQuizDataForPractice.id;
+          const originalVal = aQuizData.get(id);
+          if (originalVal) {
+            // reconsideration*****
+            originalVal.notes = currentQuizDataForPractice.notes;
+            originalVal.numberOfAnswers += 1;
+            if (isCorrectAnswer) {
+              originalVal.numberOfCorrectAnswers += 1;
+            }
+            let areCorrectAnswers = originalVal.areCorrectAnswers ?? [];
+            areCorrectAnswers.push(isCorrectAnswer);
+            originalVal.areCorrectAnswers = areCorrectAnswers;
+            // reconsideration*****
+            aQuizData.set(id, originalVal);
+            localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+          }
+        }
+        // update numberOfAnswers and numberOfCorrectAnswers to original data end
+
         if (idx === 1) {
           // when clicking the '次の問題を解く' button
           ++quizIndex;

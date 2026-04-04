@@ -261,7 +261,7 @@ export function displayDetail(
   let result = '<div class="d-flex flex-row mb-3 justify-content-center">';
   aCurrentVal.areCorrectAnswers.forEach((val, idx) => {
     result += `<div class="p-1 border">${val ? '正解' : '不正解'}</div>`;
-    if (idx === 9) {
+    if (idx % 10 === 9) {
       result +=
         '</div><div class="d-flex flex-row mb-3 justify-content-center">';
     }
