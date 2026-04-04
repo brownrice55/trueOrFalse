@@ -473,12 +473,19 @@ export function setQuizStart(
   let quizIndex: number;
   let currentQuizDataForPractice: InputsForResult | undefined = undefined;
   if (quizStartFormStartButtonElm) {
+    const prioritySelectElm = document.querySelector('.js-prioritySelect');
+    const numberOfQuestionsSelectElm = document.querySelector(
+      '.js-numberOfQuestionsSelect'
+    );
+
     quizStartFormStartButtonElm.addEventListener('click', function () {
       quizIndex = 0;
       quizDataForPractice = getQuizDataForPractice(
         aQuizData,
-        (quizStartFormTypeSelectElm as HTMLSelectElement).value,
-        'random'
+        (quizStartFormCategorySelectElm as HTMLSelectElement).value, //category
+        (quizStartFormTypeSelectElm as HTMLSelectElement).value, //type
+        (numberOfQuestionsSelectElm as HTMLSelectElement).value, //numberOfQuestions
+        (prioritySelectElm as HTMLSelectElement).value //priority
       ) as Map<number, InputsForResult>;
       currentQuizDataForPractice = quizDataForPractice.get(
         quizIndex

@@ -43,45 +43,59 @@ const getRandomIndexArray = function (aLength: number) {
   return array;
 };
 
-const retrieveNecessaryData = (aQuizData: Map<number, Inputs>) => {
+const retrieveNecessaryData = (
+  aQuizData: Map<number, Inputs>,
+  aCategory: string,
+  aType: string,
+  aNumberOfQuestions: string
+) => {
+  console.log(aNumberOfQuestions);
   const keys = [...aQuizData.keys()];
   const randomIndices = getRandomIndexArray(keys.length);
   const necessaryData: Map<number, InputsForResult> = new Map();
   keys.forEach((_, idx) => {
     const currentVal = aQuizData.get(keys[randomIndices[idx]]) as Inputs;
-    const newVal: InputsForResult = {
-      id: currentVal.id,
-      type: currentVal.type,
-      question: currentVal.question,
-      answer: currentVal.answer,
-      numberOfOptions: currentVal.numberOfOptions,
-      options: currentVal.options,
-      explanation: currentVal.explanation,
-      notes: currentVal.notes,
-      isCorrectAnswer: false,
-      answerForDisplay:
-        currentVal.type === 'trueOrFalse'
-          ? labelForQuestionAnswer[currentVal.answer]
-          : getAnswerOfSelectionForDisplay(currentVal),
-    };
-    necessaryData.set(idx, newVal);
+    if (
+      (aCategory === currentVal.category || aCategory === 'unspecified') &&
+      (aType === currentVal.type || aType === 'unspecified')
+    ) {
+      const newVal: InputsForResult = {
+        id: currentVal.id,
+        type: currentVal.type,
+        question: currentVal.question,
+        answer: currentVal.answer,
+        numberOfOptions: currentVal.numberOfOptions,
+        options: currentVal.options,
+        explanation: currentVal.explanation,
+        notes: currentVal.notes,
+        isCorrectAnswer: false,
+        answerForDisplay:
+          currentVal.type === 'trueOrFalse'
+            ? labelForQuestionAnswer[currentVal.answer]
+            : getAnswerOfSelectionForDisplay(currentVal),
+      };
+      necessaryData.set(idx, newVal);
+    }
   });
   return necessaryData;
 };
 
 export function getQuizDataForPractice(
   aQuizData: Map<number, Inputs>,
+  aCategory: string,
   aType: string,
+  aNumberOfQuestions: string,
   aPriority: string
 ) {
-  let quizDataForPractice;
-  if (aType === 'TrueOrFalse') {
-  } else if (aType === 'selection') {
-  } else {
+  if (aPriority === 'random') {
+    return retrieveNecessaryData(
+      aQuizData,
+      aCategory,
+      aType,
+      aNumberOfQuestions
+    );
   }
-  console.log(aPriority); //later
-  quizDataForPractice = retrieveNecessaryData(aQuizData); //temp
-  return quizDataForPractice;
+  // return in the case of aPriority === 'highPriority'
 }
 
 const quizStartQuestionElm = document.querySelector('.js-quizStartQuestion');

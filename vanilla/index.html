@@ -69,7 +69,11 @@
             </div>
             <div class="my-3">
               <label for="number" class="form-label">問題数</label>
-              <select class="form-select" aria-label="number" id="number">
+              <select
+                class="form-select js-numberOfQuestionsSelect"
+                aria-label="number"
+                id="number"
+              >
                 <option value="all" selected>全て</option>
                 <option value="10" selected>10</option>
               </select>
@@ -77,7 +81,7 @@
             <div class="my-3">
               <label for="priority-start" class="form-label">優先順位</label>
               <select
-                class="form-select"
+                class="form-select js-prioritySelect"
                 aria-label="priority"
                 id="priority-start"
               >
