@@ -2,6 +2,7 @@ import {
   getCategoryOptions,
   getTypeOptions,
   getAnswerOfSelectionForDisplay,
+  getNumberOfQuestionsOptions,
 } from '../common/forms/form';
 import { labelForQuestionAnswer } from '../common/labels/labels';
 import { getAccuracyRate } from '../common/utils';
@@ -11,10 +12,12 @@ import type { InputsCategory } from '../types/inputsCategory.type';
 import type { InputsForResult } from '../types/inputsForResult.type';
 
 export function setQuizStartForm(
+  aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aButtonSaveElm: HTMLButtonElement,
-  aQuizStartFormCategorySelectElm: HTMLElement,
-  aQuizStartFormTypeSelectElm: HTMLElement
+  aQuizStartFormCategorySelectElm: HTMLSelectElement,
+  aQuizStartFormTypeSelectElm: HTMLSelectElement,
+  aNumberOfQuestionsSelectElm: HTMLSelectElement
 ) {
   if (aQuizStartFormCategorySelectElm) {
     aQuizStartFormCategorySelectElm.innerHTML = getCategoryOptions(
@@ -27,6 +30,12 @@ export function setQuizStartForm(
 
   if (aQuizStartFormTypeSelectElm) {
     aQuizStartFormTypeSelectElm.innerHTML = getTypeOptions('trueOrFalse', true);
+  }
+
+  if (aNumberOfQuestionsSelectElm) {
+    aNumberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
+      aQuizData.size
+    );
   }
 }
 

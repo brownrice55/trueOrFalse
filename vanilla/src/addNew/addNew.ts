@@ -1,7 +1,10 @@
 import { displayList } from '../quizList/quizList';
 import { setCategoryInputs } from '../display';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
-import { getHTMLForOptionInputsOfSelection } from '../common/forms/form';
+import {
+  getHTMLForOptionInputsOfSelection,
+  getNumberOfQuestionsOptions,
+} from '../common/forms/form';
 import {
   setDisabled,
   setValidationForDataEntry,
@@ -230,5 +233,15 @@ export function saveQuizData(
       '問題',
       aSectionElms
     );
+
+    // set the number of questions for the quiz start page
+    const numberOfQuestionsSelectElm = document.querySelector(
+      '.js-numberOfQuestionsSelect'
+    );
+    if (numberOfQuestionsSelectElm) {
+      numberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
+        aQuizData.size
+      );
+    }
   });
 }
