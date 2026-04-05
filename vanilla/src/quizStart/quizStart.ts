@@ -260,17 +260,22 @@ export function displayQuizAnswers(
     aQuizStartQuestionButtonElms[1].classList.remove('d-none');
   }
 
-  // update numberOfAnswers and numberOfCorrectAnswers to original data
-  // reconsideration*****
+  // save data: numberOfAnswers, numberOfCorrectAnswers and areCorrectAnswers to the original data / start
   const id = aCurrentQuizDataForPractice.id;
   const originalVal = aQuizData.get(id);
-  if (isCorrectAnswer && originalVal) {
-    originalVal.numberOfCorrectAnswers += 1;
+  if (originalVal) {
+    originalVal.numberOfAnswers += 1;
+    if (isCorrectAnswer) {
+      originalVal.numberOfCorrectAnswers += 1;
+    }
     let areCorrectAnswers = originalVal.areCorrectAnswers ?? [];
     areCorrectAnswers.push(isCorrectAnswer);
     originalVal.areCorrectAnswers = areCorrectAnswers;
+    aQuizData.set(id, originalVal);
+    localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
   }
-  // reconsideration*****
+  // save data: numberOfAnswers, numberOfCorrectAnswers and areCorrectAnswers to the original data / end
+
   if (quizStartAccuracyRateSpanElm && originalVal) {
     quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(originalVal);
   }
@@ -280,7 +285,7 @@ export function displayQuizResult(aQuizIndex: number) {
   const quizDataForPractice = getDataFromLocalStorage('quizDataForPractice');
 
   let result = '';
-  let numberOfCorrectAnswers = 0;
+  let numberOfCorrectAnswersForPractice = 0;
   quizDataForPractice.forEach((val, idx) => {
     if (idx <= aQuizIndex) {
       result += `<div class="${
@@ -295,7 +300,7 @@ export function displayQuizResult(aQuizIndex: number) {
               </p>
             </div>`;
       if (val.isCorrectAnswer) {
-        ++numberOfCorrectAnswers;
+        ++numberOfCorrectAnswersForPractice;
       }
     }
   });
@@ -307,10 +312,12 @@ export function displayQuizResult(aQuizIndex: number) {
   const quizStartAccuracyRateResultSpanElm = document.querySelector(
     '.js-quizStartAccuracyRateResultSpan'
   );
-  // ******* fix
+
   if (quizStartAccuracyRateResultSpanElm) {
     quizStartAccuracyRateResultSpanElm.innerHTML = String(
-      Math.round((numberOfCorrectAnswers / quizDataForPractice.size) * 100)
+      Math.round(
+        (numberOfCorrectAnswersForPractice / quizDataForPractice.size) * 100
+      )
     );
   }
 }

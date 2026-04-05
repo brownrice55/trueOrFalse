@@ -502,7 +502,7 @@ export function setQuizStart(
   if (quizStartQuestionButtonElms) {
     quizStartQuestionButtonElms.forEach((elm, idx) => {
       elm.addEventListener('click', function () {
-        // save data: isActive and notes start
+        // save data: isCorrectAnswer and notes to the practice data / start
         const isCorrectAnswer =
           (quizStartNotesTextAreaElm as HTMLTextAreaElement).dataset
             .iscorrectanswer === 'true';
@@ -518,28 +518,19 @@ export function setQuizStart(
             JSON.stringify([...quizDataForPractice])
           );
         }
-        // save data: isActive and notes end
+        // save data: isCorrectAnswer and notes to the practice data / end
 
-        // update numberOfAnswers and numberOfCorrectAnswers to original data start
+        // save data: notes to the original data / start
         if (currentQuizDataForPractice) {
           const id = currentQuizDataForPractice.id;
           const originalVal = aQuizData.get(id);
           if (originalVal) {
-            // reconsideration*****
             originalVal.notes = currentQuizDataForPractice.notes;
-            originalVal.numberOfAnswers += 1;
-            if (isCorrectAnswer) {
-              originalVal.numberOfCorrectAnswers += 1;
-            }
-            let areCorrectAnswers = originalVal.areCorrectAnswers ?? [];
-            areCorrectAnswers.push(isCorrectAnswer);
-            originalVal.areCorrectAnswers = areCorrectAnswers;
-            // reconsideration*****
             aQuizData.set(id, originalVal);
             localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
           }
         }
-        // update numberOfAnswers and numberOfCorrectAnswers to original data end
+        // save data: notes to the original data / end
 
         if (idx === 1) {
           // when clicking the '次の問題を解く' button
