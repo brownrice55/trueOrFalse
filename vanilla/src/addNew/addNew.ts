@@ -147,7 +147,7 @@ export function saveQuizData(
       : [];
     const newId: number = aQuizData.size
       ? keysArray[keysArray.length - 1] + 1
-      : 1;
+      : 0;
     newValue.id = newId;
 
     aQuizData.set(newId, newValue);
@@ -195,7 +195,7 @@ export function saveQuizData(
       'addnew',
       null
     );
-    aAddNewPrioritySelectElm.value = 'high';
+    aAddNewPrioritySelectElm.value = '2';
 
     if (newValue.type === 'selection') {
       aAddNewTypeSelectElm.value = 'trueOrFalse';

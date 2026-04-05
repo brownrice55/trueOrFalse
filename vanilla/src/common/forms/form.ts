@@ -64,14 +64,14 @@ export function getTextArea(aValue: string, aId: string) {
 
 export function getPriorityOptions(aValue: string) {
   let selectedArray =
-    aValue === 'medium'
+    aValue === '1'
       ? ['', ' selected', '']
-      : aValue === 'low'
+      : aValue === '0'
         ? ['', '', ' selected']
         : [' selected', '', ''];
-  return `<option value="high"${selectedArray[0]}>高い</option>
-          <option value="medium"${selectedArray[1]}>普通</option>
-          <option value="low"${selectedArray[2]}>低い</option>`;
+  return `<option value="2"${selectedArray[0]}>高い</option>
+          <option value="1"${selectedArray[1]}>普通</option>
+          <option value="0"${selectedArray[2]}>低い</option>`;
 }
 
 export function getHTMLForOptionInputsOfSelection(

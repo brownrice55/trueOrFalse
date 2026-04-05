@@ -327,7 +327,7 @@ export function setAddNew(
       addNewTypeSelectElm.innerHTML = getTypeOptions('trueOrFalse', false);
     }
     if (addNewPrioritySelectElm) {
-      addNewPrioritySelectElm.innerHTML = getPriorityOptions('high');
+      addNewPrioritySelectElm.innerHTML = getPriorityOptions('2');
     }
 
     const formElementsArray = getFormElements(
@@ -487,6 +487,7 @@ export function setQuizStart(
         (numberOfQuestionsSelectElm as HTMLSelectElement).value, //numberOfQuestions
         (prioritySelectElm as HTMLSelectElement).value //priority
       ) as Map<number, InputsForResult>;
+
       currentQuizDataForPractice = quizDataForPractice.get(
         quizIndex
       ) as InputsForResult;

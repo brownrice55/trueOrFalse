@@ -4,7 +4,7 @@ export type labelForTypeType = {
 };
 
 export type labelForPriorityType = {
-  high: string;
-  medium: string;
-  low: string;
+  '2': string; //high
+  '1': string; //medium
+  '0': string; //low
 };

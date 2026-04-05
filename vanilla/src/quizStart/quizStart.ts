@@ -47,34 +47,51 @@ const retrieveNecessaryData = (
   aQuizData: Map<number, Inputs>,
   aCategory: string,
   aType: string,
-  aNumberOfQuestions: string
+  aNumberOfQuestions: string,
+  aPriority: string
 ) => {
   console.log(aNumberOfQuestions);
-  const keys = [...aQuizData.keys()];
-  const randomIndices = getRandomIndexArray(keys.length);
   const necessaryData: Map<number, InputsForResult> = new Map();
-  keys.forEach((_, idx) => {
-    const currentVal = aQuizData.get(keys[randomIndices[idx]]) as Inputs;
-    if (
-      (aCategory === currentVal.category || aCategory === 'unspecified') &&
-      (aType === currentVal.type || aType === 'unspecified')
-    ) {
-      const newVal: InputsForResult = {
-        id: currentVal.id,
-        type: currentVal.type,
-        question: currentVal.question,
-        answer: currentVal.answer,
-        numberOfOptions: currentVal.numberOfOptions,
-        options: currentVal.options,
-        explanation: currentVal.explanation,
-        notes: currentVal.notes,
-        isCorrectAnswer: false,
-        answerForDisplay:
-          currentVal.type === 'trueOrFalse'
-            ? labelForQuestionAnswer[currentVal.answer]
-            : getAnswerOfSelectionForDisplay(currentVal),
-      };
-      necessaryData.set(idx, newVal);
+  const keys: number[] = [...aQuizData.keys()];
+  const randomIndices: number[] =
+    aPriority === 'random' ? getRandomIndexArray(keys.length) : [];
+
+  const data =
+    aPriority === 'random'
+      ? new Map(aQuizData)
+      : new Map(
+          [...aQuizData.entries()]
+            .sort((a, b) => parseInt(b[1].priority) - parseInt(a[1].priority))
+            .map(([_, val], cnt) => [cnt, val])
+        );
+
+  data.forEach((val: Inputs, idx: number) => {
+    const currentVal =
+      aPriority === 'random'
+        ? (data.get(keys[randomIndices[idx]]) as Inputs)
+        : val;
+    if (currentVal) {
+      if (
+        (aCategory === currentVal.category || aCategory === 'unspecified') &&
+        (aType === currentVal.type || aType === 'unspecified')
+      ) {
+        const newVal: InputsForResult = {
+          id: currentVal.id,
+          type: currentVal.type,
+          question: currentVal.question,
+          answer: currentVal.answer,
+          numberOfOptions: currentVal.numberOfOptions,
+          options: currentVal.options,
+          explanation: currentVal.explanation,
+          notes: currentVal.notes,
+          isCorrectAnswer: false,
+          answerForDisplay:
+            currentVal.type === 'trueOrFalse'
+              ? labelForQuestionAnswer[currentVal.answer]
+              : getAnswerOfSelectionForDisplay(currentVal),
+        };
+        necessaryData.set(idx, newVal);
+      }
     }
   });
   return necessaryData;
@@ -87,15 +104,13 @@ export function getQuizDataForPractice(
   aNumberOfQuestions: string,
   aPriority: string
 ) {
-  if (aPriority === 'random') {
-    return retrieveNecessaryData(
-      aQuizData,
-      aCategory,
-      aType,
-      aNumberOfQuestions
-    );
-  }
-  // return in the case of aPriority === 'highPriority'
+  return retrieveNecessaryData(
+    aQuizData,
+    aCategory,
+    aType,
+    aNumberOfQuestions,
+    aPriority
+  );
 }
 
 const quizStartQuestionElm = document.querySelector('.js-quizStartQuestion');
@@ -187,6 +202,9 @@ export function displayQuizAnswers(
   if (aQuizStartNotesTextAreaElm) {
     (aQuizStartNotesTextAreaElm as HTMLTextAreaElement).innerHTML =
       aCurrentQuizDataForPractice.notes;
+    (
+      aQuizStartNotesTextAreaElm as HTMLTextAreaElement
+    ).dataset.iscorrectanswer = String(isCorrectAnswer);
   }
 
   if (aQuizIndex + 1 === aQuizDataForPractice.size) {

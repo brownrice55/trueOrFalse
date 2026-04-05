@@ -5,7 +5,7 @@ export const labelForType = {
   selection: '選択問題',
 };
 export const labelForPriority = {
-  high: '高い',
-  medium: '普通',
-  low: '低い',
+  '2': '高い',
+  '1': '普通',
+  '0': '低い',
 };
