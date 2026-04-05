@@ -95,7 +95,6 @@ const retrieveNecessaryData = (
   aNumberOfQuestions: string,
   aPriority: string
 ) => {
-  console.log(aNumberOfQuestions);
   const necessaryData: Map<number, InputsForResult> = new Map();
   const keys: number[] = [...aQuizData.keys()];
   const randomIndices: number[] =
@@ -110,6 +109,7 @@ const retrieveNecessaryData = (
             .map(([_, val], cnt) => [cnt, val])
         );
 
+  let cnt = 0;
   data.forEach((val: Inputs, idx: number) => {
     const currentVal =
       aPriority === 'random'
@@ -118,7 +118,8 @@ const retrieveNecessaryData = (
     if (currentVal) {
       if (
         (aCategory === currentVal.category || aCategory === 'unspecified') &&
-        (aType === currentVal.type || aType === 'unspecified')
+        (aType === currentVal.type || aType === 'unspecified') &&
+        (cnt < parseInt(aNumberOfQuestions) || aNumberOfQuestions === 'all')
       ) {
         const newVal: InputsForResult = {
           id: currentVal.id,
@@ -135,7 +136,8 @@ const retrieveNecessaryData = (
               ? labelForQuestionAnswer[currentVal.answer]
               : getAnswerOfSelectionForDisplay(currentVal),
         };
-        necessaryData.set(idx, newVal);
+        necessaryData.set(cnt, newVal);
+        ++cnt;
       }
     }
   });
