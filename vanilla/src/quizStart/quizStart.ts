@@ -37,6 +37,42 @@ export function setQuizStartForm(
       aQuizData.size
     );
   }
+
+  const setSelectForNumberOfQuestions = () => {
+    if (
+      aQuizStartFormCategorySelectElm.value === 'unspecified' &&
+      aQuizStartFormTypeSelectElm.value === 'unspecified'
+    ) {
+      if (aNumberOfQuestionsSelectElm) {
+        aNumberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
+          aQuizData.size
+        );
+      }
+    } else {
+      const numberOfQuestionsArray = [...aQuizData].filter(
+        ([_, val]) =>
+          (val.category == aQuizStartFormCategorySelectElm.value &&
+            val.type == aQuizStartFormTypeSelectElm.value) ||
+          (val.category == 'unspecified' &&
+            val.type == aQuizStartFormTypeSelectElm.value) ||
+          (val.category == aQuizStartFormTypeSelectElm.value &&
+            val.type == 'unspecified')
+      );
+      if (aNumberOfQuestionsSelectElm) {
+        aNumberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
+          numberOfQuestionsArray.length
+        );
+      }
+    }
+  };
+
+  aQuizStartFormCategorySelectElm.addEventListener('change', function () {
+    setSelectForNumberOfQuestions();
+  });
+
+  aQuizStartFormTypeSelectElm.addEventListener('change', function () {
+    setSelectForNumberOfQuestions();
+  });
 }
 
 const getRandomIndexArray = function (aLength: number) {
