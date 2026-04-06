@@ -19,7 +19,8 @@ export function setQuizStartForm(
   aQuizStartFormTypeSelectElm: HTMLSelectElement,
   aNumberOfQuestionsSelectElm: HTMLSelectElement,
   aPrioritySelectElm: HTMLSelectElement,
-  aQuizStartFormStartButtonElm: HTMLButtonElement
+  aQuizStartFormStartButtonElm: HTMLButtonElement,
+  aQuizStartAlertDivElm: HTMLElement
 ) {
   if (aQuizStartFormCategorySelectElm) {
     aQuizStartFormCategorySelectElm.innerHTML = getCategoryOptions(
@@ -38,9 +39,12 @@ export function setQuizStartForm(
     aNumberOfQuestionsSelectElm.innerHTML =
       getNumberOfQuestionsOptionsAndSetValidation(
         aQuizData.size,
+        aQuizStartFormCategorySelectElm,
+        aQuizStartFormTypeSelectElm,
         aNumberOfQuestionsSelectElm,
         aPrioritySelectElm,
-        aQuizStartFormStartButtonElm
+        aQuizStartFormStartButtonElm,
+        aQuizStartAlertDivElm
       );
   }
 
@@ -53,9 +57,12 @@ export function setQuizStartForm(
         aNumberOfQuestionsSelectElm.innerHTML =
           getNumberOfQuestionsOptionsAndSetValidation(
             aQuizData.size,
+            aQuizStartFormCategorySelectElm,
+            aQuizStartFormTypeSelectElm,
             aNumberOfQuestionsSelectElm,
             aPrioritySelectElm,
-            aQuizStartFormStartButtonElm
+            aQuizStartFormStartButtonElm,
+            aQuizStartAlertDivElm
           );
       }
     } else {
@@ -72,9 +79,12 @@ export function setQuizStartForm(
         aNumberOfQuestionsSelectElm.innerHTML =
           getNumberOfQuestionsOptionsAndSetValidation(
             numberOfQuestionsArray.length,
+            aQuizStartFormCategorySelectElm,
+            aQuizStartFormTypeSelectElm,
             aNumberOfQuestionsSelectElm,
             aPrioritySelectElm,
-            aQuizStartFormStartButtonElm
+            aQuizStartFormStartButtonElm,
+            aQuizStartAlertDivElm
           );
       }
     }

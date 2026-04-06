@@ -244,6 +244,9 @@ export function saveQuizData(
           aQuizData.size,
           null,
           null,
+          null,
+          null,
+          null,
           null
         );
     }

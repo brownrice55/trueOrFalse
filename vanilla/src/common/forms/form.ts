@@ -64,9 +64,12 @@ export function getTextArea(aValue: string, aId: string) {
 
 export function getNumberOfQuestionsOptionsAndSetValidation(
   aQuizDataSize: number,
+  aQuizStartFormCategorySelectElm: HTMLSelectElement | null,
+  aQuizStartFormTypeSelectElm: HTMLSelectElement | null,
   aNumberOfQuestionsSelectElm: HTMLSelectElement | null,
   aPrioritySelectElm: HTMLSelectElement | null,
-  aQuizStartFormStartButtonElm: HTMLButtonElement | null
+  aQuizStartFormStartButtonElm: HTMLButtonElement | null,
+  aQuizStartAlertDivElm: HTMLElement | null
 ) {
   let result = '<option value="all" selected>全て</option>';
   for (let cnt = 0; cnt < aQuizDataSize; ++cnt) {
@@ -86,6 +89,25 @@ export function getNumberOfQuestionsOptionsAndSetValidation(
     (aQuizStartFormStartButtonElm as HTMLButtonElement).disabled =
       !aQuizDataSize;
   }
+
+  if (aQuizStartAlertDivElm) {
+    aQuizStartAlertDivElm.textContent = aQuizDataSize
+      ? ''
+      : '問題がありません。条件を変更してください。';
+  }
+
+  const setAlert = (aElm: HTMLSelectElement, aQuizDataSize: number) => {
+    if (aQuizDataSize) {
+      aElm.classList.remove('border', 'border-danger', 'border-3');
+    } else {
+      aElm.classList.add('border', 'border-danger', 'border-3');
+    }
+  };
+  if (aQuizStartFormCategorySelectElm && aQuizStartFormTypeSelectElm) {
+    setAlert(aQuizStartFormCategorySelectElm, aQuizDataSize);
+    setAlert(aQuizStartFormTypeSelectElm, aQuizDataSize);
+  }
+
   // set validation end
   return result;
 }

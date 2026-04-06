@@ -464,6 +464,7 @@ export function setQuizStart(
   const quizStartFormStartButtonElm = document.querySelector(
     '.js-quizStartFormStartButton'
   );
+  const quizStartAlertDivElm = document.querySelector('.js-quizStartAlertDiv');
   const quizStartNotesTextAreaDivElm = document.querySelector(
     '.js-quizStartNotesTextAreaDiv'
   );
@@ -476,7 +477,8 @@ export function setQuizStart(
     quizStartFormTypeSelectElm as HTMLSelectElement,
     numberOfQuestionsSelectElm as HTMLSelectElement,
     prioritySelectElm as HTMLSelectElement,
-    quizStartFormStartButtonElm as HTMLButtonElement
+    quizStartFormStartButtonElm as HTMLButtonElement,
+    quizStartAlertDivElm as HTMLElement
   );
 
   let quizDataForPractice: Map<number, InputsForResult> | null = null;
