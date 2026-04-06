@@ -460,6 +460,9 @@ export function setQuizStart(
   const numberOfQuestionsSelectElm = document.querySelector(
     '.js-numberOfQuestionsSelect'
   );
+  const quizStartNotesTextAreaDivElm = document.querySelector(
+    '.js-quizStartNotesTextAreaDiv'
+  );
 
   setQuizStartForm(
     aQuizData,
@@ -504,12 +507,12 @@ export function setQuizStart(
       elm.addEventListener('click', function () {
         // save data: isCorrectAnswer and notes to the practice data / start
         const isCorrectAnswer =
-          (quizStartNotesTextAreaElm as HTMLTextAreaElement).dataset
+          (quizStartNotesTextAreaDivElm as HTMLElement).dataset
             .iscorrectanswer === 'true';
         if (currentQuizDataForPractice && quizDataForPractice) {
           currentQuizDataForPractice.isCorrectAnswer = isCorrectAnswer;
           currentQuizDataForPractice.notes = (
-            quizStartNotesTextAreaElm as HTMLTextAreaElement
+            quizStartNotesTextAreaDivElm?.childNodes[1] as HTMLTextAreaElement
           ).value;
           const keys = [...quizDataForPractice.keys()];
           quizDataForPractice.set(keys[quizIndex], currentQuizDataForPractice);
@@ -557,9 +560,6 @@ export function setQuizStart(
   const quizQuestionBtnContDivElms = document.querySelectorAll(
     '.js-quizQuestionBtnContDiv'
   );
-  const quizStartNotesTextAreaElm = document.querySelector(
-    '.js-quizStartNotesTextArea'
-  );
 
   const buttons = quizQuestionBtnContDivElms[0].querySelectorAll('button');
   buttons.forEach((elm) => {
@@ -576,7 +576,7 @@ export function setQuizStart(
         quizIndex,
         quizDataForPractice as Map<number, InputsForResult>,
         quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>,
-        quizStartNotesTextAreaElm as HTMLTextAreaElement
+        quizStartNotesTextAreaDivElm as HTMLElement
       );
       quizDivElms[1].classList.add('d-none');
       quizDivElms[2].classList.remove('d-none');
@@ -603,7 +603,7 @@ export function setQuizStart(
       quizIndex,
       quizDataForPractice as Map<number, InputsForResult>,
       quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>,
-      quizStartNotesTextAreaElm as HTMLTextAreaElement
+      quizStartNotesTextAreaDivElm as HTMLElement
     );
     quizDivElms[1].classList.add('d-none');
     quizDivElms[2].classList.remove('d-none');

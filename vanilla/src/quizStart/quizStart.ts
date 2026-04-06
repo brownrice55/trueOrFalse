@@ -224,7 +224,7 @@ export function displayQuizAnswers(
   aQuizIndex: number,
   aQuizDataForPractice: Map<number, InputsForResult>,
   aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>,
-  aQuizStartNotesTextAreaElm: HTMLTextAreaElement
+  aQuizStartNotesTextAreaDivElm: HTMLElement
 ) {
   if (quizStartAnswerSpanElm) {
     quizStartAnswerSpanElm.innerHTML =
@@ -246,12 +246,12 @@ export function displayQuizAnswers(
     quizStartExplanationSpanElm.innerHTML =
       aCurrentQuizDataForPractice.explanation;
   }
-  if (aQuizStartNotesTextAreaElm) {
-    (aQuizStartNotesTextAreaElm as HTMLTextAreaElement).innerHTML =
-      aCurrentQuizDataForPractice.notes;
-    (
-      aQuizStartNotesTextAreaElm as HTMLTextAreaElement
-    ).dataset.iscorrectanswer = String(isCorrectAnswer);
+
+  if (aQuizStartNotesTextAreaDivElm) {
+    aQuizStartNotesTextAreaDivElm.innerHTML = `
+    <textarea class="form-control" id="notes" rows="3">${aCurrentQuizDataForPractice.notes}</textarea>`;
+    (aQuizStartNotesTextAreaDivElm as HTMLElement).dataset.iscorrectanswer =
+      String(isCorrectAnswer);
   }
 
   if (aQuizIndex + 1 === aQuizDataForPractice.size) {
@@ -315,9 +315,7 @@ export function displayQuizResult(aQuizIndex: number) {
 
   if (quizStartAccuracyRateResultSpanElm) {
     quizStartAccuracyRateResultSpanElm.innerHTML = String(
-      Math.round(
-        (numberOfCorrectAnswersForPractice / quizDataForPractice.size) * 100
-      )
+      Math.round((numberOfCorrectAnswersForPractice / (aQuizIndex + 1)) * 100)
     );
   }
 }
