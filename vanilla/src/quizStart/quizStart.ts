@@ -2,7 +2,7 @@ import {
   getCategoryOptions,
   getTypeOptions,
   getAnswerOfSelectionForDisplay,
-  getNumberOfQuestionsOptions,
+  getNumberOfQuestionsOptionsAndSetValidation,
 } from '../common/forms/form';
 import { labelForQuestionAnswer } from '../common/labels/labels';
 import { getAccuracyRate } from '../common/utils';
@@ -17,7 +17,9 @@ export function setQuizStartForm(
   aButtonSaveElm: HTMLButtonElement,
   aQuizStartFormCategorySelectElm: HTMLSelectElement,
   aQuizStartFormTypeSelectElm: HTMLSelectElement,
-  aNumberOfQuestionsSelectElm: HTMLSelectElement
+  aNumberOfQuestionsSelectElm: HTMLSelectElement,
+  aPrioritySelectElm: HTMLSelectElement,
+  aQuizStartFormStartButtonElm: HTMLButtonElement
 ) {
   if (aQuizStartFormCategorySelectElm) {
     aQuizStartFormCategorySelectElm.innerHTML = getCategoryOptions(
@@ -33,9 +35,13 @@ export function setQuizStartForm(
   }
 
   if (aNumberOfQuestionsSelectElm) {
-    aNumberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
-      aQuizData.size
-    );
+    aNumberOfQuestionsSelectElm.innerHTML =
+      getNumberOfQuestionsOptionsAndSetValidation(
+        aQuizData.size,
+        aNumberOfQuestionsSelectElm,
+        aPrioritySelectElm,
+        aQuizStartFormStartButtonElm
+      );
   }
 
   const setSelectForNumberOfQuestions = () => {
@@ -44,24 +50,32 @@ export function setQuizStartForm(
       aQuizStartFormTypeSelectElm.value === 'unspecified'
     ) {
       if (aNumberOfQuestionsSelectElm) {
-        aNumberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
-          aQuizData.size
-        );
+        aNumberOfQuestionsSelectElm.innerHTML =
+          getNumberOfQuestionsOptionsAndSetValidation(
+            aQuizData.size,
+            aNumberOfQuestionsSelectElm,
+            aPrioritySelectElm,
+            aQuizStartFormStartButtonElm
+          );
       }
     } else {
       const numberOfQuestionsArray = [...aQuizData].filter(
         ([_, val]) =>
           (val.category == aQuizStartFormCategorySelectElm.value &&
             val.type == aQuizStartFormTypeSelectElm.value) ||
-          (val.category == 'unspecified' &&
+          (aQuizStartFormCategorySelectElm.value == 'unspecified' &&
             val.type == aQuizStartFormTypeSelectElm.value) ||
-          (val.category == aQuizStartFormTypeSelectElm.value &&
-            val.type == 'unspecified')
+          (val.category == aQuizStartFormCategorySelectElm.value &&
+            aQuizStartFormTypeSelectElm.value == 'unspecified')
       );
       if (aNumberOfQuestionsSelectElm) {
-        aNumberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
-          numberOfQuestionsArray.length
-        );
+        aNumberOfQuestionsSelectElm.innerHTML =
+          getNumberOfQuestionsOptionsAndSetValidation(
+            numberOfQuestionsArray.length,
+            aNumberOfQuestionsSelectElm,
+            aPrioritySelectElm,
+            aQuizStartFormStartButtonElm
+          );
       }
     }
   };

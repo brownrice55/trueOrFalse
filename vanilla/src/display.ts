@@ -460,6 +460,10 @@ export function setQuizStart(
   const numberOfQuestionsSelectElm = document.querySelector(
     '.js-numberOfQuestionsSelect'
   );
+  const prioritySelectElm = document.querySelector('.js-prioritySelect');
+  const quizStartFormStartButtonElm = document.querySelector(
+    '.js-quizStartFormStartButton'
+  );
   const quizStartNotesTextAreaDivElm = document.querySelector(
     '.js-quizStartNotesTextAreaDiv'
   );
@@ -470,19 +474,16 @@ export function setQuizStart(
     aButtonSaveElm,
     quizStartFormCategorySelectElm as HTMLSelectElement,
     quizStartFormTypeSelectElm as HTMLSelectElement,
-    numberOfQuestionsSelectElm as HTMLSelectElement
+    numberOfQuestionsSelectElm as HTMLSelectElement,
+    prioritySelectElm as HTMLSelectElement,
+    quizStartFormStartButtonElm as HTMLButtonElement
   );
 
   let quizDataForPractice: Map<number, InputsForResult> | null = null;
-  const quizStartFormStartButtonElm = document.querySelector(
-    '.js-quizStartFormStartButton'
-  );
   const quizDivElms = document.querySelectorAll('.js-quizDiv');
   let quizIndex: number;
   let currentQuizDataForPractice: InputsForResult | undefined = undefined;
   if (quizStartFormStartButtonElm) {
-    const prioritySelectElm = document.querySelector('.js-prioritySelect');
-
     quizStartFormStartButtonElm.addEventListener('click', function () {
       quizIndex = 0;
       quizDataForPractice = getQuizDataForPractice(

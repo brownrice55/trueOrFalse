@@ -3,7 +3,7 @@ import { setCategoryInputs } from '../display';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
 import {
   getHTMLForOptionInputsOfSelection,
-  getNumberOfQuestionsOptions,
+  getNumberOfQuestionsOptionsAndSetValidation,
 } from '../common/forms/form';
 import {
   setDisabled,
@@ -239,9 +239,13 @@ export function saveQuizData(
       '.js-numberOfQuestionsSelect'
     );
     if (numberOfQuestionsSelectElm) {
-      numberOfQuestionsSelectElm.innerHTML = getNumberOfQuestionsOptions(
-        aQuizData.size
-      );
+      numberOfQuestionsSelectElm.innerHTML =
+        getNumberOfQuestionsOptionsAndSetValidation(
+          aQuizData.size,
+          null,
+          null,
+          null
+        );
     }
   });
 }

@@ -62,13 +62,31 @@ export function getTextArea(aValue: string, aId: string) {
   return `<textarea class="form-control js-formTextarea" id="${aId}" rows="3">${aValue}</textarea>`;
 }
 
-export function getNumberOfQuestionsOptions(aQuizDataSize: number) {
+export function getNumberOfQuestionsOptionsAndSetValidation(
+  aQuizDataSize: number,
+  aNumberOfQuestionsSelectElm: HTMLSelectElement | null,
+  aPrioritySelectElm: HTMLSelectElement | null,
+  aQuizStartFormStartButtonElm: HTMLButtonElement | null
+) {
   let result = '<option value="all" selected>全て</option>';
   for (let cnt = 0; cnt < aQuizDataSize; ++cnt) {
     if (cnt && !((cnt + 1) % 5) && cnt + 1 !== aQuizDataSize) {
       result += `<option value="${cnt + 1}">${cnt + 1}</option>`;
     }
   }
+  // set validation start
+  if (aNumberOfQuestionsSelectElm) {
+    (aNumberOfQuestionsSelectElm as HTMLSelectElement).disabled =
+      !aQuizDataSize;
+  }
+  if (aPrioritySelectElm) {
+    (aPrioritySelectElm as HTMLSelectElement).disabled = !aQuizDataSize;
+  }
+  if (aQuizStartFormStartButtonElm) {
+    (aQuizStartFormStartButtonElm as HTMLButtonElement).disabled =
+      !aQuizDataSize;
+  }
+  // set validation end
   return result;
 }
 
