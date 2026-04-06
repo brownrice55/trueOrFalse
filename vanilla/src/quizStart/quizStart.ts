@@ -193,7 +193,10 @@ const quizQuestionSelectionOptionsDivElm =
   quizQuestionBtnContDivElms[1].querySelector('div');
 
 export function displayQuizQuestion(
-  aCurrentQuizDataForPractice: InputsForResult
+  aCurrentQuizDataForPractice: InputsForResult,
+  aQuizStartQuestionNumberDivElm: NodeListOf<HTMLElement>,
+  aQuizIndex: number,
+  aQuizDataForPracticeLength: number
 ) {
   if (quizStartQuestionElm && aCurrentQuizDataForPractice) {
     quizStartQuestionElm.innerHTML = aCurrentQuizDataForPractice.question;
@@ -225,6 +228,11 @@ export function displayQuizQuestion(
       : [1, 0];
   quizQuestionBtnContDivElms[typeIndices[0]].classList.remove('d-none');
   quizQuestionBtnContDivElms[typeIndices[1]].classList.add('d-none');
+
+  // display the question number
+  aQuizStartQuestionNumberDivElm.forEach((elm) => {
+    elm.innerHTML = `${aQuizIndex + 1}問目/${aQuizDataForPracticeLength}問`;
+  });
 }
 
 const quizStartAnswerSpanElm = document.querySelector(
@@ -317,10 +325,10 @@ export function displayQuizResult(aQuizIndex: number) {
       } mb-4 p-4 pb-3">
               <p>
                 問題${idx + 1}（${val.isCorrectAnswer ? '正解' : '不正解'}）<br />
-                ${val.question}<br />
-                ${val.answerForDisplay}<br />
-                ${val.explanation}
-                ${val.notes ? '<br />' + val.notes : ''}
+                問題：${val.question}<br />
+                答え：${val.answerForDisplay}<br />
+                解説：${val.explanation}
+                ${val.notes ? '<br />メモ：' + val.notes : ''}
               </p>
             </div>`;
       if (val.isCorrectAnswer) {

@@ -71,7 +71,7 @@ export function getNumberOfQuestionsOptionsAndSetValidation(
   aQuizStartFormStartButtonElm: HTMLButtonElement | null,
   aQuizStartAlertDivElm: HTMLElement | null
 ) {
-  let result = '<option value="all" selected>全て</option>';
+  let result = `<option value="all" selected>全て（${aQuizDataSize}問）</option>`;
   for (let cnt = 0; cnt < aQuizDataSize; ++cnt) {
     if (cnt && !((cnt + 1) % 5) && cnt + 1 !== aQuizDataSize) {
       result += `<option value="${cnt + 1}">${cnt + 1}</option>`;
@@ -83,7 +83,7 @@ export function getNumberOfQuestionsOptionsAndSetValidation(
       !aQuizDataSize;
   }
   if (aPrioritySelectElm) {
-    (aPrioritySelectElm as HTMLSelectElement).disabled = !aQuizDataSize;
+    (aPrioritySelectElm as HTMLSelectElement).disabled = aQuizDataSize < 2;
   }
   if (aQuizStartFormStartButtonElm) {
     (aQuizStartFormStartButtonElm as HTMLButtonElement).disabled =

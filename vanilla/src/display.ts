@@ -481,6 +481,8 @@ export function setQuizStart(
     quizStartAlertDivElm as HTMLElement
   );
 
+  const quizStartQuestionNumberDivElms: NodeListOf<HTMLElement> =
+    document.querySelectorAll('.js-quizStartQuestionNumberDiv');
   let quizDataForPractice: Map<number, InputsForResult> | null = null;
   const quizDivElms = document.querySelectorAll('.js-quizDiv');
   let quizIndex: number;
@@ -499,7 +501,12 @@ export function setQuizStart(
       currentQuizDataForPractice = quizDataForPractice.get(
         quizIndex
       ) as InputsForResult;
-      displayQuizQuestion(currentQuizDataForPractice as InputsForResult);
+      displayQuizQuestion(
+        currentQuizDataForPractice as InputsForResult,
+        quizStartQuestionNumberDivElms as NodeListOf<HTMLElement>,
+        quizIndex as number,
+        quizDataForPractice.size as number
+      );
       quizDivElms[0].classList.add('d-none');
       quizDivElms[1].classList.remove('d-none');
     });
@@ -542,7 +549,12 @@ export function setQuizStart(
           // when clicking the '次の問題を解く' button
           ++quizIndex;
           currentQuizDataForPractice = quizDataForPractice?.get(quizIndex);
-          displayQuizQuestion(currentQuizDataForPractice as InputsForResult);
+          displayQuizQuestion(
+            currentQuizDataForPractice as InputsForResult,
+            quizStartQuestionNumberDivElms,
+            quizIndex,
+            quizDataForPractice?.size as number
+          );
           quizDivElms[0].classList.add('d-none');
           quizDivElms[1].classList.remove('d-none');
           quizDivElms[2].classList.add('d-none');
