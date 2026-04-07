@@ -8,13 +8,14 @@ function App() {
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="/">まるばつクイズ</Navbar.Brand>
+          <Navbar.Brand href="/">タイトル</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="/">クイズ</Nav.Link>
+              <Nav.Link href="/">クイズスタート</Nav.Link>
               <Nav.Link href="/list">クイズ一覧</Nav.Link>
-              <Nav.Link href="/add">新規登録</Nav.Link>
+              <Nav.Link href="/addnew">新規登録</Nav.Link>
+              <Nav.Link href="/category">カテゴリー設定</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
