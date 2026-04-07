@@ -1,7 +1,7 @@
 import * as bootstrap from 'bootstrap';
 import { displayPage } from '../utils';
 import { displayList } from '../../quizList/utils';
-import { setCategoryInputs } from '../../categorySettings/setup';
+import { getCategoryInputHTML } from '../../categorySettings/setup';
 import { resetCategoryForm } from '../../categorySettings/utils';
 import { resetIsActiveInTheCategoryData } from '../../quizList/utils';
 import { resetEditQuizBtns } from '../utils';
@@ -347,15 +347,13 @@ export function deleteDataThroughDeleteBtnInTheModal(
       });
       localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
-      setCategoryInputs(
-        aQuizCategory as Map<number, InputsCategory>,
-        aQuizData as Map<number, Inputs>,
-        aModalForDeleteElms as modalForDeleteElmsType,
-        aButtonCancelElm as HTMLButtonElement,
-        aSectionElms,
-        aBsModal,
-        aButtonSaveElm
-      );
+      // reset category inputs : start *******
+      const inputCategoryAreaElm =
+        document.querySelector<HTMLElement>('.js-inputCategory');
+      if (inputCategoryAreaElm !== null) {
+        inputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+      }
+      // reset category inputs : end
     } else if (
       modalForDeleteDivElm &&
       modalForDeleteDivElm.dataset.page === 'quizlist'
@@ -369,15 +367,7 @@ export function deleteDataThroughDeleteBtnInTheModal(
         aQuizData.delete(key);
         localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
-        resetIsActiveInTheCategoryData(
-          aQuizData,
-          aQuizCategory,
-          aModalForDeleteElms,
-          aButtonCancelElm as HTMLButtonElement,
-          aSectionElms,
-          aBsModal,
-          aButtonSaveElm
-        );
+        resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
 
         listDivElms[0].classList.remove('d-none');
         listDivElms[1].classList.add('d-none');

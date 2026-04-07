@@ -2,7 +2,6 @@ import {
   saveCategoryData,
   setButtonDisabledForCategory,
   editOrDeleteCategoryName,
-  addCategoryInput,
 } from './utils';
 import type { Inputs } from '../common/types/inputs.type';
 import type { InputsCategory } from '../common/types/inputsCategory.type';
@@ -48,7 +47,8 @@ export function setCategoryInputs(
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
   aBsModal: bootstrap.Modal,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonAddInputElm: HTMLButtonElement
 ) {
   const inputCategoryAreaElm =
     document.querySelector<HTMLElement>('.js-inputCategory');
@@ -65,9 +65,6 @@ export function setCategoryInputs(
     true
   );
 
-  const buttonAddInputElm =
-    document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
-
   aButtonSaveElm?.addEventListener('click', function (e) {
     e.preventDefault();
     saveCategoryData(
@@ -76,24 +73,32 @@ export function setCategoryInputs(
       aSectionElms,
       aQuizData,
       aQuizCategory,
-      aModalForDeleteElms,
-      aButtonCancelElm,
-      aBsModal
+      aButtonCancelElm
     );
   });
 
-  addCategoryInput(
-    inputCategoryAreaElm as HTMLElement,
-    buttonAddInputElm as HTMLButtonElement,
-    aQuizCategory
-  );
+  const addCategoryNameInputField = () => {
+    const keysArray: number[] = aQuizCategory.size
+      ? Array.from(aQuizCategory.keys())
+      : [];
+    const newId: number = aQuizCategory.size
+      ? keysArray[keysArray.length - 1] + 1
+      : 1;
+
+    const div = document.createElement('div');
+    div.classList.add('my-3');
+
+    div.innerHTML = `<input type="text" class="form-control" value="" data-isActive="false" data-index="${newId}" />`;
+    inputCategoryAreaElm?.appendChild(div);
+  };
+  aButtonAddInputElm?.addEventListener('click', addCategoryNameInputField);
 
   editOrDeleteCategoryName(
     inputCategoryAreaElm as HTMLElement,
     initialInputValues,
     aButtonSaveElm as HTMLButtonElement,
     aButtonCancelElm as HTMLButtonElement,
-    buttonAddInputElm as HTMLButtonElement,
+    aButtonAddInputElm as HTMLButtonElement,
     aModalForDeleteElms,
     aBsModal
   );
@@ -106,6 +111,6 @@ export function setCategoryInputs(
     inputCategoryAreaElm as HTMLElement,
     isUnderEdit as boolean,
     aButtonCancelElm as HTMLButtonElement,
-    buttonAddInputElm as HTMLButtonElement
+    aButtonAddInputElm as HTMLButtonElement
   );
 }

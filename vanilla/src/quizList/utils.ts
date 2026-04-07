@@ -1,4 +1,4 @@
-import { setCategoryInputs } from '../categorySettings/setup';
+import { getCategoryInputHTML } from '../categorySettings/setup';
 import { getDataFromLocalStorage } from '../common/dataManagement';
 import {
   getHTMLForOptionInputsOfSelection,
@@ -476,12 +476,7 @@ export function displayList(
 
 export function resetIsActiveInTheCategoryData(
   aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aBsModal: bootstrap.Modal,
-  aButtonSaveElm: HTMLButtonElement
+  aQuizCategory: Map<number, InputsCategory>
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -499,15 +494,13 @@ export function resetIsActiveInTheCategoryData(
     });
   });
   localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
-  setCategoryInputs(
-    aQuizCategory,
-    aQuizData,
-    aModalForDeleteElms,
-    aButtonCancelElm,
-    aSectionElms,
-    aBsModal,
-    aButtonSaveElm
-  );
+  // reset category inputs : start *******
+  const inputCategoryAreaElm =
+    document.querySelector<HTMLElement>('.js-inputCategory');
+  if (inputCategoryAreaElm !== null) {
+    inputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+  }
+  // reset category inputs : end
 }
 
 export function hideOrShowDivElms(
@@ -723,6 +716,7 @@ export function editQuizData(
               currentVal.answer = 0; //default
             }
           }
+
           if (idx !== 3) {
             currentVal = getUpdatedCurrentVal(
               idx,
@@ -730,6 +724,9 @@ export function editQuizData(
               aCurrentValKeys[idx],
               aListDdElms
             );
+            if (!idx) {
+              resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
+            }
           }
           aQuizData.set(key, currentVal);
           localStorage.setItem('quizData', JSON.stringify([...aQuizData]));

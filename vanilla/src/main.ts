@@ -159,6 +159,9 @@ deleteDataThroughDeleteBtnInTheModal(
   divIdx3DivElms as NodeListOf<HTMLElement>
 );
 
+const buttonAddInputElm =
+  document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
+
 setCategoryInputs(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
@@ -166,7 +169,8 @@ setCategoryInputs(
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
   bsModal,
-  buttonSaveElm as HTMLButtonElement
+  buttonSaveElm as HTMLButtonElement,
+  buttonAddInputElm as HTMLButtonElement
 );
 
 setAddNew(

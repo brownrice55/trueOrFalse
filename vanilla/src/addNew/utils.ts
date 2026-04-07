@@ -1,5 +1,5 @@
 import { displayList } from '../quizList/utils';
-import { setCategoryInputs } from '../categorySettings/setup';
+import { getCategoryInputHTML } from '../categorySettings/setup';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
 import {
   getHTMLForOptionInputsOfSelection,
@@ -166,15 +166,12 @@ export function saveQuizData(
           'quizCategory',
           JSON.stringify([...aQuizCategory])
         );
-        setCategoryInputs(
-          aQuizCategory,
-          aQuizData,
-          aModalForDeleteElms,
-          aButtonCancelElm,
-          aSectionElms,
-          aBsModal,
-          aButtonSaveElm
-        );
+        // reset category inputs : start *******
+        const inputCategoryAreaElm =
+          document.querySelector<HTMLElement>('.js-inputCategory');
+        if (inputCategoryAreaElm !== null) {
+          inputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+        }
       }
     }
 

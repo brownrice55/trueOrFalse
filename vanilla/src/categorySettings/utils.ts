@@ -1,4 +1,4 @@
-import { setCategoryInputs } from '../categorySettings/setup';
+import { getCategoryInputHTML } from '../categorySettings/setup';
 import { setQuizStart } from '../quizStart/setup';
 import type { Listener } from '../common/types/listener.type';
 import {
@@ -24,9 +24,7 @@ export function saveCategoryData(
   aSectionElms: NodeListOf<HTMLElement>,
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aButtonCancelElm: HTMLButtonElement,
-  aBsModal: bootstrap.Modal
+  aButtonCancelElm: HTMLButtonElement
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -92,17 +90,12 @@ export function saveCategoryData(
     }
     aButtonSaveElm.dataset.key = '';
   }
-  // set updated category names in the quiz detail page : end
 
-  setCategoryInputs(
-    aQuizCategory,
-    aQuizData,
-    aModalForDeleteElms,
-    aButtonCancelElm,
-    aSectionElms,
-    aBsModal,
-    aButtonSaveElm
-  );
+  // reset category inputs : start *******
+  if (aInputCategoryAreaElm !== null) {
+    aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+  }
+  // reset category inputs : end
 
   const buttonSaveAndCancelElms =
     aButtonSaveElm?.parentNode?.querySelectorAll('button');
@@ -139,27 +132,6 @@ export function saveCategoryData(
       aSectionElms
     );
   }
-}
-
-export function addCategoryInput(
-  aInputCategoryAreaElm: HTMLElement,
-  aButtonAddInputElm: HTMLButtonElement,
-  aQuizCategory: Map<number, InputsCategory>
-) {
-  aButtonAddInputElm?.addEventListener('click', function () {
-    const keysArray: number[] = aQuizCategory.size
-      ? Array.from(aQuizCategory.keys())
-      : [];
-    const newId: number = aQuizCategory.size
-      ? keysArray[keysArray.length - 1] + 1
-      : 1;
-
-    const div = document.createElement('div');
-    div.classList.add('my-3');
-
-    div.innerHTML = `<input type="text" class="form-control" value="" data-isActive="false" data-index="${newId}" />`;
-    aInputCategoryAreaElm?.appendChild(div);
-  });
 }
 
 export function setInputValidationForCategory(
