@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz</title>
+    <style>
+      .app {
+        display: none;
+      }
+      body.loaded .app {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="app">
+      <header class="header">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="container-fluid">
+            <div class="navbar-brand"></div>
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse js-globalNav" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item py-2 px-3 active" data-index="0">
+                  クイズスタート
+                </li>
+                <li class="nav-item py-2 px-3" data-index="1">クイズ一覧</li>
+                <li class="nav-item py-2 px-3" data-index="2">新規登録</li>
+                <li class="nav-item py-2 px-3" data-index="3">
+                  カテゴリー設定
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <main class="container">
+        <section class="js-section pt-3">
+          <div class="js-quizDiv">
+            <h2 class="lead">クイズスタート</h2>
+            <div class="js-quizStartAlertDiv text-center text-danger"></div>
+            <div class="my-3">
+              <label for="category-start" class="form-label">カテゴリー</label>
+              <select
+                class="form-select js-quizStartFormCategorySelect"
+                aria-label="category"
+                id="category-start"
+              >
+                <option value="all" selected>全てのカテゴリー</option>
+              </select>
+            </div>
+            <div class="my-3">
+              <label for="type-start" class="form-label">クイズの種類</label>
+              <select
+                class="form-select js-quizStartFormTypeSelect"
+                aria-label="type"
+                id="type-start"
+              ></select>
+            </div>
+            <div class="my-3">
+              <label for="number" class="form-label">問題数</label>
+              <select
+                class="form-select js-numberOfQuestionsSelect"
+                aria-label="number"
+                id="number"
+              ></select>
+            </div>
+            <div class="my-3">
+              <label for="priority-start" class="form-label">優先順位</label>
+              <select
+                class="form-select js-prioritySelect"
+                aria-label="priority"
+                id="priority-start"
+              >
+                <option value="random" selected>
+                  指定しない（ランダムで表示）
+                </option>
+                <option value="highPriority">優先順位が高いものから表示</option>
+              </select>
+            </div>
+            <div class="my-3 text-center">
+              <button
+                type="submit"
+                class="btn btn-primary px-4 py-2 js-quizStartFormStartButton"
+              >
+                スタート
+              </button>
+            </div>
+          </div>
+          <div class="js-quizDiv d-none">
+            <p class="lead">Question</p>
+            <p class="js-quizStartQuestionNumberDiv text-end"></p>
+            <p class="js-quizStartQuestion">問題</p>
+            <div class="js-quizQuestionBtnContDiv text-center">
+              <button class="btn btn-primary px-4 py-2 me-3" data-index="0">
+                まる
+              </button>
+              <button class="btn btn-primary px-4 py-2" data-index="1">
+                ばつ
+              </button>
+            </div>
+            <div class="js-quizQuestionBtnContDiv text-center d-none">
+              <div></div>
+              <button class="btn btn-primary px-4 py-2 mt-3">
+                答えを確認する
+              </button>
+            </div>
+          </div>
+          <div class="js-quizDiv d-none">
+            <p class="lead">Answer</p>
+            <p class="js-quizStartQuestionNumberDiv text-end"></p>
+            <p>
+              <span class="js-quizStartIsCorrectAnswer"></span>答えは「<span
+                class="js-quizStartAnswerSpan"
+              ></span
+              >」です。
+            </p>
+            <p>
+              解説<br />
+              <span class="js-quizStartExplanationSpan"></span>
+            </p>
+            <p>
+              この問題の現在の正解率は「<span
+                class="js-quizStartAccuracyRateSpan"
+              ></span
+              >」です。
+            </p>
+            <div class="my-3">
+              <label for="notes" class="form-label"
+                >何かメモしておきたいことがあったら書いてください</label
+              >
+              <div class="js-quizStartNotesTextAreaDiv">
+                <textarea class="form-control" id="notes" rows="3"></textarea>
+              </div>
+            </div>
+            <div
+              class="text-center js-quizStartQuestionButtonAreaDiv"
+              data-type="trueOrFalse"
+            >
+              <button class="btn btn-primary px-4 py-2">終了する</button>
+              <button class="btn btn-primary px-4 py-2 ms-3">
+                次の問題を解く
+              </button>
+            </div>
+          </div>
+          <div class="js-quizDiv d-none">
+            <p>
+              お疲れ様でした。<br />
+              正解率「<span class="js-quizStartAccuracyRateResultSpan"></span
+              >％」でした。<br />
+              見直しをしましょう。
+            </p>
+            <div class="js-quizStartResult"></div>
+            <div class="text-center">
+              <button class="btn btn-primary px-4 py-2 js-quizStartEnd">
+                終了する
+              </button>
+            </div>
+          </div>
+        </section>
+        <section class="js-section pt-3 position-relative">
+          <button
+            class="js-buttonGoToAddNew btn position-absolute top-0 end-0"
+            type="button"
+          >
+            新規登録する
+          </button>
+          <div class="js-listDiv">
+            <h2 class="lead">クイズ一覧</h2>
+            <ul class="js-listUl"></ul>
+          </div>
+          <div class="js-listDiv d-none">
+            <button class="js-buttonBackToList btn ps-0 mb-3" type="button">
+              クイズ一覧に戻る
+            </button>
+            <dl class="js-listDl">
+              <dt class="border-top pt-3" data-index="0">
+                <span>カテゴリー</span>
+                <div class="float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
+              <dd class="js-listDd pb-2">
+                <div></div>
+                <div></div>
+              </dd>
+              <dt class="border-top pt-3" data-index="1">
+                <span>クイズの種類</span>
+                <div class="float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
+              <dd class="js-listDd pb-2">
+                <div></div>
+                <div></div>
+              </dd>
+              <dt class="border-top pt-3" data-index="2">
+                <span>問題</span>
+                <div class="float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
+              <dd class="js-listDd pb-2">
+                <div></div>
+                <div></div>
+              </dd>
+              <dt class="border-top pt-3" data-index="3">
+                <span>答え</span>
+                <div class="float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
+              <dd class="js-listDd pb-2">
+                <div class="js-listDd__divIdx3"></div>
+                <div class="js-listDd__divIdx3">
+                  <div class="js-listDd__divIdx3__div"></div>
+                  <div class="js-listDd__divIdx3__div"></div>
+                </div>
+              </dd>
+              <dt class="border-top pt-3" data-index="4">
+                <span>解説</span>
+                <div class="float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
+              <dd class="js-listDd pb-2">
+                <div></div>
+                <div></div>
+              </dd>
+              <dt class="border-top pt-3" data-index="5">
+                <span>優先順位</span>
+                <div class="float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
+              <dd class="js-listDd pb-2">
+                <div></div>
+                <div></div>
+              </dd>
+              <dt class="border-top pt-3" data-index="6">
+                <span>メモ</span>
+                <div class="float-end">
+                  <button
+                    class="btn btn-primary btn-sm js-listEditBtn"
+                    type="button"
+                  >
+                    編集する
+                  </button>
+                </div>
+              </dt>
+              <dd class="js-listDd pb-2">
+                <div></div>
+                <div></div>
+              </dd>
+              <dt class="border-top pt-3">正解率</dt>
+              <dd class="js-listDd pb-2"></dd>
+            </dl>
+            <div class="js-areCorrectAnswersDiv"></div>
+            <div class="text-center my-5">
+              <button
+                type="button"
+                class="btn btn-primary px-4 py-2 me-3 js-buttonDeleteQuiz"
+              >
+                削除する
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-primary px-4 py-2 js-buttonBackToList"
+              >
+                一覧に戻る
+              </button>
+            </div>
+          </div>
+        </section>
+        <section class="js-section pt-3">
+          <div class="js-addNew">
+            <div class="d-flex justify-content-between">
+              <h2 class="lead">新規登録</h2>
+              <button class="js-buttonBackToListFromAddNew btn" type="button">
+                クイズ一覧を確認する
+              </button>
+            </div>
+            <div class="my-3">
+              <label for="category" class="form-label">カテゴリー</label>
+              <select
+                class="form-select js-addNewCategorySelect"
+                aria-label="category"
+                id="category"
+              ></select>
+            </div>
+            <div class="my-3">
+              <label for="type" class="form-label">クイズの種類</label>
+              <select
+                class="form-select js-addNewTypeSelect"
+                aria-label="type"
+                id="type"
+              ></select>
+            </div>
+            <div class="my-3">
+              <label for="question" class="form-label">問題</label>
+              <textarea
+                class="form-control js-addNewTextArea"
+                id="question"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="js-addNewTypeDiv"></div>
+            <div class="js-addNewTypeDiv d-none"></div>
+            <div class="my-3">
+              <label for="explanation" class="form-label">解説</label>
+              <textarea
+                class="form-control js-addNewTextArea"
+                id="explanation"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="my-3">
+              <label for="priority" class="form-label">優先順位</label>
+              <select
+                class="form-select js-addNewPrioritySelect"
+                aria-label="type"
+                id="priority"
+              ></select>
+            </div>
+            <div class="text-center my-4">
+              <button
+                type="submit"
+                class="btn btn-primary px-4 py-2 js-buttonAddNew"
+                disabled
+              >
+                新規登録する
+              </button>
+            </div>
+          </div>
+        </section>
+        <section class="js-section pt-3">
+          <div>
+            <h2 class="lead">カテゴリー設定</h2>
+            <form>
+              <div class="js-inputCategory"></div>
+              <div class="my-3 text-end">
+                <button
+                  type="button"
+                  class="btn btn-primary px-3 py-1 js-buttonAddInput"
+                >
+                  追加する
+                </button>
+              </div>
+              <div class="my-3 text-center">
+                <button
+                  type="reset"
+                  class="btn btn-primary px-4 py-2 me-3 js-buttonCancel"
+                  disabled
+                >
+                  キャンセルする
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary px-4 py-2 js-buttonSave"
+                  disabled
+                >
+                  保存する
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- modal start -->
+        <div
+          class="modal fade js-modalForSelectionWhatToDoNextDiv"
+          id="modalForSelectionWhatToDoNext"
+          tabindex="-1"
+          aria-labelledby="modalForSelectionWhatToDoNext"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <div
+                  class="modal-title fs-5"
+                  id="modalForSelectionWhatToDoNext"
+                ></div>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <span></span>を完了しました。<br />現在<span></span>個の<span
+                ></span>が登録されています。
+              </div>
+              <div class="mx-2 mb-2">
+                <div
+                  class="d-flex justify-content-between js-modalButtonsAreaDiv"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-primary my-1"
+                    data-bs-dismiss="modal"
+                  >
+                    続けて登録する
+                  </button>
+                  <button type="button" class="btn btn-primary my-1">
+                    クイズ一覧を確認する
+                  </button>
+                  <button type="button" class="btn btn-primary my-1">
+                    クイズを始める
+                  </button>
+                </div>
+                <div
+                  class="d-flex justify-content-between js-modalButtonsAreaDiv"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-primary my-1"
+                    data-bs-dismiss="modal"
+                  >
+                    続けて設定
+                  </button>
+                  <button type="button" class="btn btn-primary my-1">
+                    新規登録へ
+                  </button>
+                  <button type="button" class="btn btn-primary my-1">
+                    クイズ一覧へ
+                  </button>
+                  <button type="button" class="btn btn-primary my-1">
+                    クイズを始める
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- modal end -->
+        <!-- modal start -->
+        <div
+          class="modal fade js-modalForDeleteDiv"
+          id="modalForDelete"
+          tabindex="-1"
+          aria-labelledby="modalForDelete"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <div class="modal-title fs-5 js-titleH1"></div>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body js-textDiv"></div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  削除しない
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary js-deleteButton"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- modal end -->
+        <!-- modal start -->
+        <div
+          class="modal fade js-modalForPageTransitionDiv"
+          id="modalForPageTransition"
+          tabindex="-1"
+          aria-labelledby="modalForPageTransition"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body js-textDiv"></div>
+              <div
+                class="modal-footer justify-content-between js-pageTransitionButtonAreaDiv"
+              >
+                <button type="button" class="btn btn-primary">
+                  移動しない
+                </button>
+                <button type="button" class="btn btn-primary"></button>
+              </div>
+              <div class="modal-body js-noteTextDiv"></div>
+            </div>
+          </div>
+        </div>
+        <!-- modal end -->
+      </main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
