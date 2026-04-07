@@ -14,6 +14,7 @@ import {
   deleteDataThroughDeleteBtnInTheModal,
   editQuizData,
 } from './quizList/setEvent';
+import { currentValKeys } from './common/utils';
 import type { Inputs } from './types/inputs.type';
 import type { InputsCategory } from './types/inputsCategory.type';
 import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';
@@ -64,16 +65,6 @@ const modalForPageTransitionElms = getElmsForModal(
   'pageTransition',
   modalForPageTransitionDivElm as HTMLElement
 );
-
-const currentValKeys: (keyof Inputs)[] = [
-  'category',
-  'type',
-  'question',
-  'answer',
-  'explanation',
-  'priority',
-  'notes',
-];
 
 const buttonCancelElm =
   document.querySelector<HTMLButtonElement>('.js-buttonCancel');
