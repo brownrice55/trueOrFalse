@@ -113,25 +113,28 @@ export function deleteDataThroughDeleteBtnInTheModal(
   );
 }
 
-const hideOrShowDivElms = (
+export function hideOrShowDivElms(
   aIdx: number,
   aDivElms: NodeListOf<HTMLElement>,
   aDivIdx3Elms: NodeListOf<HTMLElement>,
   aIsUnderEdit: boolean,
   aCurrentValType: string,
   aDivIdx3DivElms: NodeListOf<HTMLElement>
-) => {
+) {
   const indices = aIsUnderEdit ? [1, 0] : [0, 1];
   aDivElms[indices[0]].classList.remove('d-none');
   aDivElms[indices[1]].classList.add('d-none');
-  if (aDivIdx3Elms && aDivIdx3DivElms && aIdx === 1) {
+  if (
+    (aDivIdx3Elms && aDivIdx3DivElms && aIdx === 1) ||
+    (aDivIdx3Elms && aDivIdx3DivElms && aIdx === 3)
+  ) {
     aDivIdx3Elms[indices[0]].classList.remove('d-none');
     aDivIdx3Elms[indices[1]].classList.add('d-none');
     const typeIndices = aCurrentValType === 'trueOrFalse' ? [0, 1] : [1, 0];
     aDivIdx3DivElms[typeIndices[0]].classList.remove('d-none');
     aDivIdx3DivElms[typeIndices[1]].classList.add('d-none');
   }
-};
+}
 
 export function resetIdx3Form(aCurrentVal: Inputs) {
   // trueOrFalse
@@ -172,7 +175,10 @@ export function editQuizData(
   let currentVal: Inputs | undefined;
 
   aListEditBtnElms.forEach((elm, idx) => {
-    const divElms = aListDdElms[idx].querySelectorAll('div');
+    const divElms =
+      idx !== 3
+        ? aListDdElms[idx].querySelectorAll('div')
+        : aListDdElms[3].querySelectorAll(':scope > div');
     if (
       (elm?.parentNode?.parentNode?.parentNode as HTMLElement).dataset.add !==
       'true'
@@ -192,10 +198,9 @@ export function editQuizData(
         setDisabledForListEditBtns(isUnderEdit);
 
         if (isUnderEdit) {
-          resetIdx3Form(currentVal as Inputs);
           hideOrShowDivElms(
             idx,
-            divElms,
+            divElms as NodeListOf<HTMLElement>,
             aDivIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
             currentVal!.type,
@@ -230,7 +235,7 @@ export function editQuizData(
             cancelBtnElm = null;
             hideOrShowDivElms(
               idx,
-              divElms,
+              divElms as NodeListOf<HTMLElement>,
               aDivIdx3Elms as NodeListOf<HTMLElement>,
               isUnderEdit,
               currentVal!.type,
@@ -262,7 +267,9 @@ export function editQuizData(
                 resetIdx3Form(currentVal as Inputs);
               }
             } else if (idx === 3) {
-              // resetIdx3Form(currentVal as Inputs);
+              resetIdx3Form(currentVal as Inputs);
+              //judge type
+              //set d-none
             } else {
               const textareaElm = divElms[1].querySelector('textarea');
               if (textareaElm && currentVal) {
@@ -342,7 +349,7 @@ export function editQuizData(
           );
           hideOrShowDivElms(
             idx,
-            divElms,
+            divElms as NodeListOf<HTMLElement>,
             aDivIdx3Elms as NodeListOf<HTMLElement>,
             isUnderEdit,
             currentVal!.type,

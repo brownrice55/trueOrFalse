@@ -171,7 +171,10 @@ export function displayDetail(
   let detailTypeElm: HTMLSelectElement | null = null;
 
   aCurrentValKeys.forEach((_, idx: number) => {
-    const divElms = aListDdElms[idx].querySelectorAll('div');
+    const divElms =
+      idx !== 3
+        ? aListDdElms[idx].querySelectorAll('div')
+        : aListDdElms[3].querySelectorAll(':scope > div');
 
     if (idx === 7) {
       aListDdElms[7].innerHTML = String(getAccuracyRate(aCurrentVal));
@@ -186,9 +189,9 @@ export function displayDetail(
       );
 
       if (idx === 3) {
-        const divDivElms = divElms[1].querySelectorAll('div');
-        divDivElms[0].innerHTML = formElementsIrregularIndex3['trueOrFalse'];
-        divDivElms[1].innerHTML = formElementsIrregularIndex3['selection'];
+        aDivIdx3DivElms[0].innerHTML =
+          formElementsIrregularIndex3['trueOrFalse'];
+        aDivIdx3DivElms[1].innerHTML = formElementsIrregularIndex3['selection'];
 
         // trueOrFalse start
         const formAnswerRadioElms = document.querySelectorAll(
@@ -235,7 +238,7 @@ export function displayDetail(
             aCurrentVal,
             aSectionElms,
             aListDdElms,
-            divElms[1],
+            divElms[1] as HTMLElement,
             aButtonSaveElm,
             aButtonCancelElm
           );
