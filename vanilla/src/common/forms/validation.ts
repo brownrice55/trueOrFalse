@@ -73,7 +73,8 @@ export function setDisabled(
   aButtonAddNewElm: HTMLButtonElement | null,
   aElms: string,
   aEvent: string,
-  aCurrentVal: Inputs | null
+  aCurrentVal: Inputs | null,
+  aListDtIndex: number | undefined
 ) {
   const checkboxElms = aFormOptionInputsDivElm.querySelectorAll(
     '.js-formOptionsCheckbox'
@@ -101,7 +102,7 @@ export function setDisabled(
             aButtonAddNewElm,
             aFormOptionInputsDivElm
           );
-        } else {
+        } else if (aListDtIndex === 1 || aListDtIndex === 3) {
           const getDataAfterSettingsValidation =
             setValidationForQuizDetailOfIdx3(
               aFormOptionInputsDivElm,
@@ -116,7 +117,8 @@ export function setDisabled(
           const listDlElm = document.querySelector('.js-listDl');
           const listDtElms = listDlElm?.querySelectorAll('dt');
           if (listDtElms) {
-            const buttonElms = listDtElms[1].querySelectorAll('button');
+            const buttonElms =
+              listDtElms[aListDtIndex].querySelectorAll('button');
             buttonElms[0].disabled =
               (aCurrentVal?.numberOfOptions !== numberOfOptions ||
                 JSON.stringify(aCurrentVal?.options) !==
@@ -156,7 +158,8 @@ export function setValidation(
     aButtonAddNewElm,
     'textarea',
     'keyup',
-    null
+    null,
+    undefined
   );
   setDisabled(
     aAddNewTypeSelectElm,
@@ -165,7 +168,8 @@ export function setValidation(
     aButtonAddNewElm,
     'checkbox',
     'click',
-    null
+    null,
+    undefined
   );
   setDisabled(
     aAddNewTypeSelectElm,
@@ -174,7 +178,8 @@ export function setValidation(
     aButtonAddNewElm,
     'inputText',
     'keyup',
-    null
+    null,
+    undefined
   );
 }
 

@@ -92,7 +92,8 @@ const setValidationForIdx3SelectionPartOfQuizDetail = (
   aFormOptionInputsDivElm: HTMLElement,
   aType: string,
   aCurrentVal: Inputs | null,
-  aDetailTypeElm: HTMLSelectElement | null
+  aDetailTypeElm: HTMLSelectElement | null,
+  aListDtIndex: number
 ) => {
   (aFormOptionInputsDivElm as HTMLElement).innerHTML =
     getHTMLForOptionInputsOfSelection(
@@ -108,7 +109,8 @@ const setValidationForIdx3SelectionPartOfQuizDetail = (
     null,
     'checkbox',
     'click',
-    aCurrentVal
+    aCurrentVal,
+    aListDtIndex
   );
   setDisabled(
     aDetailTypeElm as HTMLSelectElement,
@@ -117,7 +119,8 @@ const setValidationForIdx3SelectionPartOfQuizDetail = (
     null,
     'inputText',
     'keyup',
-    aCurrentVal
+    aCurrentVal,
+    aListDtIndex
   );
 };
 
@@ -125,7 +128,8 @@ export function setIdx3SelectionPartOfQuizDetailAndValidation(
   aCurrentVal: Inputs,
   aFormOptionNumberSelectElm: HTMLSelectElement,
   aFormOptionInputsDivElm: HTMLElement,
-  aDetailTypeElm: HTMLSelectElement
+  aDetailTypeElm: HTMLSelectElement,
+  aListDtIndex: number
 ) {
   const numberOfOptions = aCurrentVal.numberOfOptions
     ? aCurrentVal.numberOfOptions
@@ -142,7 +146,8 @@ export function setIdx3SelectionPartOfQuizDetailAndValidation(
       aFormOptionInputsDivElm as HTMLElement,
       'quizlist',
       aCurrentVal,
-      aDetailTypeElm
+      aDetailTypeElm,
+      aListDtIndex
     );
   }
 }
@@ -216,7 +221,8 @@ export function displayDetail(
           aCurrentVal,
           formOptionNumberSelectElm as HTMLSelectElement,
           formOptionInputsDivElm as HTMLElement,
-          detailTypeElm as HTMLSelectElement
+          detailTypeElm as HTMLSelectElement,
+          idx
         );
 
         formOptionNumberSelectElm?.addEventListener('change', function (e) {
@@ -225,7 +231,8 @@ export function displayDetail(
             formOptionInputsDivElm as HTMLElement,
             'quizlist',
             null,
-            detailTypeElm
+            detailTypeElm,
+            idx
           );
         });
         //selection end
@@ -337,7 +344,7 @@ export function displayDetail(
   );
   if (detailTypeElm !== null) {
     detailTypeElm.addEventListener('change', function (e: Event) {
-      resetIdx3Form(aCurrentVal);
+      resetIdx3Form(aCurrentVal, 1);
       targetSelectElm = e.currentTarget as HTMLTextAreaElement;
       if (editButton1Elm) {
         isTypeChanged = aCurrentVal.type !== targetSelectElm.value;

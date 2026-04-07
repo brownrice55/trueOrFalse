@@ -136,7 +136,7 @@ export function hideOrShowDivElms(
   }
 }
 
-export function resetIdx3Form(aCurrentVal: Inputs) {
+export function resetIdx3Form(aCurrentVal: Inputs, aListDtIndex: number) {
   // trueOrFalse
   const formAnswerRadioElms = document.querySelectorAll('.js-formAnswerRadio');
   const checkedIndex = aCurrentVal.answer === 0 ? 0 : 1;
@@ -154,7 +154,8 @@ export function resetIdx3Form(aCurrentVal: Inputs) {
     aCurrentVal,
     formOptionNumberSelectElm as HTMLSelectElement,
     formOptionInputsDivElm as HTMLElement,
-    detailTypeElm as HTMLSelectElement
+    detailTypeElm as HTMLSelectElement,
+    aListDtIndex
   );
 }
 
@@ -198,6 +199,9 @@ export function editQuizData(
         setDisabledForListEditBtns(isUnderEdit);
 
         if (isUnderEdit) {
+          if (idx === 1 || idx === 3) {
+            resetIdx3Form(currentVal as Inputs, idx);
+          }
           hideOrShowDivElms(
             idx,
             divElms as NodeListOf<HTMLElement>,
@@ -263,14 +267,7 @@ export function editQuizData(
                   }
                 });
               }
-              if (idx === 1) {
-                resetIdx3Form(currentVal as Inputs);
-              }
-            } else if (idx === 3) {
-              resetIdx3Form(currentVal as Inputs);
-              //judge type
-              //set d-none
-            } else {
+            } else if (idx !== 3) {
               const textareaElm = divElms[1].querySelector('textarea');
               if (textareaElm && currentVal) {
                 if (textareaElm.value !== currentVal[aCurrentValKeys[idx]]) {

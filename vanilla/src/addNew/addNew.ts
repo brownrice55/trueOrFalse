@@ -57,7 +57,8 @@ export function setOptionInputs(
       aButtonAddNewElm,
       'textarea',
       'keyup',
-      null
+      null,
+      undefined
     );
     setDisabled(
       aAddNewTypeSelectElm,
@@ -66,7 +67,8 @@ export function setOptionInputs(
       aButtonAddNewElm,
       'checkbox',
       'click',
-      null
+      null,
+      undefined
     );
     setDisabled(
       aAddNewTypeSelectElm,
@@ -75,7 +77,8 @@ export function setOptionInputs(
       aButtonAddNewElm,
       'inputText',
       'keyup',
-      null
+      null,
+      undefined
     );
   });
 }
