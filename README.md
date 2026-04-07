@@ -74,19 +74,24 @@
 
 ### ディレクトリ構成
 
+#### vanilla
+
 ```
 src/
 │ main.ts
-│ display.ts
 │ style.scss
 ├── quizStart/
-│ └── quizStart.ts
+│ └── setup.ts
+│ └── utils.ts
 ├── quizList/
-│ └── quizList.ts
+│ └── setup.ts
+│ └── utils.ts
 ├── addNew/
-│ └── addNew.ts
+│ └── setup.ts
+│ └── utils.ts
 ├── categorySettings/
-│ └── categorySettings.ts
+│ └── setup.ts
+│ └── utils.ts
 ├── common/
 │ └── dataManagement.ts
 │ └── utils.ts
@@ -107,6 +112,30 @@ src/
 │ └── modalForDeleteElms.type.ts
 │ └── modalForPageTransitionElms.type.ts
 │ └── formElementsIrregularIndex3.type.ts
+```
+
+#### react
+
+```
+src/
+│ App.tsx
+│ main.tsx
+├── assets/
+├── components/
+│ └── FormSettings.ts
+│ └── Header.ts
+├── pages/
+│ └── Home.ts
+│ └── List.ts
+│ └── AddNew.ts
+│ └── Category.ts
+├── routes/
+│ └── routesLink.ts
+├── types/
+│ └── inputs.type.ts
+│ └── .ts
+├── utils/
+│ └── common.ts
 ```
 
 ### モーダルの種類
