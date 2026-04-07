@@ -115,7 +115,9 @@ export function displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingDat
     buttonPageTransitionElms[0].innerHTML = aText2
       ? 'ページを移動しない※'
       : 'ページを移動しない';
-    buttonPageTransitionElms[1].innerHTML = 'クイズ詳細へ戻る';
+    buttonPageTransitionElms[1].innerHTML = aText2
+      ? 'クイズ詳細へ戻る'
+      : '新規登録へ戻る';
   }
 
   buttonPageTransitionElms?.forEach((elm, idx) => {
@@ -125,7 +127,8 @@ export function displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingDat
           resetAndDisplayList();
         }
       } else {
-        displayPage(1, aSectionElms);
+        const nextPageIndex = aText2 ? 1 : 2;
+        displayPage(nextPageIndex, aSectionElms);
       }
       aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
       bsModal.hide();
