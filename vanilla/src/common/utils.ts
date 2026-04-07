@@ -5,7 +5,7 @@ import type { modalForPageTransitionElmsType } from './types/modalForPageTransit
 export function getAccuracyRate(aVal: Inputs) {
   const correctAnswers = aVal.areCorrectAnswers.filter((val) => val);
   return (
-    (correctAnswers && aVal.areCorrectAnswers
+    (correctAnswers.length
       ? Math.round(
           (correctAnswers.length / aVal.areCorrectAnswers.length) * 100
         )

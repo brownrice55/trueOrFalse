@@ -1,4 +1,5 @@
 import { setCategoryInputs } from '../categorySettings/setup';
+import { setQuizStart } from '../quizStart/setup';
 import type { Listener } from '../common/types/listener.type';
 import {
   getInputValues,
@@ -54,7 +55,7 @@ export function saveCategoryData(
   localStorage.setItem('quizCategory', JSON.stringify([...newMap]));
   aQuizCategory = newMap;
 
-  // set updated category names in the quiz detail page and the registration page
+  // set updated category names in the registration page
 
   aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
   const addNewCategorySelectElm = document.querySelector(
@@ -69,7 +70,10 @@ export function saveCategoryData(
     );
   }
 
-  // update quiz category select start
+  // set updated category names in the quiz start page
+  setQuizStart(aQuizData, aQuizCategory, aButtonSaveElm as HTMLButtonElement);
+
+  // set updated category names in the quiz detail page : start
   if (aButtonSaveElm.dataset.key) {
     const key = parseInt(aButtonSaveElm.dataset.key, 10);
     const currentVal = aQuizData.get(key);
@@ -87,18 +91,18 @@ export function saveCategoryData(
       );
     }
     aButtonSaveElm.dataset.key = '';
-
-    setCategoryInputs(
-      aQuizCategory,
-      aQuizData,
-      aModalForDeleteElms,
-      aButtonCancelElm,
-      aSectionElms,
-      aBsModal,
-      aButtonSaveElm
-    );
   }
-  // update quiz category select end
+  // set updated category names in the quiz detail page : end
+
+  setCategoryInputs(
+    aQuizCategory,
+    aQuizData,
+    aModalForDeleteElms,
+    aButtonCancelElm,
+    aSectionElms,
+    aBsModal,
+    aButtonSaveElm
+  );
 
   const buttonSaveAndCancelElms =
     aButtonSaveElm?.parentNode?.querySelectorAll('button');
