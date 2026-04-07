@@ -323,7 +323,8 @@ export function deleteDataThroughDeleteBtnInTheModal(
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
   aListDtElms: NodeListOf<HTMLElement>,
-  aDivIdx3DivElms: NodeListOf<HTMLElement>
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aInputCategoryAreaElm: HTMLElement
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const deleteButtonElm = aModalForDeleteElms.deleteButton;
@@ -347,11 +348,9 @@ export function deleteDataThroughDeleteBtnInTheModal(
       });
       localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
-      // reset category inputs : start *******
-      const inputCategoryAreaElm =
-        document.querySelector<HTMLElement>('.js-inputCategory');
-      if (inputCategoryAreaElm !== null) {
-        inputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+      // reset category inputs : start
+      if (aInputCategoryAreaElm !== null) {
+        aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
       }
       // reset category inputs : end
     } else if (
@@ -367,7 +366,12 @@ export function deleteDataThroughDeleteBtnInTheModal(
         aQuizData.delete(key);
         localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
-        resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
+        resetIsActiveInTheCategoryData(
+          aQuizData,
+          aQuizCategory,
+          aButtonSaveElm,
+          aInputCategoryAreaElm
+        );
 
         listDivElms[0].classList.remove('d-none');
         listDivElms[1].classList.add('d-none');

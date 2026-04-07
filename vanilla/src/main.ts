@@ -146,6 +146,9 @@ setQuizList(
   divIdx3DivElms as NodeListOf<HTMLElement>
 );
 
+const inputCategoryAreaElm =
+  document.querySelector<HTMLElement>('.js-inputCategory');
+
 deleteDataThroughDeleteBtnInTheModal(
   quizData as Map<number, Inputs>,
   quizCategory as Map<number, InputsCategory>,
@@ -156,7 +159,8 @@ deleteDataThroughDeleteBtnInTheModal(
   bsModal,
   buttonSaveElm as HTMLButtonElement,
   listDtElms as NodeListOf<HTMLElement>,
-  divIdx3DivElms as NodeListOf<HTMLElement>
+  divIdx3DivElms as NodeListOf<HTMLElement>,
+  inputCategoryAreaElm as HTMLElement
 );
 
 const buttonAddInputElm =
@@ -183,7 +187,8 @@ setAddNew(
   bsModal,
   buttonSaveElm as HTMLButtonElement,
   listDtElms as NodeListOf<HTMLElement>,
-  divIdx3DivElms as NodeListOf<HTMLElement>
+  divIdx3DivElms as NodeListOf<HTMLElement>,
+  inputCategoryAreaElm as HTMLElement
 );
 
 const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
@@ -197,7 +202,8 @@ editQuizData(
   currentValKeys,
   buttonSaveElm as HTMLButtonElement,
   divIdx3Elms as NodeListOf<HTMLElement>,
-  divIdx3DivElms as NodeListOf<HTMLElement>
+  divIdx3DivElms as NodeListOf<HTMLElement>,
+  inputCategoryAreaElm as HTMLElement
 );
 
 setQuizStart(quizData, quizCategory, buttonSaveElm as HTMLButtonElement);

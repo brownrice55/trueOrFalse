@@ -26,7 +26,8 @@ export function setAddNew(
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
   aListDtElms: NodeListOf<HTMLElement>,
-  aDivIdx3DivElms: NodeListOf<HTMLElement>
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aInputCategoryAreaElm: HTMLElement
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -134,7 +135,8 @@ export function setAddNew(
     aBsModal,
     aButtonSaveElm,
     aListDtElms,
-    aDivIdx3DivElms
+    aDivIdx3DivElms,
+    aInputCategoryAreaElm
   );
 
   const buttonBackToListFromAddNewElm = document.querySelector(

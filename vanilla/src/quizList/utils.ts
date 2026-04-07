@@ -418,7 +418,7 @@ export function displayList(
 
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
-      let quizCategory = aButtonSaveElm.classList.contains(
+      const quizCategory = aButtonSaveElm.classList.contains(
         'js-categoryNameIsUpdated'
       )
         ? getDataFromLocalStorage('quizCategory')
@@ -476,7 +476,9 @@ export function displayList(
 
 export function resetIsActiveInTheCategoryData(
   aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>
+  aQuizCategory: Map<number, InputsCategory>,
+  aButtonSaveElm: HTMLButtonElement,
+  aInputCategoryAreaElm: HTMLElement
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -484,8 +486,13 @@ export function resetIsActiveInTheCategoryData(
       activeCategoryKeys.push(val.category);
     }
   });
+  const quizCategory = aButtonSaveElm.classList.contains(
+    'js-categoryNameIsUpdated'
+  )
+    ? getDataFromLocalStorage('quizCategory')
+    : aQuizCategory;
   const activeCategoryKeysSet = new Set(activeCategoryKeys);
-  aQuizCategory.forEach((val, key) => {
+  quizCategory.forEach((val, key) => {
     val.isActive = false;
     activeCategoryKeysSet.forEach((val2) => {
       if (key === parseInt(val2, 10)) {
@@ -493,12 +500,10 @@ export function resetIsActiveInTheCategoryData(
       }
     });
   });
-  localStorage.setItem('quizCategory', JSON.stringify([...aQuizCategory]));
-  // reset category inputs : start *******
-  const inputCategoryAreaElm =
-    document.querySelector<HTMLElement>('.js-inputCategory');
-  if (inputCategoryAreaElm !== null) {
-    inputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+  localStorage.setItem('quizCategory', JSON.stringify([...quizCategory]));
+  // reset category inputs : start
+  if (aInputCategoryAreaElm !== null) {
+    aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(quizCategory);
   }
   // reset category inputs : end
 }
@@ -558,7 +563,8 @@ export function editQuizData(
   aCurrentValKeys: (keyof Inputs)[],
   aButtonSaveElm: HTMLButtonElement,
   aDivIdx3Elms: NodeListOf<HTMLElement>,
-  aDivIdx3DivElms: NodeListOf<HTMLElement>
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aInputCategoryAreaElm: HTMLElement
 ) {
   let quizCategory = aQuizCategory;
   let isUnderEdit = false;
@@ -724,12 +730,18 @@ export function editQuizData(
               aCurrentValKeys[idx],
               aListDdElms
             );
-            if (!idx) {
-              resetIsActiveInTheCategoryData(aQuizData, aQuizCategory);
-            }
           }
           aQuizData.set(key, currentVal);
           localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+          if (!idx) {
+            resetIsActiveInTheCategoryData(
+              aQuizData,
+              aQuizCategory,
+              aButtonSaveElm,
+              aInputCategoryAreaElm
+            );
+          }
+
           // display an updated value
           divElms[0].innerHTML = getEachValueForDivIndex0(
             idx,

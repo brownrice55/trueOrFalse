@@ -102,7 +102,8 @@ export function saveQuizData(
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
   aListDtElms: NodeListOf<HTMLElement>,
-  aDivIdx3DivElms: NodeListOf<HTMLElement>
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aInputCategoryAreaElm: HTMLElement
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -166,11 +167,9 @@ export function saveQuizData(
           'quizCategory',
           JSON.stringify([...aQuizCategory])
         );
-        // reset category inputs : start *******
-        const inputCategoryAreaElm =
-          document.querySelector<HTMLElement>('.js-inputCategory');
-        if (inputCategoryAreaElm !== null) {
-          inputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
+        // reset category inputs : start
+        if (aInputCategoryAreaElm !== null) {
+          aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
         }
       }
     }

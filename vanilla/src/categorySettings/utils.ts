@@ -54,7 +54,6 @@ export function saveCategoryData(
   aQuizCategory = newMap;
 
   // set updated category names in the registration page
-
   aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -91,7 +90,7 @@ export function saveCategoryData(
     aButtonSaveElm.dataset.key = '';
   }
 
-  // reset category inputs : start *******
+  // reset category inputs : start
   if (aInputCategoryAreaElm !== null) {
     aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
   }
@@ -139,7 +138,7 @@ export function setInputValidationForCategory(
   aButtonCancelElm: HTMLButtonElement,
   aButtonSaveElm: HTMLButtonElement,
   aIsUnderEdit: boolean,
-  aInputCategoryAreaElm: HTMLInputElement
+  aInputCategoryAreaElm: HTMLElement
 ) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -210,7 +209,7 @@ export function setButtonDisabledForCategory(
       aButtonCancelElm,
       aButtonSaveElm,
       aIsUnderEdit,
-      aInputCategoryAreaElm as HTMLInputElement
+      aInputCategoryAreaElm as HTMLElement
     );
   });
 
@@ -308,7 +307,7 @@ export function editOrDeleteCategoryName(
           aButtonCancelElm,
           aButtonSaveElm,
           isUnderEdit,
-          aInputCategoryAreaElm as HTMLInputElement
+          aInputCategoryAreaElm as HTMLElement
         );
       }
     });
@@ -331,7 +330,7 @@ export function editOrDeleteCategoryName(
           aButtonCancelElm,
           aButtonSaveElm,
           isUnderEdit,
-          aInputCategoryAreaElm as HTMLInputElement
+          aInputCategoryAreaElm as HTMLElement
         );
         if (aButtonAddInputElm) {
           aButtonAddInputElm.disabled = false;
