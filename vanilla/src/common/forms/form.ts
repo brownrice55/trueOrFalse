@@ -1,11 +1,11 @@
 import { getDataFromLocalStorage } from '../dataManagement';
-import type { Inputs } from '../../types/inputs.type';
-import type { InputsCategory } from '../../types/inputsCategory.type';
+import type { Inputs } from '../types/inputs.type';
+import type { InputsCategory } from '../types/inputsCategory.type';
 import type {
   labelForTypeType,
   labelForPriorityType,
-} from '../../types/labels.type';
-import type { FormElementsIrregularIndex3Type } from '../../types/formElementsIrregularIndex3.type';
+} from '../types/labels.type';
+import type { FormElementsIrregularIndex3Type } from '../types/formElementsIrregularIndex3.type';
 import {
   labelForType,
   labelForPriority,

@@ -1,5 +1,5 @@
-import { displayList } from '../quizList/quizList';
-import { setCategoryInputs } from '../display';
+import { displayList } from '../quizList/utils';
+import { setCategoryInputs } from '../categorySettings/setup';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
 import {
   getHTMLForOptionInputsOfSelection,
@@ -9,9 +9,9 @@ import {
   setDisabled,
   setValidationForDataEntry,
 } from '../common/forms/validation';
-import type { InputsCategory } from '../types/inputsCategory.type';
-import type { Inputs } from '../types/inputs.type';
-import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
+import type { InputsCategory } from '../common/types/inputsCategory.type';
+import type { Inputs } from '../common/types/inputs.type';
+import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
 
 export function switchType(
   aAddNewTypeSelectElm: HTMLElement,

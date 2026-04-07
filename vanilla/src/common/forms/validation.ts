@@ -1,4 +1,4 @@
-import type { Inputs } from '../../types/inputs.type';
+import type { Inputs } from '../types/inputs.type';
 
 export function getInputValues(
   aInputCategoryElms: NodeListOf<HTMLInputElement>,

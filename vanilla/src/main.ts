@@ -1,24 +1,18 @@
 import './style.scss';
 import * as bootstrap from 'bootstrap';
+import { Collapse } from 'bootstrap';
 import { getDataFromLocalStorage } from './common/dataManagement';
-import {
-  setupDisplay,
-  switchPage,
-  closeGlobalMenu,
-  setCategoryInputs,
-  setAddNew,
-  setQuizList,
-  setQuizStart,
-} from './display';
-import {
-  deleteDataThroughDeleteBtnInTheModal,
-  editQuizData,
-} from './quizList/setEvent';
-import { currentValKeys } from './common/utils';
-import type { Inputs } from './types/inputs.type';
-import type { InputsCategory } from './types/inputsCategory.type';
-import type { modalForDeleteElmsType } from './types/modalForDeleteElms.type';
-import type { modalForPageTransitionElmsType } from './types/modalForPageTransitionElms.type';
+import { setAddNew } from './addNew/setup';
+import { setQuizStart } from './quizStart/setup';
+import { setQuizList } from './quizList/setup';
+import { setCategoryInputs } from './categorySettings/setup';
+import { editQuizData } from './quizList/utils';
+import { currentValKeys, switchPage } from './common/utils';
+import { deleteDataThroughDeleteBtnInTheModal } from './common/modals/modal';
+import type { Inputs } from './common/types/inputs.type';
+import type { InputsCategory } from './common/types/inputsCategory.type';
+import type { modalForDeleteElmsType } from './common/types/modalForDeleteElms.type';
+import type { modalForPageTransitionElmsType } from './common/types/modalForPageTransitionElms.type';
 
 document.body.classList.add('loaded');
 
@@ -71,14 +65,16 @@ const buttonCancelElm =
 
 const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
 
-setupDisplay(
-  quizCategory as Map<number, InputsCategory>,
-  quizData as Map<number, Inputs>,
+// initial page start
+const pageIndex = !quizCategory.size ? 3 : !quizData.size ? 2 : 0;
+switchPage(
+  pageIndex,
   false,
   modalForPageTransitionElms as modalForPageTransitionElmsType,
-  buttonCancelElm as HTMLButtonElement,
+  buttonCancelElm,
   sectionElms
 );
+// initial page end
 
 globalNavLiElms?.forEach((elm) => {
   elm.addEventListener('click', function (e: MouseEvent) {
@@ -95,6 +91,29 @@ globalNavLiElms?.forEach((elm) => {
   });
 });
 
+const closeGlobalMenu = (aGlobalNavElm: HTMLElement) => {
+  const bsCollapse = new Collapse(aGlobalNavElm, { toggle: false });
+  const mediaQueryList = window.matchMedia('(max-width: 992px)');
+  const hideMenus = (matches: boolean) => {
+    if (matches) {
+      document.addEventListener('click', function (e: MouseEvent) {
+        if (aGlobalNavElm.classList.contains('show')) {
+          const target = e.target;
+          if (target instanceof Node) {
+            bsCollapse.hide();
+          }
+        }
+      });
+    }
+  };
+
+  const listener = (e: MediaQueryListEvent) => {
+    hideMenus(e.matches);
+  };
+
+  mediaQueryList.addEventListener('change', listener);
+  hideMenus(mediaQueryList.matches);
+};
 if (globalNavElm) {
   closeGlobalMenu(globalNavElm);
 }

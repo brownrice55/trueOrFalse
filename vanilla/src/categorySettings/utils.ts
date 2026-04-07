@@ -1,5 +1,5 @@
-import type { Listener } from '../types/listener.type';
-import { setCategoryInputs } from '../display';
+import { setCategoryInputs } from '../categorySettings/setup';
+import type { Listener } from '../common/types/listener.type';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
@@ -13,9 +13,9 @@ import {
   getCategoryOptions,
   setDivIndex1FormForQuizDetailIdx0Category,
 } from '../common/forms/form';
-import type { Inputs } from '../types/inputs.type';
-import type { InputsCategory } from '../types/inputsCategory.type';
-import type { modalForDeleteElmsType } from '../types/modalForDeleteElms.type';
+import type { Inputs } from '../common/types/inputs.type';
+import type { InputsCategory } from '../common/types/inputsCategory.type';
+import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
 
 export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,

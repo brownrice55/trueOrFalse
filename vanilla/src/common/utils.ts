@@ -1,5 +1,6 @@
-import { switchPage } from '../display';
-import type { Inputs } from '../types/inputs.type';
+import { displayModalForPageTransition } from './modals/modal';
+import type { Inputs } from './types/inputs.type';
+import type { modalForPageTransitionElmsType } from './types/modalForPageTransitionElms.type';
 
 export function getAccuracyRate(aVal: Inputs) {
   const correctAnswers = aVal.areCorrectAnswers.filter((val) => val);
@@ -67,4 +68,84 @@ export function goToCategoryToSetNewCategory(
       listDdElms[0]?.parentNode?.parentNode as HTMLElement
     )?.dataset?.key;
   }
+}
+
+export function switchPage(
+  aIndex: number,
+  aIsCategorySettingsUnderEdit: boolean,
+  aModalForPageTransitionElms: Partial<modalForPageTransitionElmsType>,
+  aButtonCancelElm: HTMLButtonElement | null,
+  aSectionElms: NodeListOf<HTMLElement>
+) {
+  const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
+
+  const hasDnoneArray = Array.from(sectionElms).map((elm) =>
+    elm.classList.contains('d-none')
+  );
+
+  let isContinued = true;
+  if (!hasDnoneArray[1]) {
+    //when leaving quizlist
+    // reset quizlist
+    // setQuizList(aQuizData, aQuizCategory);
+    displayPage(aIndex, sectionElms);
+  } else if (!hasDnoneArray[3]) {
+    //when leaving the category settings
+    const buttons = (
+      aButtonCancelElm?.parentNode as HTMLElement
+    ).querySelectorAll('button');
+    const isQuestionUnderEdit = buttons[1].classList.contains(
+      'js-quizDataIsUnderEdit'
+    );
+    const isNewDataUnderEdit = buttons[1].classList.contains(
+      'js-newDataIsUnderEdit'
+    );
+
+    const setModalFunction = (
+      aIndex: number,
+      aPageTransitionPatternIndex: number
+    ) => {
+      displayModalForPageTransition(
+        aIndex,
+        aButtonCancelElm as HTMLButtonElement,
+        aPageTransitionPatternIndex,
+        aModalForPageTransitionElms as modalForPageTransitionElmsType,
+        aSectionElms
+      );
+    };
+
+    if (aIsCategorySettingsUnderEdit) {
+      isContinued = false;
+      let pageTransitionPatternIndex = 0;
+      if (isQuestionUnderEdit) {
+        pageTransitionPatternIndex = aIndex === 1 ? 5 : 2;
+      } else if (isNewDataUnderEdit) {
+        pageTransitionPatternIndex = aIndex === 2 ? 6 : 4;
+      }
+      setModalFunction(aIndex, pageTransitionPatternIndex);
+    } else if (isQuestionUnderEdit) {
+      if (aIndex !== 1 && aIndex !== 3) {
+        isContinued = false;
+        setModalFunction(aIndex, 1);
+      }
+    } else if (isNewDataUnderEdit) {
+      if (aIndex !== 2 && aIndex !== 3) {
+        isContinued = false;
+        setModalFunction(aIndex, 3);
+      }
+    }
+  }
+  if (isContinued) {
+    displayPage(aIndex, sectionElms);
+  }
+}
+
+export function displayPage(
+  aIndex: number,
+  aSectionElms: NodeListOf<HTMLElement>
+) {
+  aSectionElms.forEach((elm) => {
+    elm.classList.add('d-none');
+  });
+  aSectionElms[aIndex].classList.remove('d-none');
 }

@@ -7,9 +7,9 @@ import {
 import { labelForQuestionAnswer } from '../common/labels/labels';
 import { getAccuracyRate } from '../common/utils';
 import { getDataFromLocalStorage } from '../common/dataManagement';
-import type { Inputs } from '../types/inputs.type';
-import type { InputsCategory } from '../types/inputsCategory.type';
-import type { InputsForResult } from '../types/inputsForResult.type';
+import type { Inputs } from '../common/types/inputs.type';
+import type { InputsCategory } from '../common/types/inputsCategory.type';
+import type { InputsForResult } from '../common/types/inputsForResult.type';
 
 export function setQuizStartForm(
   aQuizData: Map<number, Inputs>,
