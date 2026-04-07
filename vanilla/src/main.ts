@@ -73,7 +73,6 @@ const currentValKeys: (keyof Inputs)[] = [
   'explanation',
   'priority',
   'notes',
-  'numberOfCorrectAnswers',
 ];
 
 const buttonCancelElm =

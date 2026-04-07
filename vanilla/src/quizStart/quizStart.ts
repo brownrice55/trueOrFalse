@@ -292,21 +292,17 @@ export function displayQuizAnswers(
     aQuizStartQuestionButtonElms[1].classList.remove('d-none');
   }
 
-  // save data: numberOfAnswers, numberOfCorrectAnswers and areCorrectAnswers to the original data / start
+  // save data: areCorrectAnswers to the original data / start
   const id = aCurrentQuizDataForPractice.id;
   const originalVal = aQuizData.get(id);
   if (originalVal) {
-    originalVal.numberOfAnswers += 1;
-    if (isCorrectAnswer) {
-      originalVal.numberOfCorrectAnswers += 1;
-    }
     let areCorrectAnswers = originalVal.areCorrectAnswers ?? [];
     areCorrectAnswers.push(isCorrectAnswer);
     originalVal.areCorrectAnswers = areCorrectAnswers;
     aQuizData.set(id, originalVal);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
   }
-  // save data: numberOfAnswers, numberOfCorrectAnswers and areCorrectAnswers to the original data / end
+  // save data: areCorrectAnswers to the original data / end
 
   if (quizStartAccuracyRateSpanElm && originalVal) {
     quizStartAccuracyRateSpanElm.innerHTML = getAccuracyRate(originalVal);

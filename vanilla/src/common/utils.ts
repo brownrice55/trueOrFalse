@@ -2,9 +2,12 @@ import { switchPage } from '../display';
 import type { Inputs } from '../types/inputs.type';
 
 export function getAccuracyRate(aVal: Inputs) {
+  const correctAnswers = aVal.areCorrectAnswers.filter((val) => val);
   return (
-    (aVal.numberOfAnswers && aVal.numberOfCorrectAnswers
-      ? Math.round((aVal.numberOfCorrectAnswers / aVal.numberOfAnswers) * 100)
+    (correctAnswers && aVal.areCorrectAnswers
+      ? Math.round(
+          (correctAnswers.length / aVal.areCorrectAnswers.length) * 100
+        )
       : '0') + '%'
   );
 }
@@ -17,7 +20,6 @@ export const currentValKeys: (keyof Inputs)[] = [
   'explanation',
   'priority',
   'notes',
-  'numberOfCorrectAnswers',
 ];
 export function resetEditQuizBtns(aIsFromModal: boolean) {
   const quizDetailEditCancelBtnElm =

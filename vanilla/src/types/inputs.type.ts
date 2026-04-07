@@ -9,7 +9,5 @@ export type Inputs = {
   explanation: string;
   priority: string;
   notes: string;
-  numberOfCorrectAnswers: number;
-  numberOfAnswers: number;
   areCorrectAnswers: boolean[];
 };
