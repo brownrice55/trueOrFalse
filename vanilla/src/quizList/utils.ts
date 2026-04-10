@@ -1,4 +1,4 @@
-import { getCategoryInputHTML } from '../categorySettings/setup';
+import { getCategoryInputHTML } from '../categorySettings/utils';
 import { getDataFromLocalStorage } from '../common/dataManagement';
 import {
   getHTMLForOptionInputsOfSelection,

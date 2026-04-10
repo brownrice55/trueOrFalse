@@ -1,7 +1,7 @@
 import * as bootstrap from 'bootstrap';
 import { displayPage } from '../utils';
 import { displayList } from '../../quizList/utils';
-import { getCategoryInputHTML } from '../../categorySettings/setup';
+import { getCategoryInputHTML } from '../../categorySettings/utils';
 import { resetCategoryForm } from '../../categorySettings/utils';
 import { resetIsActiveInTheCategoryData } from '../../quizList/utils';
 import { resetEditQuizBtns } from '../utils';

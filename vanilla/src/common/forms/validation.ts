@@ -1,11 +1,11 @@
 import type { Inputs } from '../types/inputs.type';
 
 export function getInputValues(
-  aInputCategoryElms: NodeListOf<HTMLInputElement>,
+  aInputElms: NodeListOf<HTMLInputElement>,
   aIsReset: boolean
 ) {
   let inputValues: string[] = [];
-  aInputCategoryElms.forEach((elm) => {
+  aInputElms.forEach((elm) => {
     if (aIsReset) {
       elm.classList.remove('border', 'border-danger', 'border-3');
     }

@@ -1,6 +1,4 @@
-import { getCategoryInputHTML } from '../categorySettings/setup';
 import { setQuizStart } from '../quizStart/setup';
-import type { Listener } from '../common/types/listener.type';
 import {
   getInputValues,
   setInputValidationForDuplicateCheckAndGetDuplicateValuesIndices,
@@ -8,7 +6,6 @@ import {
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData,
-  showModalForDelete,
 } from '../common/modals/modal';
 import {
   getCategoryOptions,
@@ -16,7 +13,6 @@ import {
 } from '../common/forms/form';
 import type { Inputs } from '../common/types/inputs.type';
 import type { InputsCategory } from '../common/types/inputsCategory.type';
-import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
 
 export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,
@@ -159,30 +155,35 @@ export function setInputValidationForCategory(
     aButtonSaveElm.disabled = true;
   } else {
     let inputValues: string[] = getInputValues(inputCategoryElms, false);
-    let isSame =
+    isSame =
       JSON.stringify(aInitialInputValues) ===
       JSON.stringify(inputValues.filter(Boolean));
     aButtonSaveElm.disabled =
       !duplicateValuesIndices.length && !isSame ? false : true;
   }
-}
 
-const handleEventForsetInputValidationForCategory: Listener['handleEvent'] =
-  function (this, e) {
-    if (e?.target instanceof HTMLInputElement) {
-      (e.target as HTMLInputElement).value = e.target.value.trim();
+  if (aIsUnderEdit) {
+    const targetEditBtnElm = document.querySelector(
+      '.js-targetEditBtn'
+    ) as HTMLButtonElement;
+    const targetInputElm = document.querySelector(
+      '.js-targetInput'
+    ) as HTMLInputElement;
+    if (targetInputElm) {
+      const originalValue = targetInputElm.dataset.originalvalue;
+
+      if (targetEditBtnElm) {
+        targetEditBtnElm.disabled =
+          targetInputElm.value &&
+          originalValue !== targetInputElm.value &&
+          !duplicateValuesIndices.length &&
+          !isSame
+            ? false
+            : true;
+      }
     }
-
-    const inputCategoryAreaElm = e.currentTarget;
-
-    setInputValidationForCategory(
-      this.initialInputValues,
-      this.buttonCancelElm,
-      this.buttonSaveElm,
-      this.isUnderEdit,
-      inputCategoryAreaElm as HTMLInputElement
-    );
-  };
+  }
+}
 
 export function resetCategoryForm(
   aButtonCancelElm: HTMLButtonElement,
@@ -218,133 +219,56 @@ export function setButtonDisabledForCategory(
   }
 }
 
-const getInputStatus = (
+export function setDisabledStatusForEditAndDeleteButtonsOfCategoryNames(
   aInputCategoryAreaElm: HTMLElement,
   aTargetInputElm: HTMLInputElement,
   aIsUnderEdit: boolean
-) => {
+) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
-  inputCategoryElms.forEach((elm2) => {
-    if (aTargetInputElm !== elm2) {
-      if (elm2?.dataset?.isActive?.toLowerCase() === 'true') {
+  inputCategoryElms.forEach((elm) => {
+    if (aTargetInputElm !== elm) {
+      if (elm?.dataset?.isActive?.toLowerCase() === 'true') {
         const btnElms =
-          elm2?.parentNode?.querySelectorAll<HTMLButtonElement>('button');
-        btnElms?.forEach((elm3) => {
-          elm3.disabled = aIsUnderEdit;
+          elm?.parentNode?.querySelectorAll<HTMLButtonElement>('button');
+        btnElms?.forEach((elm2) => {
+          elm2.disabled = aIsUnderEdit;
         });
       } else {
-        elm2.disabled = aIsUnderEdit;
+        elm.disabled = aIsUnderEdit;
       }
     }
   });
-};
+}
 
-export function editOrDeleteCategoryName(
-  aInputCategoryAreaElm: HTMLElement,
-  aInitialInputValues: string[],
-  aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement,
-  aButtonAddInputElm: HTMLButtonElement,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aBsModal: bootstrap.Modal
+export function getCategoryInputHTML(
+  aQuizCategory: Map<number, InputsCategory>
 ) {
-  const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
-    '.js-categoryEditBtn'
-  );
-  const deleteBtnElms = document.querySelectorAll<HTMLButtonElement>(
-    '.js-categoryDeleteBtn'
-  );
-  let isUnderEdit: boolean = false;
-  let targetInputElm: HTMLInputElement;
-  let originalValue: string = '';
+  let inputsData = '';
 
-  let targetIndex = 0;
-
-  const listener = {
-    initialInputValues: aInitialInputValues,
-    buttonSaveElm: aButtonSaveElm,
-    buttonCancelElm: aButtonCancelElm,
-    isUnderEdit: isUnderEdit,
-    handleEvent: handleEventForsetInputValidationForCategory,
-  };
-
-  aInputCategoryAreaElm?.addEventListener('keyup', listener, false);
-
-  editBtnElms.forEach((elm, index) => {
-    elm.addEventListener('click', function () {
-      isUnderEdit = !isUnderEdit;
-      targetIndex = index;
-      const nextSibling = this.parentNode?.nextSibling;
-      if (nextSibling instanceof HTMLInputElement) {
-        targetInputElm = nextSibling;
+  if (aQuizCategory.size) {
+    [...aQuizCategory].forEach(([key, val]) => {
+      let isDisabled = '';
+      inputsData += '<div class="my-3 position-relative">';
+      if (val?.isActive) {
+        inputsData += `<span>問題に設定済みのカテゴリー名</span>`;
+        inputsData += `<div class="position-absolute bottom-0 end-0">
+                      <button class="btn btn-primary me-1 js-categoryEditBtn" type="button">編集する</button>
+                      <button class="btn btn-primary js-categoryDeleteBtn" type="button">削除する</button>
+                    </div>`;
+        isDisabled = ' disabled';
       }
-      this.disabled = isUnderEdit;
-      targetInputElm.disabled = !isUnderEdit;
-      this.textContent = isUnderEdit ? '上書きする' : '編集する';
-      deleteBtnElms[index].textContent = isUnderEdit
-        ? 'キャンセル'
-        : '削除する';
-      originalValue = targetInputElm.value;
-      getInputStatus(aInputCategoryAreaElm, targetInputElm, isUnderEdit);
-
-      if (isUnderEdit) {
-        targetInputElm.focus();
-        targetInputElm.addEventListener('keyup', function () {
-          const isEditInputChanged = originalValue === this.value;
-          editBtnElms[index].disabled = isEditInputChanged;
-        });
-        aButtonSaveElm.disabled = true;
-        aButtonCancelElm.disabled = true;
-      }
-
-      if (isUnderEdit) {
-        aInputCategoryAreaElm?.removeEventListener('keyup', listener, false);
-      } else {
-        aInputCategoryAreaElm?.addEventListener('keyup', listener, false);
-        setInputValidationForCategory(
-          aInitialInputValues,
-          aButtonCancelElm,
-          aButtonSaveElm,
-          isUnderEdit,
-          aInputCategoryAreaElm as HTMLElement
-        );
-      }
+      inputsData += `<input type="text" class="form-control" id="input-${key}" value="${val?.categoryName || ''}" data-is-active="${val?.isActive || false}" data-index="${key}" ${isDisabled} />
+    </div>`;
     });
-  });
-
-  deleteBtnElms.forEach((elm, index) => {
-    elm.addEventListener('click', function () {
-      if (targetIndex === index && isUnderEdit) {
-        //when clicking a cancel button
-        isUnderEdit = false;
-        this.textContent = '削除する';
-        editBtnElms[index].textContent = '編集する';
-        editBtnElms[index].disabled = false;
-        targetInputElm.disabled = true;
-        targetInputElm.value = originalValue;
-        getInputStatus(aInputCategoryAreaElm, targetInputElm, isUnderEdit);
-        aInputCategoryAreaElm?.addEventListener('keyup', listener, false);
-        setInputValidationForCategory(
-          aInitialInputValues,
-          aButtonCancelElm,
-          aButtonSaveElm,
-          isUnderEdit,
-          aInputCategoryAreaElm as HTMLElement
-        );
-        if (aButtonAddInputElm) {
-          aButtonAddInputElm.disabled = false;
-        }
-      } else if (!isUnderEdit) {
-        const targetInputElm = this?.parentNode?.nextSibling;
-
-        showModalForDelete(
-          targetInputElm as HTMLInputElement,
-          aModalForDeleteElms,
-          null,
-          aBsModal
-        );
-      }
-    });
-  });
+  } else {
+    Array(3)
+      .fill('')
+      .forEach((_, index) => {
+        inputsData += `<div class="my-3">
+        <input type="text" class="form-control" id="input-${index}" value="" data-is-active="false" data-index="${index}" />
+        </div>`;
+      });
+  }
+  return inputsData;
 }

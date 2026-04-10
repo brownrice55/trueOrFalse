@@ -1,5 +1,5 @@
 import { displayList } from '../quizList/utils';
-import { getCategoryInputHTML } from '../categorySettings/setup';
+import { getCategoryInputHTML } from '../categorySettings/utils';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
 import {
   getHTMLForOptionInputsOfSelection,

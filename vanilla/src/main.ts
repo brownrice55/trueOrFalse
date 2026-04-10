@@ -5,7 +5,7 @@ import { getDataFromLocalStorage } from './common/dataManagement';
 import { setAddNew } from './addNew/setup';
 import { setQuizStart } from './quizStart/setup';
 import { setQuizList } from './quizList/setup';
-import { setCategoryInputs } from './categorySettings/setup';
+import { setCategorySettings } from './categorySettings/setup';
 import { editQuizData } from './quizList/utils';
 import { currentValKeys, switchPage } from './common/utils';
 import { deleteDataThroughDeleteBtnInTheModal } from './common/modals/modal';
@@ -166,7 +166,7 @@ deleteDataThroughDeleteBtnInTheModal(
 const buttonAddInputElm =
   document.querySelector<HTMLButtonElement>('.js-buttonAddInput');
 
-setCategoryInputs(
+setCategorySettings(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
   modalForDeleteElms as modalForDeleteElmsType,
@@ -174,7 +174,8 @@ setCategoryInputs(
   sectionElms,
   bsModal,
   buttonSaveElm as HTMLButtonElement,
-  buttonAddInputElm as HTMLButtonElement
+  buttonAddInputElm as HTMLButtonElement,
+  inputCategoryAreaElm as HTMLElement
 );
 
 setAddNew(
