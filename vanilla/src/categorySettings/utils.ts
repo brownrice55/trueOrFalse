@@ -6,6 +6,7 @@ import {
 import {
   displayModalToSelectWhatToDoNextAfterSavingData,
   displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData,
+  showModalForDelete,
 } from '../common/modals/modal';
 import {
   getCategoryOptions,
@@ -13,6 +14,127 @@ import {
 } from '../common/forms/form';
 import type { Inputs } from '../common/types/inputs.type';
 import type { InputsCategory } from '../common/types/inputsCategory.type';
+import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
+
+export function editOrDeleteCategoryNamesAndSetValidationForInput(
+  aQuizCategory: Map<number, InputsCategory>,
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aInitialInputValues: string[],
+  aButtonCancelElm: HTMLButtonElement,
+  aButtonSaveElm: HTMLButtonElement,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aBsModal: bootstrap.Modal
+) {
+  // edit or delete --- start
+  const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
+    '.js-categoryEditBtn'
+  );
+  const deleteBtnElms = document.querySelectorAll<HTMLButtonElement>(
+    '.js-categoryDeleteBtn'
+  );
+  let isUnderEdit: boolean = false;
+  let targetInputElm: HTMLInputElement;
+  let originalValue: string = '';
+  // edit or save data
+  editBtnElms.forEach((elm, idx) => {
+    elm.addEventListener('click', function (e) {
+      isUnderEdit = !isUnderEdit;
+      targetInputElm = this.parentNode?.nextSibling as HTMLInputElement;
+      const targetEditBtnElm = e.currentTarget as HTMLButtonElement;
+      if (targetEditBtnElm) {
+        targetEditBtnElm.disabled = isUnderEdit;
+        targetEditBtnElm.textContent = isUnderEdit ? '上書きする' : '編集する';
+        targetEditBtnElm.classList.add('js-targetEditBtn');
+      }
+      if (targetInputElm) {
+        targetInputElm.disabled = !isUnderEdit;
+        targetInputElm.classList.add('js-targetInput');
+        targetInputElm.dataset.originalvalue = targetInputElm.value;
+      }
+      deleteBtnElms[idx].textContent = isUnderEdit ? 'キャンセル' : '削除する';
+      setDisabledStatusForEditAndDeleteButtonsOfCategoryNames(
+        aInputCategoryAreaElm,
+        targetInputElm,
+        isUnderEdit
+      );
+      aButtonAddInputElm.disabled = isUnderEdit;
+
+      if (isUnderEdit) {
+        targetInputElm.focus();
+        originalValue = targetInputElm.value;
+      } else {
+        //when saving the target category name
+        const key = parseInt(targetInputElm.dataset.index ?? '10000');
+        const currentVal = aQuizCategory.get(key);
+        aQuizCategory.set(key, {
+          categoryName: targetInputElm.value,
+          isActive: currentVal?.isActive ?? false,
+        });
+        localStorage.setItem(
+          'quizCategory',
+          JSON.stringify([...aQuizCategory])
+        );
+        targetEditBtnElm.classList.remove('js-targetEditBtn');
+        targetInputElm.classList.remove('js-targetInput');
+        aButtonCancelElm.dataset.isSaved = String(true);
+      }
+    });
+  });
+
+  // delete data or cancel change
+  deleteBtnElms.forEach((elm, idx) => {
+    elm.addEventListener('click', function (e) {
+      const targetCancelOrDeleteBtnElm = e.currentTarget as HTMLButtonElement;
+      if (isUnderEdit) {
+        //when clicking a cancel button
+        isUnderEdit = false;
+        targetCancelOrDeleteBtnElm.textContent = '削除する';
+        editBtnElms[idx].textContent = '編集する';
+        editBtnElms[idx].disabled = false;
+        targetInputElm.disabled = true;
+        targetInputElm.value = originalValue;
+
+        setDisabledStatusForEditAndDeleteButtonsOfCategoryNames(
+          aInputCategoryAreaElm,
+          targetInputElm,
+          isUnderEdit
+        );
+        aButtonAddInputElm.disabled = isUnderEdit;
+        setInputValidationForCategory(
+          aInitialInputValues,
+          aButtonCancelElm,
+          aButtonSaveElm,
+          isUnderEdit,
+          aInputCategoryAreaElm as HTMLElement
+        );
+      } else if (!isUnderEdit) {
+        // when deleting data
+        const targetInputElm = this?.parentNode?.nextSibling;
+
+        showModalForDelete(
+          targetInputElm as HTMLInputElement,
+          aModalForDeleteElms,
+          null,
+          aBsModal
+        );
+      }
+    });
+  });
+
+  // edit or delete --- end
+
+  // set validation for input fields
+  aInputCategoryAreaElm.addEventListener('keyup', function () {
+    setInputValidationForCategory(
+      aInitialInputValues,
+      aButtonCancelElm,
+      aButtonSaveElm,
+      isUnderEdit,
+      aInputCategoryAreaElm as HTMLElement
+    );
+  });
+}
 
 export function saveCategoryData(
   aButtonSaveElm: HTMLButtonElement,
@@ -20,9 +142,12 @@ export function saveCategoryData(
   aSectionElms: NodeListOf<HTMLElement>,
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aBsModal: bootstrap.Modal
 ) {
-  const inputCategoryElms =
+  let inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
 
   let newMap = new Map<number, InputsCategory>();
@@ -49,6 +174,7 @@ export function saveCategoryData(
   localStorage.setItem('quizCategory', JSON.stringify([...newMap]));
   aQuizCategory = newMap;
 
+  //  ****** later ******
   // set updated category names in the registration page
   aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
   const addNewCategorySelectElm = document.querySelector(
@@ -85,12 +211,31 @@ export function saveCategoryData(
     }
     aButtonSaveElm.dataset.key = '';
   }
+  //  ****** later ******
 
   // reset category inputs : start
   if (aInputCategoryAreaElm !== null) {
     aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
   }
+  inputCategoryElms = aInputCategoryAreaElm?.querySelectorAll('input');
+
+  const initialInputValues: string[] = getInputValues(
+    inputCategoryElms as NodeListOf<HTMLInputElement>,
+    true
+  );
+  editOrDeleteCategoryNamesAndSetValidationForInput(
+    aQuizCategory,
+    aInputCategoryAreaElm,
+    aButtonAddInputElm as HTMLButtonElement,
+    initialInputValues,
+    aButtonCancelElm,
+    aButtonSaveElm,
+    aModalForDeleteElms as modalForDeleteElmsType,
+    aBsModal as bootstrap.Modal
+  );
   // reset category inputs : end
+
+  aButtonCancelElm.dataset.isSaved = String(true);
 
   const buttonSaveAndCancelElms =
     aButtonSaveElm?.parentNode?.querySelectorAll('button');
@@ -129,13 +274,13 @@ export function saveCategoryData(
   }
 }
 
-export function setInputValidationForCategory(
+const setInputValidationForCategory = (
   aInitialInputValues: string[],
   aButtonCancelElm: HTMLButtonElement,
   aButtonSaveElm: HTMLButtonElement,
   aIsUnderEdit: boolean,
   aInputCategoryAreaElm: HTMLElement
-) {
+) => {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
   let inputValues: string[] = getInputValues(inputCategoryElms, true);
@@ -183,7 +328,7 @@ export function setInputValidationForCategory(
       }
     }
   }
-}
+};
 
 export function resetCategoryForm(
   aButtonCancelElm: HTMLButtonElement,
@@ -195,35 +340,11 @@ export function resetCategoryForm(
   aButtonSaveElm.disabled = true;
 }
 
-export function setButtonDisabledForCategory(
-  aButtonSaveElm: HTMLButtonElement,
-  aInitialInputValues: string[],
-  aInputCategoryAreaElm: HTMLElement,
-  aIsUnderEdit: boolean,
-  aButtonCancelElm: HTMLButtonElement,
-  aButtonAddInputElm: HTMLButtonElement
-) {
-  aButtonCancelElm?.addEventListener('click', function () {
-    resetCategoryForm(aButtonCancelElm, aButtonSaveElm);
-    setInputValidationForCategory(
-      aInitialInputValues,
-      aButtonCancelElm,
-      aButtonSaveElm,
-      aIsUnderEdit,
-      aInputCategoryAreaElm as HTMLElement
-    );
-  });
-
-  if (aButtonAddInputElm) {
-    aButtonAddInputElm.disabled = aIsUnderEdit ? true : false;
-  }
-}
-
-export function setDisabledStatusForEditAndDeleteButtonsOfCategoryNames(
+const setDisabledStatusForEditAndDeleteButtonsOfCategoryNames = (
   aInputCategoryAreaElm: HTMLElement,
   aTargetInputElm: HTMLInputElement,
   aIsUnderEdit: boolean
-) {
+) => {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
   inputCategoryElms.forEach((elm) => {
@@ -239,7 +360,7 @@ export function setDisabledStatusForEditAndDeleteButtonsOfCategoryNames(
       }
     }
   });
-}
+};
 
 export function getCategoryInputHTML(
   aQuizCategory: Map<number, InputsCategory>

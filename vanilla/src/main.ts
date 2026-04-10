@@ -169,13 +169,13 @@ const buttonAddInputElm =
 setCategorySettings(
   quizCategory as Map<number, InputsCategory>,
   quizData as Map<number, Inputs>,
-  modalForDeleteElms as modalForDeleteElmsType,
   buttonCancelElm as HTMLButtonElement,
   sectionElms,
-  bsModal,
   buttonSaveElm as HTMLButtonElement,
   buttonAddInputElm as HTMLButtonElement,
-  inputCategoryAreaElm as HTMLElement
+  inputCategoryAreaElm as HTMLElement,
+  modalForDeleteElms as modalForDeleteElmsType,
+  bsModal
 );
 
 setAddNew(
