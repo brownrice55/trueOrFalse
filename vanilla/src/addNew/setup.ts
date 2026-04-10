@@ -27,7 +27,8 @@ export function setAddNew(
   aButtonSaveElm: HTMLButtonElement,
   aListDtElms: NodeListOf<HTMLElement>,
   aDivIdx3DivElms: NodeListOf<HTMLElement>,
-  aInputCategoryAreaElm: HTMLElement
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -136,7 +137,8 @@ export function setAddNew(
     aButtonSaveElm,
     aListDtElms,
     aDivIdx3DivElms,
-    aInputCategoryAreaElm
+    aInputCategoryAreaElm,
+    aButtonAddInputElm
   );
 
   const buttonBackToListFromAddNewElm = document.querySelector(

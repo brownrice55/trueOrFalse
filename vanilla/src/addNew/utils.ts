@@ -1,5 +1,8 @@
 import { displayList } from '../quizList/utils';
-import { getCategoryInputHTML } from '../categorySettings/utils';
+import {
+  getCategoryInputHTML,
+  editOrDeleteCategoryNamesAndSetValidationForInput,
+} from '../categorySettings/utils';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
 import {
   getHTMLForOptionInputsOfSelection,
@@ -8,6 +11,7 @@ import {
 import {
   setDisabled,
   setValidationForDataEntry,
+  getInputValues,
 } from '../common/forms/validation';
 import type { InputsCategory } from '../common/types/inputsCategory.type';
 import type { Inputs } from '../common/types/inputs.type';
@@ -103,7 +107,8 @@ export function saveQuizData(
   aButtonSaveElm: HTMLButtonElement,
   aListDtElms: NodeListOf<HTMLElement>,
   aDivIdx3DivElms: NodeListOf<HTMLElement>,
-  aInputCategoryAreaElm: HTMLElement
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -159,7 +164,7 @@ export function saveQuizData(
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
     const key = parseInt(newValue.category, 10);
-    if (!Number.isNaN(key)) {
+    if (Number.isInteger(key)) {
       const currentQuizCategoryVal = aQuizCategory.get(key);
       if (currentQuizCategoryVal) {
         currentQuizCategoryVal.isActive = true;
@@ -171,6 +176,26 @@ export function saveQuizData(
         if (aInputCategoryAreaElm !== null) {
           aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
         }
+        const inputCategoryElms: NodeListOf<HTMLInputElement> =
+          aInputCategoryAreaElm?.querySelectorAll('input');
+
+        const initialInputValues: string[] = getInputValues(
+          inputCategoryElms as NodeListOf<HTMLInputElement>,
+          true
+        );
+        editOrDeleteCategoryNamesAndSetValidationForInput(
+          aQuizData,
+          aQuizCategory,
+          aInputCategoryAreaElm,
+          aButtonAddInputElm,
+          initialInputValues,
+          aButtonCancelElm,
+          aButtonSaveElm,
+          aModalForDeleteElms,
+          aBsModal,
+          aSectionElms
+        );
+        // reset category inputs : end
       }
     }
 
@@ -180,9 +205,11 @@ export function saveQuizData(
     });
     inputTextElms.forEach((elm) => {
       (elm as HTMLInputElement).value = '';
+      (elm as HTMLInputElement).dataset.texttemporary = '';
     });
     checkboxElms.forEach((elm) => {
       (elm as HTMLInputElement).checked = false;
+      (elm as HTMLInputElement).dataset.checktemporary = 'false';
     });
 
     aAddNewCategoryElm.value = 'unspecified';

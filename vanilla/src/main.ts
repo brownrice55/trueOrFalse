@@ -189,7 +189,8 @@ setAddNew(
   buttonSaveElm as HTMLButtonElement,
   listDtElms as NodeListOf<HTMLElement>,
   divIdx3DivElms as NodeListOf<HTMLElement>,
-  inputCategoryAreaElm as HTMLElement
+  inputCategoryAreaElm as HTMLElement,
+  buttonAddInputElm as HTMLButtonElement
 );
 
 const listEditBtnElms = document.querySelectorAll('.js-listEditBtn');
