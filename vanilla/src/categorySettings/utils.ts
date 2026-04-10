@@ -17,6 +17,7 @@ import type { InputsCategory } from '../common/types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
 
 export function editOrDeleteCategoryNamesAndSetValidationForInput(
+  aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aInputCategoryAreaElm: HTMLElement,
   aButtonAddInputElm: HTMLButtonElement,
@@ -24,7 +25,8 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
   aButtonCancelElm: HTMLButtonElement,
   aButtonSaveElm: HTMLButtonElement,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aSectionElms: NodeListOf<HTMLElement>
 ) {
   // edit or delete --- start
   const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
@@ -78,6 +80,14 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
         targetEditBtnElm.classList.remove('js-targetEditBtn');
         targetInputElm.classList.remove('js-targetInput');
         aButtonCancelElm.dataset.isSaved = String(true);
+
+        resetCategoryNamesInOtherPages(
+          aQuizData,
+          aQuizCategory,
+          aSectionElms,
+          aButtonSaveElm,
+          aButtonCancelElm
+        );
       }
     });
   });
@@ -174,44 +184,13 @@ export function saveCategoryData(
   localStorage.setItem('quizCategory', JSON.stringify([...newMap]));
   aQuizCategory = newMap;
 
-  //  ****** later ******
-  // set updated category names in the registration page
-  aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
-  const addNewCategorySelectElm = document.querySelector(
-    '.js-addNewCategorySelect'
+  resetCategoryNamesInOtherPages(
+    aQuizData,
+    aQuizCategory,
+    aSectionElms,
+    aButtonSaveElm,
+    aButtonCancelElm
   );
-  if (addNewCategorySelectElm) {
-    addNewCategorySelectElm.innerHTML = getCategoryOptions(
-      aQuizCategory,
-      'unspecified',
-      aButtonSaveElm,
-      true
-    );
-  }
-
-  // set updated category names in the quiz start page
-  setQuizStart(aQuizData, aQuizCategory, aButtonSaveElm as HTMLButtonElement);
-
-  // set updated category names in the quiz detail page : start
-  if (aButtonSaveElm.dataset.key) {
-    const key = parseInt(aButtonSaveElm.dataset.key, 10);
-    const currentVal = aQuizData.get(key);
-    if (currentVal) {
-      const listDdElms = document.querySelectorAll('.js-listDd');
-      const divElms = listDdElms[0].querySelectorAll('div');
-      setDivIndex1FormForQuizDetailIdx0Category(
-        aQuizCategory,
-        currentVal as Inputs,
-        aSectionElms,
-        listDdElms as NodeListOf<HTMLElement>,
-        divElms[1],
-        aButtonSaveElm,
-        aButtonCancelElm
-      );
-    }
-    aButtonSaveElm.dataset.key = '';
-  }
-  //  ****** later ******
 
   // reset category inputs : start
   if (aInputCategoryAreaElm !== null) {
@@ -224,6 +203,7 @@ export function saveCategoryData(
     true
   );
   editOrDeleteCategoryNamesAndSetValidationForInput(
+    aQuizData,
     aQuizCategory,
     aInputCategoryAreaElm,
     aButtonAddInputElm as HTMLButtonElement,
@@ -231,7 +211,8 @@ export function saveCategoryData(
     aButtonCancelElm,
     aButtonSaveElm,
     aModalForDeleteElms as modalForDeleteElmsType,
-    aBsModal as bootstrap.Modal
+    aBsModal as bootstrap.Modal,
+    aSectionElms
   );
   // reset category inputs : end
 
@@ -273,6 +254,51 @@ export function saveCategoryData(
     );
   }
 }
+
+const resetCategoryNamesInOtherPages = (
+  aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement
+) => {
+  // set updated category names in the registration page
+  aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
+  const addNewCategorySelectElm = document.querySelector(
+    '.js-addNewCategorySelect'
+  );
+  if (addNewCategorySelectElm) {
+    addNewCategorySelectElm.innerHTML = getCategoryOptions(
+      aQuizCategory,
+      'unspecified',
+      aButtonSaveElm,
+      true
+    );
+  }
+
+  // set updated category names in the quiz start page
+  setQuizStart(aQuizData, aQuizCategory, aButtonSaveElm as HTMLButtonElement);
+
+  // set updated category names in the quiz detail page : start
+  if (aButtonSaveElm.dataset.key) {
+    const key = parseInt(aButtonSaveElm.dataset.key, 10);
+    const currentVal = aQuizData.get(key);
+    if (currentVal) {
+      const listDdElms = document.querySelectorAll('.js-listDd');
+      const divElms = listDdElms[0].querySelectorAll('div');
+      setDivIndex1FormForQuizDetailIdx0Category(
+        aQuizCategory,
+        currentVal as Inputs,
+        aSectionElms,
+        listDdElms as NodeListOf<HTMLElement>,
+        divElms[1],
+        aButtonSaveElm,
+        aButtonCancelElm
+      );
+    }
+    aButtonSaveElm.dataset.key = '';
+  }
+};
 
 const setInputValidationForCategory = (
   aInitialInputValues: string[],

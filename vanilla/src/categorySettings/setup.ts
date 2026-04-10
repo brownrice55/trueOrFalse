@@ -35,6 +35,7 @@ export function setCategorySettings(
   );
 
   editOrDeleteCategoryNamesAndSetValidationForInput(
+    aQuizData,
     aQuizCategory,
     aInputCategoryAreaElm,
     aButtonAddInputElm,
@@ -42,7 +43,8 @@ export function setCategorySettings(
     aButtonCancelElm,
     aButtonSaveElm,
     aModalForDeleteElms,
-    aBsModal
+    aBsModal,
+    aSectionElms
   );
 
   // save data
@@ -91,6 +93,7 @@ export function setCategorySettings(
         true
       );
       editOrDeleteCategoryNamesAndSetValidationForInput(
+        aQuizData,
         quizCategory,
         aInputCategoryAreaElm,
         aButtonAddInputElm,
@@ -98,7 +101,8 @@ export function setCategorySettings(
         aButtonCancelElm,
         aButtonSaveElm,
         aModalForDeleteElms,
-        aBsModal
+        aBsModal,
+        aSectionElms
       );
       // reset category inputs : end
       this.dataset.isSaved = String(false);
