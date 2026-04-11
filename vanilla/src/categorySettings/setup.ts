@@ -19,7 +19,8 @@ export function setCategorySettings(
   aButtonAddInputElm: HTMLButtonElement,
   aInputCategoryAreaElm: HTMLElement,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   // set html of input fields
   if (aInputCategoryAreaElm !== null) {
@@ -44,7 +45,8 @@ export function setCategorySettings(
     aButtonSaveElm,
     aModalForDeleteElms,
     aBsModal,
-    aSectionElms
+    aSectionElms,
+    aListDivElms
   );
 
   // save data
@@ -58,7 +60,8 @@ export function setCategorySettings(
       aButtonCancelElm,
       aButtonAddInputElm,
       aModalForDeleteElms,
-      aBsModal
+      aBsModal,
+      aListDivElms
     );
   });
 
@@ -102,7 +105,8 @@ export function setCategorySettings(
         aButtonSaveElm,
         aModalForDeleteElms,
         aBsModal,
-        aSectionElms
+        aSectionElms,
+        aListDivElms
       );
       // reset category inputs : end
       this.dataset.isSaved = String(false);

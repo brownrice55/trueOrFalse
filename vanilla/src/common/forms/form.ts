@@ -275,7 +275,8 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
   aListDdElms: NodeListOf<HTMLElement>,
   aDivElmsIndex1: HTMLElement,
   aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   const formElementsArray = getFormElements(
     aQuizCategory,
@@ -293,7 +294,8 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
         aSectionElms,
         'quizList',
         aButtonSaveElm,
-        aButtonCancelElm
+        aButtonCancelElm,
+        aListDivElms
       );
     }
   });

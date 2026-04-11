@@ -56,9 +56,10 @@ export function goToCategoryToSetNewCategory(
   aSectionElms: NodeListOf<HTMLElement>,
   aFrom: string,
   aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
-  switchPage(3, false, {}, aButtonCancelElm, aSectionElms);
+  switchPage(3, false, {}, aButtonCancelElm, aSectionElms, aListDivElms);
   if (aButtonSaveElm) {
     const className =
       aFrom === 'quizList' ? 'js-quizDataIsUnderEdit' : 'js-newDataIsUnderEdit';
@@ -75,7 +76,8 @@ export function switchPage(
   aIsCategorySettingsUnderEdit: boolean,
   aModalForPageTransitionElms: Partial<modalForPageTransitionElmsType>,
   aButtonCancelElm: HTMLButtonElement | null,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   const sectionElms = document.querySelectorAll<HTMLElement>('.js-section')!;
 
@@ -110,7 +112,8 @@ export function switchPage(
         aButtonCancelElm as HTMLButtonElement,
         aPageTransitionPatternIndex,
         aModalForPageTransitionElms as modalForPageTransitionElmsType,
-        aSectionElms
+        aSectionElms,
+        aListDivElms
       );
     };
 

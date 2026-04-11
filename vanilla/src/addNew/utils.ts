@@ -1,4 +1,4 @@
-import { displayList } from '../quizList/utils';
+import { displayList, setEventForDisplayDetail } from '../quizList/utils';
 import {
   getCategoryInputHTML,
   editOrDeleteCategoryNamesAndSetValidationForInput,
@@ -102,13 +102,17 @@ export function saveQuizData(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
   aListDtElms: NodeListOf<HTMLElement>,
   aDivIdx3DivElms: NodeListOf<HTMLElement>,
-  aInputCategoryAreaElm: HTMLElement,
-  aButtonAddInputElm: HTMLButtonElement
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>,
+  aListUlElm: HTMLElement
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -193,7 +197,8 @@ export function saveQuizData(
           aButtonSaveElm,
           aModalForDeleteElms,
           aBsModal,
-          aSectionElms
+          aSectionElms,
+          aListDivElms
         );
         // reset category inputs : end
       }
@@ -233,21 +238,19 @@ export function saveQuizData(
     this.disabled = true;
     // reset end
 
-    const listDivElms = document.querySelectorAll('.js-listDiv');
-    const listUlElm = document.querySelector('.js-listUl');
-    displayList(
+    displayList(aQuizData, aListUlElm as HTMLElement);
+    setEventForDisplayDetail(
       aQuizData,
       aQuizCategory,
-      listDivElms,
-      listUlElm as HTMLElement,
-      aModalForDeleteElms,
+      aListDivElms,
       aCurrentValKeys,
-      aBsModal,
+      aListDdElms,
       aSectionElms,
       aButtonSaveElm,
       aButtonCancelElm,
       aListDtElms,
-      aDivIdx3DivElms
+      aDivIdx3DivElms,
+      aButtonBackToListElms
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(

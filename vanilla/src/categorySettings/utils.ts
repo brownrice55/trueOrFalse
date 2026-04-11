@@ -26,7 +26,8 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
   aButtonSaveElm: HTMLButtonElement,
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   // edit or delete --- start
   const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
@@ -86,7 +87,8 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
           aQuizCategory,
           aSectionElms,
           aButtonSaveElm,
-          aButtonCancelElm
+          aButtonCancelElm,
+          aListDivElms
         );
       }
     });
@@ -155,7 +157,8 @@ export function saveCategoryData(
   aButtonCancelElm: HTMLButtonElement,
   aButtonAddInputElm: HTMLButtonElement,
   aModalForDeleteElms: modalForDeleteElmsType,
-  aBsModal: bootstrap.Modal
+  aBsModal: bootstrap.Modal,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   let inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
@@ -189,7 +192,8 @@ export function saveCategoryData(
     aQuizCategory,
     aSectionElms,
     aButtonSaveElm,
-    aButtonCancelElm
+    aButtonCancelElm,
+    aListDivElms
   );
 
   // reset category inputs : start
@@ -212,7 +216,8 @@ export function saveCategoryData(
     aButtonSaveElm,
     aModalForDeleteElms as modalForDeleteElmsType,
     aBsModal as bootstrap.Modal,
-    aSectionElms
+    aSectionElms,
+    aListDivElms
   );
   // reset category inputs : end
 
@@ -232,7 +237,8 @@ export function saveCategoryData(
       aButtonSaveElm,
       'カテゴリー設定を保存しました。<br />編集中のクイズ詳細ページに戻りますか？',
       '※「ページを移動しない」を選択した場合は<br />クイズ詳細の編集中の内容はキャンセルされます。',
-      aSectionElms
+      aSectionElms,
+      aListDivElms
     );
   } else if (
     aButtonSaveElm.classList.contains('js-newDataIsUnderEdit') &&
@@ -242,7 +248,8 @@ export function saveCategoryData(
       aButtonSaveElm,
       'カテゴリー設定を保存しました。<br />編集中の新規登録ページに戻りますか？',
       '',
-      aSectionElms
+      aSectionElms,
+      aListDivElms
     );
   } else {
     displayModalToSelectWhatToDoNextAfterSavingData(
@@ -260,7 +267,8 @@ const resetCategoryNamesInOtherPages = (
   aQuizCategory: Map<number, InputsCategory>,
   aSectionElms: NodeListOf<HTMLElement>,
   aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aListDivElms: NodeListOf<HTMLElement>
 ) => {
   // set updated category names in the registration page
   aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
@@ -293,7 +301,8 @@ const resetCategoryNamesInOtherPages = (
         listDdElms as NodeListOf<HTMLElement>,
         divElms[1],
         aButtonSaveElm,
-        aButtonCancelElm
+        aButtonCancelElm,
+        aListDivElms
       );
     }
     aButtonSaveElm.dataset.key = '';
