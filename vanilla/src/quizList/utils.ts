@@ -375,20 +375,22 @@ export function displayDetail(
   });
 
   // validation for 2 selects
-  const selectElms = document.querySelectorAll('.js-listDl .js-formSelect');
-  const selectElmIndices = [0, 5];
-  const keyIndices = ['category', 'priority'];
-  selectElms.forEach((elm, idx) => {
-    elm.addEventListener('change', function (e: Event) {
-      const targetSelectElm = e.currentTarget as HTMLTextAreaElement;
-      const dtIdx = selectElmIndices[idx];
-      const buttonElm = aListDtElms[dtIdx].querySelector('button');
-      if (buttonElm) {
-        const key = keyIndices[idx];
-        buttonElm.disabled =
-          aCurrentVal[key as keyof Inputs] === targetSelectElm.value;
-      }
-    });
+
+  aListDdElms[0].addEventListener('change', function (e) {
+    const targetSelectElm = e.target as HTMLSelectElement;
+    const buttonElm = aListDtElms[0].querySelector('button');
+    if (buttonElm) {
+      buttonElm.disabled = aCurrentVal.category === targetSelectElm.value;
+    }
+  });
+
+  const prioritySelectForQuizDetailElm = aListDdElms[5].querySelector('select');
+  prioritySelectForQuizDetailElm?.addEventListener('change', function (e) {
+    const targetSelectElm = e.currentTarget as HTMLSelectElement;
+    const buttonElm = aListDtElms[5].querySelector('button');
+    if (buttonElm) {
+      buttonElm.disabled = aCurrentVal.priority === targetSelectElm.value;
+    }
   });
 
   // validation for idx1 & idx3
@@ -404,7 +406,7 @@ export function displayDetail(
   if (detailTypeElm !== null) {
     detailTypeElm.addEventListener('change', function (e: Event) {
       resetIdx3Form(aCurrentVal, 1);
-      targetSelectElm = e.currentTarget as HTMLTextAreaElement;
+      targetSelectElm = e.currentTarget as HTMLSelectElement;
       if (editButton1Elm) {
         isTypeChanged = aCurrentVal.type !== targetSelectElm.value;
         editButton1Elm.disabled = !isTypeChanged;
