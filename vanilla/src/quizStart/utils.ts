@@ -134,7 +134,7 @@ const retrieveNecessaryData = (
         );
 
   let cnt = 0;
-  data.forEach((val: Inputs, idx: number) => {
+  [...data].forEach(([_, val], idx) => {
     const currentVal =
       aPriority === 'random'
         ? (data.get(keys[randomIndices[idx]]) as Inputs)
