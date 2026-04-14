@@ -198,7 +198,13 @@ export function saveQuizData(
           aModalForDeleteElms,
           aBsModal,
           aSectionElms,
-          aListDivElms
+          aListDivElms,
+          aListUlElm,
+          aCurrentValKeys,
+          aListDdElms,
+          aListDtElms,
+          aDivIdx3DivElms,
+          aButtonBackToListElms
         );
         // reset category inputs : end
       }

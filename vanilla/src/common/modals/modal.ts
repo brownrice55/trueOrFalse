@@ -380,7 +380,13 @@ export function deleteDataThroughDeleteBtnInTheModal(
         aModalForDeleteElms,
         aBsModal,
         aSectionElms,
-        aListDivElms
+        aListDivElms,
+        aListUlElm,
+        aCurrentValKeys,
+        aListDdElms,
+        aListDtElms,
+        aDivIdx3DivElms,
+        aButtonBackToListElms
       );
       // reset category inputs : end
     } else if (
@@ -406,7 +412,13 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aModalForDeleteElms,
           aBsModal,
           aSectionElms,
-          aListDivElms
+          aListDivElms,
+          aListUlElm,
+          aCurrentValKeys,
+          aListDdElms,
+          aListDtElms,
+          aDivIdx3DivElms,
+          aButtonBackToListElms
         );
 
         aListDivElms[0].classList.remove('d-none');

@@ -20,7 +20,13 @@ export function setCategorySettings(
   aInputCategoryAreaElm: HTMLElement,
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
-  aListDivElms: NodeListOf<HTMLElement>
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) {
   // set html of input fields
   if (aInputCategoryAreaElm !== null) {
@@ -46,7 +52,13 @@ export function setCategorySettings(
     aModalForDeleteElms,
     aBsModal,
     aSectionElms,
-    aListDivElms
+    aListDivElms,
+    aListUlElm,
+    aCurrentValKeys,
+    aListDdElms,
+    aListDtElms,
+    aDivIdx3DivElms,
+    aButtonBackToListElms
   );
 
   // save data
@@ -61,7 +73,13 @@ export function setCategorySettings(
       aButtonAddInputElm,
       aModalForDeleteElms,
       aBsModal,
-      aListDivElms
+      aListDivElms,
+      aListUlElm,
+      aCurrentValKeys,
+      aListDdElms,
+      aListDtElms,
+      aDivIdx3DivElms,
+      aButtonBackToListElms
     );
   });
 
@@ -106,7 +124,13 @@ export function setCategorySettings(
         aModalForDeleteElms,
         aBsModal,
         aSectionElms,
-        aListDivElms
+        aListDivElms,
+        aListUlElm,
+        aCurrentValKeys,
+        aListDdElms,
+        aListDtElms,
+        aDivIdx3DivElms,
+        aButtonBackToListElms
       );
       // reset category inputs : end
       this.dataset.iscategorynameedited = 'false';

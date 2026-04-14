@@ -27,7 +27,13 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
   aSectionElms: NodeListOf<HTMLElement>,
-  aListDivElms: NodeListOf<HTMLElement>
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) {
   // edit or delete --- start
   const editBtnElms = document.querySelectorAll<HTMLButtonElement>(
@@ -89,7 +95,13 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
           aSectionElms,
           aButtonSaveElm,
           aButtonCancelElm,
-          aListDivElms
+          aListDivElms,
+          aListUlElm,
+          aCurrentValKeys,
+          aListDdElms,
+          aListDtElms,
+          aDivIdx3DivElms,
+          aButtonBackToListElms
         );
       }
     });
@@ -159,7 +171,13 @@ export function saveCategoryData(
   aButtonAddInputElm: HTMLButtonElement,
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
-  aListDivElms: NodeListOf<HTMLElement>
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) {
   aButtonSaveElm.dataset.iscategorynameupdated = 'true';
 
@@ -196,7 +214,13 @@ export function saveCategoryData(
     aSectionElms,
     aButtonSaveElm,
     aButtonCancelElm,
-    aListDivElms
+    aListDivElms,
+    aListUlElm,
+    aCurrentValKeys,
+    aListDdElms,
+    aListDtElms,
+    aDivIdx3DivElms,
+    aButtonBackToListElms
   );
 
   // reset category inputs : start
@@ -220,7 +244,13 @@ export function saveCategoryData(
     aModalForDeleteElms as modalForDeleteElmsType,
     aBsModal as bootstrap.Modal,
     aSectionElms,
-    aListDivElms
+    aListDivElms,
+    aListUlElm,
+    aCurrentValKeys,
+    aListDdElms,
+    aListDtElms,
+    aDivIdx3DivElms,
+    aButtonBackToListElms
   );
   // reset category inputs : end
 
@@ -269,7 +299,13 @@ const resetCategoryNamesInOtherPages = (
   aSectionElms: NodeListOf<HTMLElement>,
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
-  aListDivElms: NodeListOf<HTMLElement>
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) => {
   // set updated category names in the registration page
   const addNewCategorySelectElm = document.querySelector(
@@ -285,7 +321,20 @@ const resetCategoryNamesInOtherPages = (
   }
 
   // set updated category names in the quiz start page
-  setQuizStart(aQuizData, aQuizCategory, aButtonSaveElm as HTMLButtonElement);
+  setQuizStart(
+    aQuizData,
+    aQuizCategory,
+    aButtonSaveElm as HTMLButtonElement,
+    aListUlElm,
+    aListDivElms,
+    aCurrentValKeys,
+    aListDdElms,
+    aSectionElms,
+    aButtonCancelElm,
+    aListDtElms,
+    aDivIdx3DivElms,
+    aButtonBackToListElms
+  );
 
   // set updated category names in the quiz detail page : start
   if (aButtonSaveElm.dataset.key) {

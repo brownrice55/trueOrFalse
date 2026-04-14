@@ -189,7 +189,13 @@ setCategorySettings(
   inputCategoryAreaElm as HTMLElement,
   modalForDeleteElms as modalForDeleteElmsType,
   bsModal,
-  listDivElms as NodeListOf<HTMLElement>
+  listDivElms as NodeListOf<HTMLElement>,
+  listUlElm as HTMLElement,
+  currentValKeys,
+  listDdElms as NodeListOf<HTMLElement>,
+  listDtElms as NodeListOf<HTMLElement>,
+  divIdx3DivElms as NodeListOf<HTMLElement>,
+  buttonBackToListElms as NodeListOf<HTMLButtonElement>
 );
 
 setAddNew(
@@ -230,7 +236,22 @@ editQuizData(
   bsModal as bootstrap.Modal,
   sectionElms as NodeListOf<HTMLElement>,
   buttonBackToListElms as NodeListOf<HTMLButtonElement>,
-  listDivElms as NodeListOf<HTMLElement>
+  listDivElms as NodeListOf<HTMLElement>,
+  listUlElm as HTMLElement,
+  listDtElms as NodeListOf<HTMLElement>
 );
 
-setQuizStart(quizData, quizCategory, buttonSaveElm as HTMLButtonElement);
+setQuizStart(
+  quizData,
+  quizCategory,
+  buttonSaveElm as HTMLButtonElement,
+  listUlElm as HTMLElement,
+  listDivElms as NodeListOf<HTMLElement>,
+  currentValKeys,
+  listDdElms as NodeListOf<HTMLElement>,
+  sectionElms,
+  buttonCancelElm as HTMLButtonElement,
+  listDtElms as NodeListOf<HTMLElement>,
+  divIdx3DivElms as NodeListOf<HTMLElement>,
+  buttonBackToListElms as NodeListOf<HTMLButtonElement>
+);

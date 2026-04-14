@@ -12,7 +12,16 @@ import type { InputsForResult } from '../common/types/inputsForResult.type';
 export function setQuizStart(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aButtonSaveElm: HTMLButtonElement
+  aButtonSaveElm: HTMLButtonElement,
+  aListUlElm: HTMLElement,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aButtonCancelElm: HTMLButtonElement,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) {
   const quizStartFormCategorySelectElm = document.querySelector(
     '.js-quizStartFormCategorySelect'
@@ -157,7 +166,18 @@ export function setQuizStart(
         quizIndex,
         quizDataForPractice as Map<number, InputsForResult>,
         quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>,
-        quizStartNotesTextAreaDivElm as HTMLElement
+        quizStartNotesTextAreaDivElm as HTMLElement,
+        aListUlElm,
+        aQuizCategory,
+        aListDivElms,
+        aCurrentValKeys,
+        aListDdElms,
+        aSectionElms,
+        aButtonSaveElm,
+        aButtonCancelElm,
+        aListDtElms,
+        aDivIdx3DivElms,
+        aButtonBackToListElms
       );
       quizDivElms[1].classList.add('d-none');
       quizDivElms[2].classList.remove('d-none');
@@ -184,7 +204,18 @@ export function setQuizStart(
       quizIndex,
       quizDataForPractice as Map<number, InputsForResult>,
       quizStartQuestionButtonElms as NodeListOf<HTMLButtonElement>,
-      quizStartNotesTextAreaDivElm as HTMLElement
+      quizStartNotesTextAreaDivElm as HTMLElement,
+      aListUlElm,
+      aQuizCategory,
+      aListDivElms,
+      aCurrentValKeys,
+      aListDdElms,
+      aSectionElms,
+      aButtonSaveElm,
+      aButtonCancelElm,
+      aListDtElms,
+      aDivIdx3DivElms,
+      aButtonBackToListElms
     );
     quizDivElms[1].classList.add('d-none');
     quizDivElms[2].classList.remove('d-none');

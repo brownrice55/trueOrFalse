@@ -459,7 +459,13 @@ export function resetIsActiveInTheCategoryData(
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
   aSectionElms: NodeListOf<HTMLElement>,
-  aListDivElms: NodeListOf<HTMLElement>
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -502,7 +508,13 @@ export function resetIsActiveInTheCategoryData(
     aModalForDeleteElms,
     aBsModal,
     aSectionElms,
-    aListDivElms
+    aListDivElms,
+    aListUlElm,
+    aCurrentValKeys,
+    aListDdElms,
+    aListDtElms,
+    aDivIdx3DivElms,
+    aButtonBackToListElms
   );
   // reset category inputs : end
 }
@@ -570,7 +582,9 @@ export function editQuizData(
   aBsModal: bootstrap.Modal,
   aSectionElms: NodeListOf<HTMLElement>,
   aButtonBackToListElms: NodeListOf<HTMLButtonElement>,
-  aListDivElms: NodeListOf<HTMLElement>
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aListDtElms: NodeListOf<HTMLElement>
 ) {
   let quizCategory = aQuizCategory;
   let isUnderEdit = false;
@@ -745,7 +759,13 @@ export function editQuizData(
               aModalForDeleteElms,
               aBsModal,
               aSectionElms,
-              aListDivElms
+              aListDivElms,
+              aListUlElm,
+              aCurrentValKeys,
+              aListDdElms,
+              aListDtElms,
+              aDivIdx3DivElms,
+              aButtonBackToListElms
             );
           }
 
