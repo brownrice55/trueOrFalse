@@ -134,7 +134,7 @@ export function displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingDat
         const nextPageIndex = aText2 ? 1 : 2;
         displayPage(nextPageIndex, aSectionElms);
       }
-      aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
+      aButtonSaveElm.dataset.isquizdataunderedit = 'false';
       bsModal.hide();
     });
   });
@@ -241,13 +241,13 @@ export function displayModalForPageTransition(
             if (idx === 1) {
               displayPage(1, aSectionElms);
             } else if (idx === 2) {
-              categoryButtonElms[1].classList.remove('js-quizDataIsUnderEdit');
+              categoryButtonElms[1].dataset.isquizdataunderedit = 'false';
               resetAndDisplayList(aListDivElms);
               displayPage(aIndex, aSectionElms);
             }
           } else if (aPatternIndex === 2 || aPatternIndex === 5) {
             if (idx === 2) {
-              categoryButtonElms[1]?.classList.remove('js-quizDataIsUnderEdit');
+              categoryButtonElms[1].dataset.isquizdataunderedit = 'false';
               if (aPatternIndex === 2) {
                 resetAndDisplayList(aListDivElms);
               }
@@ -263,7 +263,7 @@ export function displayModalForPageTransition(
             aPatternIndex === 6
           ) {
             if (idx === 2) {
-              categoryButtonElms[1]?.classList.remove('js-newDataIsUnderEdit');
+              categoryButtonElms[1].dataset.isnewdataunderedit = 'false';
               displayPage(aIndex, aSectionElms);
               if (aPatternIndex === 4 || aPatternIndex === 6) {
                 resetCategoryFormAndDisplayPage(

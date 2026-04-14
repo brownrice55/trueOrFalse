@@ -61,9 +61,11 @@ export function goToCategoryToSetNewCategory(
 ) {
   switchPage(3, false, {}, aButtonCancelElm, aSectionElms, aListDivElms);
   if (aButtonSaveElm) {
-    const className =
-      aFrom === 'quizList' ? 'js-quizDataIsUnderEdit' : 'js-newDataIsUnderEdit';
-    aButtonSaveElm.classList.add(className);
+    if (aFrom === 'quizList') {
+      aButtonSaveElm.dataset.isquizdataunderedit = 'true';
+    } else {
+      aButtonSaveElm.dataset.isnewdataunderedit = 'true';
+    }
     const listDdElms = document.querySelectorAll('.js-listDd');
     aButtonSaveElm.dataset.key = (
       listDdElms[0]?.parentNode?.parentNode as HTMLElement
@@ -96,12 +98,9 @@ export function switchPage(
     const buttons = (
       aButtonCancelElm?.parentNode as HTMLElement
     ).querySelectorAll('button');
-    const isQuestionUnderEdit = buttons[1].classList.contains(
-      'js-quizDataIsUnderEdit'
-    );
-    const isNewDataUnderEdit = buttons[1].classList.contains(
-      'js-newDataIsUnderEdit'
-    );
+    const isQuestionUnderEdit =
+      buttons[1].dataset.isquizdataunderedit === 'true';
+    const isNewDataUnderEdit = buttons[1].dataset.isnewdataunderedit === 'true';
 
     const setModalFunction = (
       aIndex: number,

@@ -170,11 +170,10 @@ export function setEventForDisplayDetail(
 
   listDetailButtonElms.forEach((elm) => {
     elm.addEventListener('click', function (e) {
-      const quizCategory = aButtonSaveElm.classList.contains(
-        'js-categoryNameIsUpdated'
-      )
-        ? getDataFromLocalStorage('quizCategory')
-        : aQuizCategory;
+      const quizCategory =
+        aButtonSaveElm.dataset.iscategorynameupdated === 'true'
+          ? getDataFromLocalStorage('quizCategory')
+          : aQuizCategory;
       aListDivElms[0].classList.add('d-none');
       aListDivElms[1].classList.remove('d-none');
 
@@ -468,11 +467,10 @@ export function resetIsActiveInTheCategoryData(
       activeCategoryKeys.push(val.category);
     }
   });
-  const quizCategory = aButtonSaveElm.classList.contains(
-    'js-categoryNameIsUpdated'
-  )
-    ? getDataFromLocalStorage('quizCategory')
-    : aQuizCategory;
+  const quizCategory =
+    aButtonSaveElm.dataset.iscategorynameupdated === 'true'
+      ? getDataFromLocalStorage('quizCategory')
+      : aQuizCategory;
   const activeCategoryKeysSet = new Set(activeCategoryKeys);
   quizCategory.forEach((val, key) => {
     val.isActive = false;
@@ -674,12 +672,10 @@ export function editQuizData(
         } else if (currentVal) {
           // when clicking save button
           // save a new value
-          quizCategory = aButtonSaveElm.classList.contains(
-            'js-categoryNameIsUpdated'
-          )
-            ? getDataFromLocalStorage('quizCategory')
-            : aQuizCategory;
-
+          quizCategory =
+            aButtonSaveElm.dataset.iscategorynameupdated === 'true'
+              ? getDataFromLocalStorage('quizCategory')
+              : aQuizCategory;
           if (idx === 2) {
             aButtonBackToListElms.forEach((elm) => {
               elm.classList.add('js-questionIsUpdated');

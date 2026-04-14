@@ -82,7 +82,7 @@ export function setCategorySettings(
   aButtonAddInputElm?.addEventListener('click', addCategoryNameInputField);
 
   aButtonCancelElm?.addEventListener('click', function () {
-    if (this.dataset.isSaved) {
+    if (this.dataset.iscategorynameedited === 'true') {
       // reset category inputs : start
       const quizCategory = getDataFromLocalStorage('quizCategory');
       if (aInputCategoryAreaElm !== null) {
@@ -109,7 +109,7 @@ export function setCategorySettings(
         aListDivElms
       );
       // reset category inputs : end
-      this.dataset.isSaved = String(false);
+      this.dataset.iscategorynameedited = 'false';
     } else {
       resetCategoryForm(aButtonCancelElm, aButtonSaveElm);
       if (aButtonSaveElm.disabled) {

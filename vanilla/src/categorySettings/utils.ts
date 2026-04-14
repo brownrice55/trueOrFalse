@@ -68,6 +68,8 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
         originalValue = targetInputElm.value;
       } else {
         //when saving the target category name
+        aButtonSaveElm.dataset.iscategorynameupdated = 'true';
+        aButtonCancelElm.dataset.iscategorynameedited = 'true';
         const key = parseInt(targetInputElm.dataset.index ?? '10000');
         const currentVal = aQuizCategory.get(key);
         aQuizCategory.set(key, {
@@ -80,7 +82,6 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
         );
         targetEditBtnElm.classList.remove('js-targetEditBtn');
         targetInputElm.classList.remove('js-targetInput');
-        aButtonCancelElm.dataset.isSaved = String(true);
 
         resetCategoryNamesInOtherPages(
           aQuizData,
@@ -160,6 +161,8 @@ export function saveCategoryData(
   aBsModal: bootstrap.Modal,
   aListDivElms: NodeListOf<HTMLElement>
 ) {
+  aButtonSaveElm.dataset.iscategorynameupdated = 'true';
+
   let inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
 
@@ -221,8 +224,6 @@ export function saveCategoryData(
   );
   // reset category inputs : end
 
-  aButtonCancelElm.dataset.isSaved = String(true);
-
   const buttonSaveAndCancelElms =
     aButtonSaveElm?.parentNode?.querySelectorAll('button');
   buttonSaveAndCancelElms?.forEach((elm) => {
@@ -230,8 +231,8 @@ export function saveCategoryData(
   });
 
   if (
-    aButtonSaveElm.classList.contains('js-quizDataIsUnderEdit') &&
-    aButtonSaveElm.classList.contains('js-categoryNameIsUpdated')
+    aButtonSaveElm.dataset.isquizdataunderedit === 'true' &&
+    aButtonSaveElm.dataset.iscategorynameupdated === 'true'
   ) {
     displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData(
       aButtonSaveElm,
@@ -241,8 +242,8 @@ export function saveCategoryData(
       aListDivElms
     );
   } else if (
-    aButtonSaveElm.classList.contains('js-newDataIsUnderEdit') &&
-    aButtonSaveElm.classList.contains('js-categoryNameIsUpdated')
+    aButtonSaveElm.dataset.isnewdataunderedit === 'true' &&
+    aButtonSaveElm.dataset.iscategorynameupdated === 'true'
   ) {
     displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData(
       aButtonSaveElm,
@@ -271,7 +272,6 @@ const resetCategoryNamesInOtherPages = (
   aListDivElms: NodeListOf<HTMLElement>
 ) => {
   // set updated category names in the registration page
-  aButtonSaveElm?.classList.add('js-categoryNameIsUpdated');
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
   );
@@ -305,7 +305,6 @@ const resetCategoryNamesInOtherPages = (
         aListDivElms
       );
     }
-    aButtonSaveElm.dataset.key = '';
   }
 };
 

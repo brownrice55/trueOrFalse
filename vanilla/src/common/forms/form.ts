@@ -18,7 +18,7 @@ export function getCategoryOptions(
   aButtonSaveElm: HTMLButtonElement,
   aIsAddNeeded: boolean
 ) {
-  if (aButtonSaveElm?.classList.contains('js-categoryNameIsUpdated')) {
+  if (aButtonSaveElm.dataset.iscategorynameupdated === 'true') {
     aQuizCategory = getDataFromLocalStorage('quizCategory');
   }
   let optionHTML2 = '';
