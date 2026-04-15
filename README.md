@@ -198,17 +198,14 @@ src/
 
 ### フラグ
 
-| No. | フラグ名              | 関連するページ番号：関数名                            | 付与される場所  | タイミング                                               | いつ必要？                                                                                                            |
-| --- | --------------------- | ----------------------------------------------------- | --------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| 1   | iscategorynameupdated | 4：resetCategoryNamesInOtherPages                     | buttonSaveElm   | カテゴリー名が更新・追加された時                         | モーダルの出し分け                                                                                                    |
-| 2   | isquizdataunderedit   | 2 & 4：goToCategoryToSetNewCategory                   | buttonSaveElm   | クイズ詳細で編集途中の時                                 | モーダルの出し分け                                                                                                    |
-| 3   | isnewdataunderedit    | 3 & 4：goToCategoryToSetNewCategory                   | buttonSaveElm   | 新規登録で編集途中の時                                   | モーダルの出し分け                                                                                                    |
-| 4   | iscategorynameedited  | 4： editOrDeleteCategoryNamesAndSetValidationForInput | buttonCancelElm | カテゴリー設定で編集ボタンを押して編集後上書き保存した時 | カテゴリー設定の全体のキャンセルボタンを押した後にtrueの場合はquizCategoryのデータを再取得する。取得後はfalseにする。 |
-| 5   |                       |                                                       |                 |                                                          |                                                                                                                       |
-| 6   |                       |                                                       |                 |                                                          |                                                                                                                       |
-| 7   |                       |                                                       |                 |                                                          |                                                                                                                       |
-
 <p>【ページ番号】1:クイズスタート 2:クイズ一覧 3:新規登録 4:カテゴリー設定</p>
+
+| No. | フラグ名              | 関連するページ番号<br />関数名<br />付与される要素 <br />付与のタイミング<br />使用する時                                                                                                                                                                              |
+| --- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | iscategorynameupdated | 4<br />resetCategoryNamesInOtherPages<br />buttonSaveElm<br />カテゴリー名が更新・追加された時<br />モーダルの出し分け                                                                                                                                                 |
+| 2   | isquizdataunderedit   | 2 & 4<br />goToCategoryToSetNewCategory<br />buttonSaveElm<br />クイズ詳細で編集途中の時<br />モーダルの出し分け                                                                                                                                                       |
+| 3   | isnewdataunderedit    | 3 & 4<br />goToCategoryToSetNewCategory<br />buttonSaveElm<br />新規登録で編集途中の時<br />モーダルの出し分け                                                                                                                                                         |
+| 4   | iscategorynameedited  | 4<br />editOrDeleteCategoryNamesAndSetValidationForInput<br />buttonCancelElm<br />カテゴリー設定で編集ボタンを押して編集後上書き保存した時<br />カテゴリー設定の全体のキャンセルボタンを押した後にtrueの場合はquizCategoryのデータを再取得する。取得後はfalseにする。 |
 
 ### テストケース
 
@@ -239,5 +236,7 @@ src/
 <li>pankobo.me/blog/post/202202-js-deduplicate-array-set</li>
 <li>note.com/yamanoborer/n/n2e4cc40328b7</li>
 <li>core-tech.jp/blog/tech_log/9262/</li>
+<li>biz.techvan.co.jp/tech-quality/quality-blog/000244.html</li>
+<li>qbook.jp/column/1794.html</li>
 <li></li>
 </ul>
