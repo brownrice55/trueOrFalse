@@ -1,5 +1,6 @@
 import * as bootstrap from 'bootstrap';
 import { displayPage } from '../utils';
+import { addCategoryNameInputField } from '../../categorySettings/setup';
 import { displayList, setEventForDisplayDetail } from '../../quizList/utils';
 import {
   getCategoryInputHTML,
@@ -316,6 +317,10 @@ export function showModalForDelete(
     modalForDeleteDivElm.dataset.key = aTargetInputElm
       ? aTargetInputElm.dataset.index
       : '10000';
+
+    modalForDeleteDivElm.dataset.cnt = aTargetInputElm
+      ? aTargetInputElm.dataset.cnt
+      : '10000';
   }
 
   aBsModal.show();
@@ -347,6 +352,18 @@ export function deleteDataThroughDeleteBtnInTheModal(
       modalForDeleteDivElm &&
       modalForDeleteDivElm.dataset.page === 'category'
     ) {
+      // get present input values before delete
+      let inputCategoryElms: NodeListOf<HTMLInputElement> =
+        aInputCategoryAreaElm?.querySelectorAll('input');
+      let deletedInitialInputValues: string[] = getInputValues(
+        inputCategoryElms as NodeListOf<HTMLInputElement>,
+        true
+      );
+      deletedInitialInputValues.splice(
+        parseInt(modalForDeleteDivElm.dataset.cnt ?? '10000'),
+        1
+      );
+
       //delete a category name
       const keyNumber = parseInt(modalForDeleteDivElm.dataset.key ?? '10000');
       aQuizCategory.delete(keyNumber);
@@ -360,15 +377,28 @@ export function deleteDataThroughDeleteBtnInTheModal(
       localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
       // reset category inputs : start
+
       if (aInputCategoryAreaElm !== null) {
         aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
       }
-      const inputCategoryElms: NodeListOf<HTMLInputElement> =
-        aInputCategoryAreaElm?.querySelectorAll('input');
+      inputCategoryElms = aInputCategoryAreaElm?.querySelectorAll('input');
       const initialInputValues: string[] = getInputValues(
         inputCategoryElms as NodeListOf<HTMLInputElement>,
         true
       );
+      const diffs: [string, number][] = deletedInitialInputValues
+        .map<
+          [string, number]
+        >((val, idx) => (val !== initialInputValues[idx] ? [val, idx] : ['', -1]))
+        .filter(([_, idx]) => idx !== -1);
+      diffs.forEach(([val, idx]) => {
+        if (inputCategoryElms && inputCategoryElms[idx]) {
+          inputCategoryElms[idx].value = val;
+        } else {
+          addCategoryNameInputField(aInputCategoryAreaElm, val);
+        }
+      });
+
       editOrDeleteCategoryNamesAndSetValidationForInput(
         aQuizData,
         aQuizCategory,

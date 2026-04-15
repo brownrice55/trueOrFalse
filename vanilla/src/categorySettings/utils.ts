@@ -45,7 +45,7 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
   let isUnderEdit: boolean = false;
   let targetInputElm: HTMLInputElement;
   let originalValue: string = '';
-  // edit or save data
+  // edit/update or cancel data
   editBtnElms.forEach((elm, idx) => {
     elm.addEventListener('click', function (e) {
       isUnderEdit = !isUnderEdit;
@@ -68,6 +68,8 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
         isUnderEdit
       );
       aButtonAddInputElm.disabled = isUnderEdit;
+      aButtonSaveElm.disabled = isUnderEdit;
+      aButtonCancelElm.disabled = isUnderEdit;
 
       if (isUnderEdit) {
         targetInputElm.focus();
@@ -102,6 +104,22 @@ export function editOrDeleteCategoryNamesAndSetValidationForInput(
           aListDtElms,
           aDivIdx3DivElms,
           aButtonBackToListElms
+        );
+
+        // validation after editing
+        const editedInitialInputValuesIndex = parseInt(
+          targetInputElm.dataset.cnt ?? '10000'
+        );
+        const updatedInitialInputValues: string[] = aInitialInputValues;
+        updatedInitialInputValues[editedInitialInputValuesIndex] =
+          targetInputElm.value;
+
+        setInputValidationForCategory(
+          updatedInitialInputValues,
+          aButtonCancelElm,
+          aButtonSaveElm,
+          false, //isUnderEdit
+          aInputCategoryAreaElm as HTMLElement
         );
       }
     });
@@ -357,13 +375,13 @@ const resetCategoryNamesInOtherPages = (
   }
 };
 
-const setInputValidationForCategory = (
+export function setInputValidationForCategory(
   aInitialInputValues: string[],
   aButtonCancelElm: HTMLButtonElement,
   aButtonSaveElm: HTMLButtonElement,
   aIsUnderEdit: boolean,
   aInputCategoryAreaElm: HTMLElement
-) => {
+) {
   const inputCategoryElms =
     aInputCategoryAreaElm.querySelectorAll<HTMLInputElement>('input');
   let inputValues: string[] = getInputValues(inputCategoryElms, true);
@@ -411,7 +429,7 @@ const setInputValidationForCategory = (
       }
     }
   }
-};
+}
 
 export function resetCategoryForm(
   aButtonCancelElm: HTMLButtonElement,
@@ -451,7 +469,7 @@ export function getCategoryInputHTML(
   let inputsData = '';
 
   if (aQuizCategory.size) {
-    [...aQuizCategory].forEach(([key, val]) => {
+    [...aQuizCategory].forEach(([key, val], cnt) => {
       let isDisabled = '';
       inputsData += '<div class="my-3 position-relative">';
       if (val?.isActive) {
@@ -462,7 +480,7 @@ export function getCategoryInputHTML(
                     </div>`;
         isDisabled = ' disabled';
       }
-      inputsData += `<input type="text" class="form-control" id="input-${key}" value="${val?.categoryName || ''}" data-is-active="${val?.isActive || false}" data-index="${key}" ${isDisabled} />
+      inputsData += `<input type="text" class="form-control" id="input-${key}" value="${val?.categoryName || ''}" data-is-active="${val?.isActive || false}" data-index="${key}" data-cnt=${cnt} ${isDisabled} />
     </div>`;
     });
   } else {
@@ -470,7 +488,7 @@ export function getCategoryInputHTML(
       .fill('')
       .forEach((_, index) => {
         inputsData += `<div class="my-3">
-        <input type="text" class="form-control" id="input-${index}" value="" data-is-active="false" data-index="${index}" />
+        <input type="text" class="form-control" id="input-${index}" value="" data-is-active="false" data-index="${index}" data-cnt=${index} />
         </div>`;
       });
   }

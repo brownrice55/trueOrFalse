@@ -10,6 +10,22 @@ import type { Inputs } from '../common/types/inputs.type';
 import type { InputsCategory } from '../common/types/inputsCategory.type';
 import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
 
+export function addCategoryNameInputField(
+  aInputCategoryAreaElm: HTMLElement,
+  aVal: string
+) {
+  const inputCategoryElms = aInputCategoryAreaElm.querySelectorAll('input');
+  const newCnt = inputCategoryElms.length;
+  const newId: number =
+    parseInt(inputCategoryElms[newCnt - 1].dataset.index ?? '10000') + 1;
+
+  const div = document.createElement('div');
+  div.classList.add('my-3');
+
+  div.innerHTML = `<input type="text" class="form-control" value="${aVal}" data-isActive="false" data-index="${newId}" data-cnt=${newCnt} />`;
+  aInputCategoryAreaElm?.appendChild(div);
+}
+
 export function setCategorySettings(
   aQuizCategory: Map<number, InputsCategory>,
   aQuizData: Map<number, Inputs>,
@@ -83,21 +99,9 @@ export function setCategorySettings(
     );
   });
 
-  const addCategoryNameInputField = () => {
-    const keysArray: number[] = aQuizCategory.size
-      ? Array.from(aQuizCategory.keys())
-      : [];
-    const newId: number = aQuizCategory.size
-      ? keysArray[keysArray.length - 1] + 1
-      : 1;
-
-    const div = document.createElement('div');
-    div.classList.add('my-3');
-
-    div.innerHTML = `<input type="text" class="form-control" value="" data-isActive="false" data-index="${newId}" />`;
-    aInputCategoryAreaElm?.appendChild(div);
-  };
-  aButtonAddInputElm?.addEventListener('click', addCategoryNameInputField);
+  aButtonAddInputElm?.addEventListener('click', function () {
+    addCategoryNameInputField(aInputCategoryAreaElm, '');
+  });
 
   aButtonCancelElm?.addEventListener('click', function () {
     if (this.dataset.iscategorynameedited === 'true') {
