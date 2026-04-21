@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import type { SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import type { InputsCategory } from "../types/inputsCategory.type";
+import type {
+  InputsCategory,
+  InputCategoryCategories,
+} from "../types/inputsCategory.type";
 
 const getCategories = (): InputsCategory => {
   const raw = localStorage.getItem("TrueOrFalseCategory");
@@ -28,6 +31,7 @@ export default function FormCategory() {
     handleSubmit,
     control,
     reset,
+    resetField,
     formState: { errors, isDirty, isValid },
   } = useForm<InputsCategory>({
     defaultValues,
@@ -40,12 +44,9 @@ export default function FormCategory() {
   });
 
   const onsubmit: SubmitHandler<InputsCategory> = (values) => {
-    const inputData = values.categories.map((val) => ({
-      ...val,
-      categoryId: val.categoryId,
-    }));
+    const inputData = values.categories.filter((val) => val.categoryName);
     localStorage.setItem("TrueOrFalseCategory", JSON.stringify(inputData));
-    setCategoryData({ categories: inputData });
+    reset({ categories: inputData });
   };
 
   const onerror: SubmitErrorHandler<InputsCategory> = (err) => console.log(err);
@@ -54,12 +55,48 @@ export default function FormCategory() {
     reset();
   };
 
-  const handleEdit = () => {
-    console.log("edit");
+  const [isUnderEdit, setIsUnderEdit] = useState<boolean[]>(
+    Array(categoryData.categories.length).fill(false),
+  );
+
+  const handleEdit = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    aIndex: number,
+  ) => {
+    setIsUnderEdit((prev) =>
+      prev.map((val, idx) => (idx === aIndex ? !val : val)),
+    );
+    if (isUnderEdit[aIndex]) {
+      [...categoryData.categories].forEach((val, idx) => {
+        if (idx === aIndex) {
+          const targetInputElms = (
+            e.target as HTMLButtonElement
+          ).parentNode?.parentNode?.querySelectorAll("input");
+          if (targetInputElms) {
+            val.categoryName = targetInputElms[0].value;
+          }
+        }
+      });
+      localStorage.setItem(
+        "TrueOrFalseCategory",
+        JSON.stringify(categoryData.categories),
+      );
+      setCategoryData({ categories: categoryData.categories });
+    }
   };
 
   const handleDelete = (aIndex: number) => {
-    remove(aIndex);
+    if (isUnderEdit[aIndex]) {
+      resetField(`categories.${aIndex}.categoryName`);
+      setIsUnderEdit((prev) => {
+        const newState = [...prev];
+        newState[aIndex] = false;
+        return newState;
+      });
+      reset({ categories: categoryData.categories });
+    } else {
+      remove(aIndex);
+    }
   };
 
   const handleAddField = () => {
@@ -67,10 +104,18 @@ export default function FormCategory() {
     append({ categoryId: nextId, categoryName: "", isActive: false });
   };
 
+  useEffect(() => {
+    setIsUnderEdit(Array(categoryData.categories.length).fill(false));
+  }, [categoryData.categories.length]);
+
+  useEffect(() => {
+    reset({ categories: categoryData.categories });
+  }, [categoryData]);
+
   return (
     <>
       <Form onSubmit={handleSubmit(onsubmit, onerror)} noValidate>
-        {fields.map((field: any, index: number) => (
+        {fields.map((field: InputCategoryCategories, index: number) => (
           <Form.Group className="my-4" key={index}>
             {field.isActive && <span>問題に設定済みのカテゴリー名</span>}
             <div className={field.isActive ? "position-relative" : ""}>
@@ -80,19 +125,19 @@ export default function FormCategory() {
                 as="input"
                 {...register(`categories.${index}.categoryName`)}
                 defaultValue={field.categoryName}
-                disabled={field.isActive}
+                disabled={field.isActive && !isUnderEdit[index]}
               />
               <Form.Control
                 type="hidden"
                 {...register(`categories.${index}.categoryId`, {
                   valueAsNumber: true,
                 })}
-                value={field.categoryId ?? index}
+                value={String(field.categoryId ?? index)}
               />
               <Form.Control
                 type="hidden"
                 {...register(`categories.${index}.isActive`)}
-                value={field.isActive ?? false}
+                value={String(field.isActive ?? false)}
               />
               <div className="text-danger pt-2">
                 {!index && errors.categories?.[index]?.categoryName?.message}
@@ -102,16 +147,16 @@ export default function FormCategory() {
                   <Button
                     variant="primary"
                     className="py-1 px-2 me-2"
-                    onClick={handleEdit}
+                    onClick={(e) => handleEdit(e, index)}
                   >
-                    編集
+                    {isUnderEdit[index] ? "上書き保存" : "編集"}
                   </Button>
                   <Button
                     variant="primary"
                     className="py-1 px-2"
                     onClick={() => handleDelete(index)}
                   >
-                    削除
+                    {isUnderEdit[index] ? "キャンセル" : "削除"}
                   </Button>
                 </div>
               )}
