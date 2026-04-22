@@ -1,24 +1,13 @@
 import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import type { SubmitHandler, SubmitErrorHandler } from "react-hook-form";
+import { getCategories } from "../utils/common";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import type {
   InputsCategory,
   InputCategoryCategories,
 } from "../types/inputsCategory.type";
-
-const getCategories = (): InputsCategory => {
-  const raw = localStorage.getItem("TrueOrFalseCategory");
-  const data: {
-    categoryId: number;
-    categoryName: string;
-    isActive: boolean;
-  }[] = raw
-    ? JSON.parse(raw)
-    : [{ categoryId: 0, categoryName: "", isActive: false }];
-  return { categories: data };
-};
 
 export default function FormCategory() {
   const originalCategories = getCategories();
