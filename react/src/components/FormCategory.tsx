@@ -32,6 +32,7 @@ export default function FormCategory() {
     control,
     reset,
     resetField,
+    getFieldState,
     formState: { errors, isDirty, isValid },
   } = useForm<InputsCategory>({
     defaultValues,
@@ -59,6 +60,9 @@ export default function FormCategory() {
     Array(categoryData.categories.length).fill(false),
   );
 
+  const [isUnderEditForDisabled, setIsUnderEditForDisabled] =
+    useState<boolean>(false);
+
   const handleEdit = (
     e: React.MouseEvent<HTMLButtonElement>,
     aIndex: number,
@@ -66,6 +70,8 @@ export default function FormCategory() {
     setIsUnderEdit((prev) =>
       prev.map((val, idx) => (idx === aIndex ? !val : val)),
     );
+    setIsUnderEditForDisabled((prev) => !prev);
+
     if (isUnderEdit[aIndex]) {
       [...categoryData.categories].forEach((val, idx) => {
         if (idx === aIndex) {
@@ -86,6 +92,7 @@ export default function FormCategory() {
   };
 
   const handleDelete = (aIndex: number) => {
+    setIsUnderEditForDisabled((prev) => !prev);
     if (isUnderEdit[aIndex]) {
       resetField(`categories.${aIndex}.categoryName`);
       setIsUnderEdit((prev) => {
@@ -115,60 +122,75 @@ export default function FormCategory() {
   return (
     <>
       <Form onSubmit={handleSubmit(onsubmit, onerror)} noValidate>
-        {fields.map((field: InputCategoryCategories, index: number) => (
-          <Form.Group className="my-4" key={index}>
-            {field.isActive && <span>問題に設定済みのカテゴリー名</span>}
-            <div className={field.isActive ? "position-relative" : ""}>
-              <Form.Control
-                size="lg"
-                id={`categories${index}`}
-                as="input"
-                {...register(`categories.${index}.categoryName`)}
-                defaultValue={field.categoryName}
-                disabled={field.isActive && !isUnderEdit[index]}
-              />
-              <Form.Control
-                type="hidden"
-                {...register(`categories.${index}.categoryId`, {
-                  valueAsNumber: true,
-                })}
-                value={String(field.categoryId ?? index)}
-              />
-              <Form.Control
-                type="hidden"
-                {...register(`categories.${index}.isActive`)}
-                value={String(field.isActive ?? false)}
-              />
-              <div className="text-danger pt-2">
-                {!index && errors.categories?.[index]?.categoryName?.message}
-              </div>
-              {field.isActive && (
-                <div className="position-absolute top-0 end-0 mt-2 me-2">
-                  <Button
-                    variant="primary"
-                    className="py-1 px-2 me-2"
-                    onClick={(e) => handleEdit(e, index)}
-                  >
-                    {isUnderEdit[index] ? "上書き保存" : "編集"}
-                  </Button>
-                  <Button
-                    variant="primary"
-                    className="py-1 px-2"
-                    onClick={() => handleDelete(index)}
-                  >
-                    {isUnderEdit[index] ? "キャンセル" : "削除"}
-                  </Button>
+        {fields.map((field: InputCategoryCategories, index: number) => {
+          const fieldState = getFieldState(`categories.${index}.categoryName`);
+          const isFieldDirty = fieldState.isDirty;
+          const isFieldValid = !fieldState.error;
+
+          return (
+            <div key={index}>
+              <Form.Group className="my-4" key={index}>
+                {field.isActive && <span>問題に設定済みのカテゴリー名</span>}
+                <div className={field.isActive ? "position-relative" : ""}>
+                  <Form.Control
+                    size="lg"
+                    id={`categories${index}`}
+                    as="input"
+                    {...register(`categories.${index}.categoryName`)}
+                    defaultValue={field.categoryName}
+                    disabled={field.isActive && !isUnderEdit[index]}
+                  />
+                  <Form.Control
+                    type="hidden"
+                    {...register(`categories.${index}.categoryId`, {
+                      valueAsNumber: true,
+                    })}
+                    value={String(field.categoryId ?? index)}
+                  />
+                  <Form.Control
+                    type="hidden"
+                    {...register(`categories.${index}.isActive`)}
+                    value={String(field.isActive ?? false)}
+                  />
+                  <div className="text-danger pt-2">
+                    {!index &&
+                      errors.categories?.[index]?.categoryName?.message}
+                  </div>
+                  {field.isActive && (
+                    <div className="position-absolute top-0 end-0 mt-2 me-2">
+                      <Button
+                        variant="primary"
+                        className="py-1 px-2 me-2"
+                        onClick={(e) => handleEdit(e, index)}
+                        disabled={
+                          isUnderEdit[index]
+                            ? !isFieldDirty || !isFieldValid
+                            : false
+                        }
+                      >
+                        {isUnderEdit[index] ? "上書き保存" : "編集"}
+                      </Button>
+                      <Button
+                        variant="primary"
+                        className="py-1 px-2"
+                        onClick={() => handleDelete(index)}
+                      >
+                        {isUnderEdit[index] ? "キャンセル" : "削除"}
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              )}
+              </Form.Group>
             </div>
-          </Form.Group>
-        ))}
+          );
+        })}
 
         <div className="text-end">
           <Button
             variant="primary"
             className="py-1 px-2"
             onClick={handleAddField}
+            disabled={isUnderEditForDisabled}
           >
             追加する
           </Button>
@@ -178,6 +200,7 @@ export default function FormCategory() {
             variant="primary"
             className="py-2 px-3 me-3"
             onClick={handleCancel}
+            disabled={isUnderEditForDisabled}
           >
             キャンセルする
           </Button>
@@ -185,7 +208,7 @@ export default function FormCategory() {
             variant="primary"
             type="submit"
             className="py-2 px-3"
-            disabled={!isDirty || !isValid}
+            disabled={isUnderEditForDisabled ? true : !isDirty || !isValid}
           >
             保存する
           </Button>
