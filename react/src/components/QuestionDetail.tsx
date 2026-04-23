@@ -1,0 +1,60 @@
+import { useState } from "react";
+import QuestionDetailParts from "./QuestionDetailParts";
+import { getCategories } from "../utils/common";
+import { typeOptionArray, priorityOptionArray } from "../utils/labels";
+
+export default function QuestionDetail({ selectedVal }) {
+  const [indexNoUnderEdit, setIndexNoUnderEdit] = useState<number>(0);
+
+  const originalCategories = getCategories();
+  const categoryNameArray = [...originalCategories.categories].map(
+    (val) => val.categoryName,
+  );
+
+  return (
+    <>
+      <QuestionDetailParts
+        selectedVal={selectedVal}
+        indexNoUnderEdit={indexNoUnderEdit}
+        formType={"select"}
+        formInfo={[null, categoryNameArray, "カテゴリー", "category"]}
+      />
+      <QuestionDetailParts
+        selectedVal={selectedVal}
+        indexNoUnderEdit={indexNoUnderEdit}
+        formType={"select"}
+        formInfo={[null, typeOptionArray, "クイズの種類", "type"]}
+      />
+      <QuestionDetailParts
+        selectedVal={selectedVal}
+        indexNoUnderEdit={indexNoUnderEdit}
+        formType={"textarea"}
+        formInfo={[null, [], "問題", "question"]}
+      />
+      <QuestionDetailParts
+        selectedVal={selectedVal}
+        indexNoUnderEdit={indexNoUnderEdit}
+        formType={"other"}
+        formInfo={[null, categoryNameArray, "答え", "answer"]}
+      />
+      <QuestionDetailParts
+        selectedVal={selectedVal}
+        indexNoUnderEdit={indexNoUnderEdit}
+        formType={"textarea"}
+        formInfo={[null, [], "解説", "explanation"]}
+      />
+      <QuestionDetailParts
+        selectedVal={selectedVal}
+        indexNoUnderEdit={indexNoUnderEdit}
+        formType={"select"}
+        formInfo={[null, priorityOptionArray, "優先順位", "priority"]}
+      />
+      <QuestionDetailParts
+        selectedVal={selectedVal}
+        indexNoUnderEdit={indexNoUnderEdit}
+        formType={"textarea"}
+        formInfo={[null, [], "メモ", "notes"]}
+      />
+    </>
+  );
+}

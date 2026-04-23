@@ -5,4 +5,6 @@ export type Inputs = {
   answer: boolean[];
   explanation: string;
   priority: number;
+  notes: string;
+  areCorrectAnswers: boolean[] | [];
 };

@@ -1,17 +1,22 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import type { SubmitHandler, SubmitErrorHandler } from "react-hook-form";
+import FormgroupSelect from "./formgroups/FormgroupSelect";
+import FormgroupTextarea from "./formgroups/FormgroupTextarea";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import { getData, getCategories } from "../utils/common";
+import { typeOptionArray, priorityOptionArray } from "../utils/labels";
 import type { Inputs } from "../types/inputs.type";
-import type { InputCategoryCategories } from "../types/inputsCategory.type";
 
 export default function FormSettings() {
   const data = getData();
   const originalCategories = getCategories();
+  const categoryNameArray = [...originalCategories.categories].map(
+    (val) => val.categoryName,
+  );
 
   const keysArray: number[] = data.size ? Array.from(data.keys()) : [];
   const nextId: number = data.size ? keysArray[keysArray.length - 1] + 1 : 1;
@@ -24,10 +29,10 @@ export default function FormSettings() {
     priority: 1,
     answer: [true, false],
     numberOfOptions: 2,
+    notes: "",
+    areCorrectAnswers: [false],
   };
 
-  const typeOptionArray = ["まるばつクイズ", "選択問題"];
-  const priorityOptionArray = ["低い", "普通", "高い"];
   const answerArrayText = ["まる", "ばつ"];
   const [answerArray, setAnswerArray] = useState<boolean[]>([true, false]);
 
@@ -55,9 +60,6 @@ export default function FormSettings() {
   const onerror: SubmitErrorHandler<Inputs> = (err) => console.log(err);
 
   const [questionTypeNumber, setQuestionTypeNumber] = useState<number>(0);
-  const handleTypeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setQuestionTypeNumber(parseInt(e.target.value));
-  };
 
   const [theNumberOfOptions, setTheNumberOfOptions] = useState<number>(2);
   const handleNumberOfOptions = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -72,51 +74,27 @@ export default function FormSettings() {
 
   return (
     <Form onSubmit={handleSubmit(onsubmit, onerror)} noValidate>
-      <Form.Group className="mb-3">
-        <Form.Label>カテゴリー</Form.Label>
-        <Form.Select {...register("category")}>
-          {originalCategories.categories.map(
-            (val: InputCategoryCategories, index) => (
-              <option value={index} key={index}>
-                {val.categoryName}
-              </option>
-            ),
-          )}
-          <option value="">カテゴリーを追加する</option>
-        </Form.Select>
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>クイズの種類</Form.Label>
-        <Form.Select
-          {...register("type")}
-          onChange={(e) => handleTypeSelect(e)}
-        >
-          {typeOptionArray.map((val, index) => (
-            <option value={index} key={index}>
-              {val}
-            </option>
-          ))}
-        </Form.Select>
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="question">
-          問題
-          <span className="text-danger small ms-2 mt-2">
-            {errors.question?.message}
-          </span>
-        </Form.Label>
-        <Form.Control
-          id="question"
-          as="textarea"
-          rows={5}
-          {...register("question", {
-            required: "必須です",
-          })}
-        />
-      </Form.Group>
-
+      <FormgroupSelect
+        register={register}
+        textArray={categoryNameArray}
+        label={"カテゴリー"}
+        name={"category"}
+        selectedValue={0}
+      />
+      <FormgroupSelect
+        register={register}
+        textArray={typeOptionArray}
+        label={"クイズの種類"}
+        name={"type"}
+        selectedValue={0}
+      />
+      <FormgroupTextarea
+        register={register}
+        errors={errors}
+        label={"問題"}
+        name={"question"}
+        value=""
+      />
       {questionTypeNumber === 0 ? (
         <Form.Group className="mb-3">
           <Form.Label>答え</Form.Label>
@@ -125,7 +103,7 @@ export default function FormSettings() {
               <Form.Check
                 type="radio"
                 key={index}
-                id={`answer-${index}`}
+                id={`answer`}
                 label={<label htmlFor={`answer-${index}`}>{val}</label>}
                 className="pe-4"
                 {...register(`answer.${index}`)}
@@ -168,35 +146,26 @@ export default function FormSettings() {
             ))}
         </Form.Group>
       )}
-
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="explanation">
-          解説
-          <span className="text-danger small ms-2 mt-2">
-            {errors.explanation?.message}
-          </span>
-        </Form.Label>
-        <Form.Control
-          id="explanation"
-          as="textarea"
-          rows={5}
-          {...register("explanation", {
-            required: "必須です",
-          })}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label>優先順位</Form.Label>
-        <Form.Select {...register("priority")}>
-          {priorityOptionArray.map((val, index) => (
-            <option value={index} key={index}>
-              {val}
-            </option>
-          ))}
-        </Form.Select>
-      </Form.Group>
-
+      <FormgroupTextarea
+        register={register}
+        errors={errors}
+        label={"解説"}
+        name={"explanation"}
+        value=""
+      />
+      <FormgroupSelect
+        register={register}
+        textArray={priorityOptionArray}
+        label={"優先順位"}
+        name={"priority"}
+        selectedValue={0}
+      />
+      <Form.Control type="hidden" {...register("notes")} value="" />
+      <Form.Control
+        type="hidden"
+        {...register("areCorrectAnswers")}
+        value={[]}
+      />
       <div className="text-center">
         <Button variant="primary" type="submit" className="py-2 px-3">
           登録する
