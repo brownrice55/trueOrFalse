@@ -93,7 +93,7 @@ export default function FormSettings() {
         errors={errors}
         label={"問題"}
         name={"question"}
-        value=""
+        selectedValue={""}
       />
       {questionTypeNumber === 0 ? (
         <Form.Group className="mb-3">
@@ -151,7 +151,7 @@ export default function FormSettings() {
         errors={errors}
         label={"解説"}
         name={"explanation"}
-        value=""
+        selectedValue={""}
       />
       <FormgroupSelect
         register={register}

@@ -5,7 +5,7 @@ type FormgroupTextareaProps = {
   errors: any;
   label: string;
   name: string;
-  value: string;
+  selectedValue: string | undefined;
 };
 
 export default function FormgroupTextarea({
@@ -13,7 +13,7 @@ export default function FormgroupTextarea({
   errors,
   label,
   name,
-  value,
+  selectedValue,
 }: FormgroupTextareaProps) {
   return (
     <Form.Group className="mb-3">
@@ -29,7 +29,7 @@ export default function FormgroupTextarea({
         id="question"
         as="textarea"
         rows={5}
-        defaultValue={value}
+        defaultValue={selectedValue}
         {...(register &&
           register(name, {
             required: "必須です",

@@ -6,13 +6,11 @@ import ListGroup from "react-bootstrap/ListGroup";
 export default function QuestionList() {
   const [data, setData] = useState(getData());
   const [isListPage, setIsListPage] = useState<boolean>(true);
-
-  const [selectedVal, setSelectedVal] = useState({});
+  const [selectedKey, setSelectedKey] = useState<number>(0);
 
   const handleGoToDetail = (key: number) => {
     setIsListPage(false);
-    const newVal = data.get(key);
-    setSelectedVal(newVal);
+    setSelectedKey(key);
   };
   return (
     <>
@@ -29,7 +27,7 @@ export default function QuestionList() {
           ))}
         </ListGroup>
       ) : (
-        <QuestionDetail selectedVal={selectedVal} />
+        <QuestionDetail selectedKey={selectedKey} />
       )}
     </>
   );

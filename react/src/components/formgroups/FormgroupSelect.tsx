@@ -5,7 +5,7 @@ type FormgroupSelectProps = {
   textArray: string[];
   label: string;
   name: string;
-  selectedValue: number;
+  selectedValue: number | undefined;
 };
 
 export default function FormgroupSelect({
