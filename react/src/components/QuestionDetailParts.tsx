@@ -1,13 +1,11 @@
 import { useState } from "react";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
-import type { Inputs } from "../types/inputs.type";
+import type { Inputs, InputsOmit } from "../types/inputs.type";
 import { getData } from "../utils/common";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-
-type InputsOmit = Omit<Inputs, "answer" | "areCorrectAnswers">;
 
 type QuestionDetailPartsProps = {
   selectedKey: number;
@@ -22,8 +20,9 @@ export default function QuestionDetailParts({
   formInfo,
 }: QuestionDetailPartsProps) {
   const data = getData();
-  const selectedVal: Inputs | undefined = data.get(selectedKey);
-
+  const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
+    data.get(selectedKey),
+  );
   const [isUnderEdit, setIsUnderEdit] = useState<boolean>(false);
 
   const handleEdit = () => {
@@ -31,8 +30,21 @@ export default function QuestionDetailParts({
     setIsUnderEdit((prev) => !prev);
   };
 
-  const handleOverwrite = () => {
-    console.log("overwrite");
+  const handleOverwrite = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    aFormType: string,
+    aProperty: string,
+  ) => {
+    const targetElm =
+      e.currentTarget?.parentNode?.parentNode?.parentNode?.querySelector(
+        aFormType,
+      ) as HTMLSelectElement | HTMLTextAreaElement;
+    if (selectedVal && targetElm) {
+      const newVal = { ...selectedVal, [aProperty]: targetElm.value };
+      setSelectedVal(newVal);
+      data.set(selectedKey, newVal);
+      localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
+    }
     setIsUnderEdit((prev) => !prev);
   };
 
@@ -49,7 +61,7 @@ export default function QuestionDetailParts({
               <Button
                 variant="primary"
                 className="py-1 px-2 me-2"
-                onClick={() => handleOverwrite()}
+                onClick={(e) => handleOverwrite(e, formType, formInfo[3])}
               >
                 上書きする
               </Button>
@@ -109,7 +121,6 @@ export default function QuestionDetailParts({
                   : ""}
             </Col>
           )}
-          {formInfo[3]}
         </Row>
       </div>
     </>

@@ -4,7 +4,7 @@ import type { InputsCategory } from "../types/inputsCategory.type";
 export function getData() {
   let data = new Map<number, Inputs>();
   const dataFromLocalStorage: string | null =
-    localStorage.getItem("trueOrFalseData");
+    localStorage.getItem("TrueOrFalseData");
   if (dataFromLocalStorage !== "undefined") {
     let dataJson: any;
     if (typeof dataFromLocalStorage === "string") {

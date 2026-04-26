@@ -9,3 +9,5 @@ export type Inputs = {
   notes: string;
   areCorrectAnswers: boolean[] | [];
 };
+
+export type InputsOmit = Omit<Inputs, "answer" | "areCorrectAnswers">;

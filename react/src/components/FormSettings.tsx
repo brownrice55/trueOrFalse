@@ -55,7 +55,7 @@ export default function FormSettings() {
   const onsubmit: SubmitHandler<Inputs> = (values) => {
     data.set(nextId, values);
     values.answer = answerArray;
-    localStorage.setItem("trueOrFalseData", JSON.stringify([...data]));
+    localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
   };
   const onerror: SubmitErrorHandler<Inputs> = (err) => console.log(err);
 
