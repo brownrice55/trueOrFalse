@@ -1,19 +1,37 @@
 import { useState } from "react";
 import QuestionDetailParts from "./QuestionDetailParts";
-import { getCategories } from "../utils/common";
+import { getData, getCategories } from "../utils/common";
+import type { Inputs } from "../types/inputs.type";
 import { typeOptionArray, priorityOptionArray } from "../utils/labels";
+import Button from "react-bootstrap/Button";
 
 type QuestionDetailProps = {
   selectedKey: number;
+  onUpdate: (updatedData: Map<number, Inputs> | null) => void;
 };
 
-export default function QuestionDetail({ selectedKey }: QuestionDetailProps) {
+export default function QuestionDetail({
+  selectedKey,
+  onUpdate,
+}: QuestionDetailProps) {
+  const [data, setData] = useState(getData());
   const [indexNoUnderEdit, setIndexNoUnderEdit] = useState<number>(0);
 
   const originalCategories = getCategories();
   const categoryNameArray = [...originalCategories.categories].map(
     (val) => val.categoryName,
   );
+
+  const handleGoToList = () => {
+    onUpdate(null);
+  };
+  const handleDelete = () => {
+    const newMap = new Map(data);
+    newMap.delete(selectedKey);
+    localStorage.setItem("TrueOrFalseData", JSON.stringify([...newMap]));
+    setData(newMap);
+    onUpdate(newMap);
+  };
 
   return (
     <>
@@ -59,6 +77,23 @@ export default function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         formType={"textarea"}
         formInfo={[null, [], "メモ", "notes"]}
       />
+      <div className="text-center mt-5">
+        <Button
+          variant="primary"
+          className="py-2 px-3 me-3"
+          onClick={() => handleGoToList()}
+        >
+          一覧に戻る
+        </Button>
+        <Button
+          variant="primary"
+          type="submit"
+          className="py-2 px-3"
+          onClick={() => handleDelete()}
+        >
+          削除する
+        </Button>
+      </div>
     </>
   );
 }

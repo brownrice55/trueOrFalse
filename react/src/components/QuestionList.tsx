@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getData } from "../utils/common";
+import type { Inputs } from "../types/inputs.type";
 import QuestionDetail from "./QuestionDetail";
 import ListGroup from "react-bootstrap/ListGroup";
 
@@ -12,6 +13,14 @@ export default function QuestionList() {
     setIsListPage(false);
     setSelectedKey(key);
   };
+
+  const handleUpdateIsListPage = (aUpdatedData: Map<number, Inputs> | null) => {
+    setIsListPage(true);
+    if (aUpdatedData) {
+      setData(aUpdatedData);
+    }
+  };
+
   return (
     <>
       {isListPage ? (
@@ -27,7 +36,10 @@ export default function QuestionList() {
           ))}
         </ListGroup>
       ) : (
-        <QuestionDetail selectedKey={selectedKey} />
+        <QuestionDetail
+          selectedKey={selectedKey}
+          onUpdate={handleUpdateIsListPage}
+        />
       )}
     </>
   );
