@@ -1,5 +1,5 @@
-import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import type { SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
@@ -7,16 +7,16 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import { getData, getCategories } from "../utils/common";
-import { typeOptionArray, priorityOptionArray } from "../utils/labels";
+import { getData } from "../utils/common";
+import {
+  typeOptionArray,
+  priorityOptionArray,
+  categoryNameArray,
+} from "../utils/labels";
 import type { Inputs } from "../types/inputs.type";
 
 export default function FormSettings() {
   const data = getData();
-  const originalCategories = getCategories();
-  const categoryNameArray = [...originalCategories.categories].map(
-    (val) => val.categoryName,
-  );
 
   const keysArray: number[] = data.size ? Array.from(data.keys()) : [];
   const nextId: number = data.size ? keysArray[keysArray.length - 1] + 1 : 1;

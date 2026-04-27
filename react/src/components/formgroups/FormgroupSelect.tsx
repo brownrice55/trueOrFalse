@@ -1,10 +1,12 @@
 import Form from "react-bootstrap/Form";
+import type { UseFormRegister } from "react-hook-form";
+import type { Inputs } from "../../types/inputs.type";
 
 type FormgroupSelectProps = {
-  register: any;
+  register: UseFormRegister<Inputs> | null;
   textArray: string[];
   label: string;
-  name: string;
+  name: keyof Inputs;
   selectedValue: number | undefined;
 };
 
@@ -17,7 +19,7 @@ export default function FormgroupSelect({
 }: FormgroupSelectProps) {
   return (
     <Form.Group className="mb-3">
-      {register && <Form.Label>{label}</Form.Label>}
+      {label && <Form.Label>{label}</Form.Label>}
       <Form.Select
         {...(register && register(name))}
         defaultValue={selectedValue}
