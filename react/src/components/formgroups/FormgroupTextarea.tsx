@@ -1,10 +1,12 @@
 import Form from "react-bootstrap/Form";
+import type { UseFormRegister } from "react-hook-form";
+import type { Inputs } from "../../types/inputs.type";
 
 type FormgroupTextareaProps = {
-  register: any;
+  register: UseFormRegister<Inputs> | null;
   errors: any;
   label: string;
-  name: string;
+  name: keyof Inputs;
   selectedValue: string | undefined;
 };
 
