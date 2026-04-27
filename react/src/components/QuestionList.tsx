@@ -4,7 +4,11 @@ import type { Inputs } from "../types/inputs.type";
 import QuestionDetail from "./QuestionDetail";
 import ListGroup from "react-bootstrap/ListGroup";
 
-export default function QuestionList() {
+type QuestionListProps = {
+  onUpdate: (value: boolean) => void;
+};
+
+export default function QuestionList({ onUpdate }: QuestionListProps) {
   const [data, setData] = useState(getData());
   const [isListPage, setIsListPage] = useState<boolean>(true);
   const [selectedKey, setSelectedKey] = useState<number>(0);
@@ -12,10 +16,12 @@ export default function QuestionList() {
   const handleGoToDetail = (key: number) => {
     setIsListPage(false);
     setSelectedKey(key);
+    onUpdate(true);
   };
 
   const handleUpdateIsListPage = (aUpdatedData: Map<number, Inputs> | null) => {
     setIsListPage(true);
+    onUpdate(false);
     if (aUpdatedData) {
       setData(aUpdatedData);
     }

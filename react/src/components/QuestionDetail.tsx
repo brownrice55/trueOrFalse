@@ -15,7 +15,7 @@ export default function QuestionDetail({
   onUpdate,
 }: QuestionDetailProps) {
   const [data, setData] = useState(getData());
-  const [indexNoUnderEdit, setIndexNoUnderEdit] = useState<number>(0);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   const originalCategories = getCategories();
   const categoryNameArray = [...originalCategories.categories].map(
@@ -33,47 +33,58 @@ export default function QuestionDetail({
     onUpdate(newMap);
   };
 
+  const handleIsDisabled = (aIsUnderEdit: boolean) => {
+    setIsDisabled(aIsUnderEdit);
+  };
+
   return (
     <>
       <QuestionDetailParts
         selectedKey={selectedKey}
-        indexNoUnderEdit={indexNoUnderEdit}
+        isDisabled={isDisabled}
+        onUpdate={handleIsDisabled}
         formType={"select"}
         formInfo={[null, categoryNameArray, "カテゴリー", "category"]}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
-        indexNoUnderEdit={indexNoUnderEdit}
+        isDisabled={isDisabled}
+        onUpdate={handleIsDisabled}
         formType={"select"}
         formInfo={[null, typeOptionArray, "クイズの種類", "type"]}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
-        indexNoUnderEdit={indexNoUnderEdit}
+        isDisabled={isDisabled}
+        onUpdate={handleIsDisabled}
         formType={"textarea"}
         formInfo={[null, [], "問題", "question"]}
       />
       {/* <QuestionDetailParts
         selectedKey={selectedKey}
-        indexNoUnderEdit={indexNoUnderEdit}
+        isDisabled={isDisabled}
+        onUpdate={handleIsDisabled}
         formType={"other"}
         formInfo={[null, categoryNameArray, "答え", "answer"]}
       /> */}
       <QuestionDetailParts
         selectedKey={selectedKey}
-        indexNoUnderEdit={indexNoUnderEdit}
+        isDisabled={isDisabled}
+        onUpdate={handleIsDisabled}
         formType={"textarea"}
         formInfo={[null, [], "解説", "explanation"]}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
-        indexNoUnderEdit={indexNoUnderEdit}
+        isDisabled={isDisabled}
+        onUpdate={handleIsDisabled}
         formType={"select"}
         formInfo={[null, priorityOptionArray, "優先順位", "priority"]}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
-        indexNoUnderEdit={indexNoUnderEdit}
+        isDisabled={isDisabled}
+        onUpdate={handleIsDisabled}
         formType={"textarea"}
         formInfo={[null, [], "メモ", "notes"]}
       />
@@ -82,6 +93,7 @@ export default function QuestionDetail({
           variant="primary"
           className="py-2 px-3 me-3"
           onClick={() => handleGoToList()}
+          disabled={isDisabled}
         >
           一覧に戻る
         </Button>
@@ -90,6 +102,7 @@ export default function QuestionDetail({
           type="submit"
           className="py-2 px-3"
           onClick={() => handleDelete()}
+          disabled={isDisabled}
         >
           削除する
         </Button>

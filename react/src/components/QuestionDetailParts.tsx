@@ -9,13 +9,15 @@ import Button from "react-bootstrap/Button";
 
 type QuestionDetailPartsProps = {
   selectedKey: number;
-  indexNoUnderEdit: number;
+  isDisabled: boolean;
+  onUpdate: (value: boolean) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
 };
 export default function QuestionDetailParts({
   selectedKey,
-  indexNoUnderEdit,
+  isDisabled,
+  onUpdate,
   formType,
   formInfo,
 }: QuestionDetailPartsProps) {
@@ -26,8 +28,8 @@ export default function QuestionDetailParts({
   const [isUnderEdit, setIsUnderEdit] = useState<boolean>(false);
 
   const handleEdit = () => {
-    console.log("edit");
     setIsUnderEdit((prev) => !prev);
+    onUpdate(!isUnderEdit);
   };
 
   const handleOverwrite = (
@@ -46,10 +48,12 @@ export default function QuestionDetailParts({
       localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
     }
     setIsUnderEdit((prev) => !prev);
+    onUpdate(!isUnderEdit);
   };
 
   const handleCancel = () => {
     setIsUnderEdit((prev) => !prev);
+    onUpdate(!isUnderEdit);
   };
   return (
     <>
@@ -79,6 +83,7 @@ export default function QuestionDetailParts({
                 variant="primary"
                 className="py-1 px-2"
                 onClick={() => handleEdit()}
+                disabled={isDisabled}
               >
                 編集する
               </Button>

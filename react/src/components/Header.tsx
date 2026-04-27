@@ -3,11 +3,17 @@ import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 type HeaderProps = {
   title: string;
+  isDetailPage: boolean | undefined;
   description: string;
   keywords: string;
 };
 
-export default function Header({ title, description, keywords }: HeaderProps) {
+export default function Header({
+  title,
+  isDetailPage,
+  description,
+  keywords,
+}: HeaderProps) {
   return (
     <>
       <Helmet>
@@ -17,10 +23,18 @@ export default function Header({ title, description, keywords }: HeaderProps) {
       </Helmet>
       <Breadcrumb>
         {title !== "クイズスタート" ? (
-          <>
-            <Breadcrumb.Item href="/">クイズスタート</Breadcrumb.Item>
-            <Breadcrumb.Item active>{title}</Breadcrumb.Item>
-          </>
+          title === "クイズ一覧" && isDetailPage ? (
+            <>
+              <Breadcrumb.Item href="/">クイズスタート</Breadcrumb.Item>
+              <Breadcrumb.Item href="/list/">クイズ一覧</Breadcrumb.Item>
+              <Breadcrumb.Item active>クイズ詳細</Breadcrumb.Item>
+            </>
+          ) : (
+            <>
+              <Breadcrumb.Item href="/">クイズスタート</Breadcrumb.Item>
+              <Breadcrumb.Item active>{title}</Breadcrumb.Item>
+            </>
+          )
         ) : (
           ""
         )}
