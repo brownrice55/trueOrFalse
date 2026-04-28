@@ -4,10 +4,10 @@ import QuizStartIndex1 from "./QuizStartIndex1";
 import QuizStartIndex2 from "./QuizStartIndex2";
 import QuizStartIndex3 from "./QuizStartIndex3";
 import { DataContext } from "../contexts/context";
+import type { DataContextType } from "../types/dataContextType.type";
 
 export default function QuizStart() {
-  const originalData = useContext(DataContext);
-  const { data, setData } = originalData;
+  const { data, setData } = useContext(DataContext) as DataContextType;
   const [pageNo, setPageNo] = useState<number>(0);
 
   const handleUpdatePageNo = (aNextPageNumber: number) => {

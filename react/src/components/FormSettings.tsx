@@ -14,12 +14,10 @@ import {
   categoryNameArray,
 } from "../utils/labels";
 import type { Inputs } from "../types/inputs.type";
+import type { DataContextType } from "../types/dataContextType.type";
 
 export default function FormSettings() {
-  const originalData = useContext(DataContext);
-  if (!originalData) return null; //******later */
-
-  const { data, setData } = originalData;
+  const { data, setData } = useContext(DataContext) as DataContextType;
 
   const keysArray: number[] = data.size ? Array.from(data.keys()) : [];
   const nextId: number = data.size ? keysArray[keysArray.length - 1] + 1 : 1;
