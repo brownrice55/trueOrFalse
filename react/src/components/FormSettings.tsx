@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
+import { DataContext } from "../contexts/context";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import { getData } from "../utils/common";
 import {
   typeOptionArray,
   priorityOptionArray,
@@ -16,7 +16,10 @@ import {
 import type { Inputs } from "../types/inputs.type";
 
 export default function FormSettings() {
-  const data = getData();
+  const originalData = useContext(DataContext);
+  if (!originalData) return null; //******later */
+
+  const { data, setData } = originalData;
 
   const keysArray: number[] = data.size ? Array.from(data.keys()) : [];
   const nextId: number = data.size ? keysArray[keysArray.length - 1] + 1 : 1;
@@ -56,6 +59,7 @@ export default function FormSettings() {
     data.set(nextId, values);
     values.answer = answerArray;
     localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
+    setData(data);
   };
   const onerror: SubmitErrorHandler<Inputs> = (err) => console.log(err);
 

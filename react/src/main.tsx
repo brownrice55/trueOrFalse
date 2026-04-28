@@ -4,11 +4,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { RouterProvider } from "react-router-dom";
 import routesLink from "./routes/routesLink";
 import { HelmetProvider } from "react-helmet-async";
+import { DataProvider } from "./contexts/DataProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <HelmetProvider>
-      <RouterProvider router={routesLink} />
-    </HelmetProvider>
-  </StrictMode>
+    <DataProvider>
+      <HelmetProvider>
+        <RouterProvider router={routesLink} />
+      </HelmetProvider>
+    </DataProvider>
+  </StrictMode>,
 );

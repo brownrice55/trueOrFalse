@@ -1,15 +1,18 @@
-import { useState } from "react";
-import { getData } from "../utils/common";
+import { useState, useContext } from "react";
 import type { Inputs } from "../types/inputs.type";
 import QuestionDetail from "./QuestionDetail";
 import ListGroup from "react-bootstrap/ListGroup";
+import { DataContext } from "../contexts/context";
 
 type QuestionListProps = {
   onUpdate: (value: boolean) => void;
 };
 
 export default function QuestionList({ onUpdate }: QuestionListProps) {
-  const [data, setData] = useState(getData());
+  const originalData = useContext(DataContext);
+  if (!originalData) return null; //******later */
+
+  const { data, setData } = originalData;
   const [isListPage, setIsListPage] = useState<boolean>(true);
   const [selectedKey, setSelectedKey] = useState<number>(0);
 
