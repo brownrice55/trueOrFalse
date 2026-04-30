@@ -3,8 +3,8 @@ import type { UseFormRegister } from "react-hook-form";
 import type { Inputs } from "../../types/inputs.type";
 
 type FormgroupTextareaProps = {
-  register: UseFormRegister<Inputs> | null;
-  errors: any;
+  register?: UseFormRegister<Inputs>;
+  errors?: any;
   label: string;
   name: keyof Inputs;
   selectedValue: string | undefined;

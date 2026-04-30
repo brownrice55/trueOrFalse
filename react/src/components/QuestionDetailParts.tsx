@@ -106,7 +106,6 @@ export default function QuestionDetailParts({
               ) : formType === "textarea" ? (
                 <FormgroupTextarea
                   register={formInfo[0]}
-                  errors={null}
                   label={formInfo[2]}
                   name={formInfo[3]}
                   selectedValue={

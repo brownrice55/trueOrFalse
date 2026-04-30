@@ -74,6 +74,10 @@ export default function FormSettings() {
     }
   }, [isSubmitSuccessful, reset]);
 
+  const handleUpdate = (aNumber: number) => {
+    setQuestionTypeNumber(aNumber);
+  };
+
   return (
     <Form onSubmit={handleSubmit(onsubmit, onerror)} noValidate>
       <FormgroupSelect
@@ -89,6 +93,7 @@ export default function FormSettings() {
         label={"クイズの種類"}
         name={"type"}
         selectedValue={0}
+        onUpdate={handleUpdate}
       />
       <FormgroupTextarea
         register={register}

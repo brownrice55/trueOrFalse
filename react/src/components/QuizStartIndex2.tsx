@@ -23,13 +23,7 @@ export default function QuizStartIndex2({ onUpdate }: QuizStartIndex2Props) {
 
       <p>この問題の現在の正解率は「33%」です。</p>
       <label>何かメモしておきたいことがあったら書いてください</label>
-      <FormgroupTextarea
-        register={null}
-        errors={null}
-        label={"メモ"}
-        name={"notes"}
-        selectedValue={""}
-      />
+      <FormgroupTextarea label={"メモ"} name={"notes"} selectedValue={""} />
 
       <div className="text-center mt-3">
         <Button variant="primary" className="py-2 px-3 mt-3 me-3">

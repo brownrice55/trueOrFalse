@@ -18,14 +18,12 @@ export default function QuizStartIndex0({ onUpdate }: QuizStartIndex0Props) {
   return (
     <>
       <FormgroupSelect
-        register={null}
         textArray={categoryNameArray}
         label={"カテゴリー"}
         name={"category"}
         selectedValue={0}
       />
       <FormgroupSelect
-        register={null}
         textArray={typeOptionArray}
         label={"クイズの種類"}
         name={"type"}

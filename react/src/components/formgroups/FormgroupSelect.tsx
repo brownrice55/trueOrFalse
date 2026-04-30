@@ -3,11 +3,12 @@ import type { UseFormRegister } from "react-hook-form";
 import type { Inputs } from "../../types/inputs.type";
 
 type FormgroupSelectProps = {
-  register: UseFormRegister<Inputs> | null;
+  register?: UseFormRegister<Inputs>;
   textArray: string[];
   label: string;
   name: keyof Inputs;
   selectedValue: number | undefined;
+  onUpdate?: (value: number) => void;
 };
 
 export default function FormgroupSelect({
@@ -16,13 +17,28 @@ export default function FormgroupSelect({
   label,
   name,
   selectedValue,
+  onUpdate,
 }: FormgroupSelectProps) {
+  const handleOnChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    aName: string,
+  ) => {
+    if (aName !== "type") {
+      return;
+    }
+    const eventTargetValue = (e.currentTarget as HTMLSelectElement).value;
+    if (onUpdate) {
+      onUpdate(parseInt(eventTargetValue));
+    }
+  };
+
   return (
     <Form.Group className="mb-3">
       {label && <Form.Label>{label}</Form.Label>}
       <Form.Select
         {...(register && register(name))}
         defaultValue={selectedValue}
+        onChange={(e) => handleOnChange(e, name)}
       >
         {textArray.map((val: string, index) => (
           <option value={index} key={index}>
