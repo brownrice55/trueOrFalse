@@ -12,6 +12,7 @@ import {
   typeOptionArray,
   priorityOptionArray,
   categoryNameArray,
+  answerArrayText,
 } from "../utils/labels";
 import type { Inputs } from "../types/inputs.type";
 import type { DataContextType } from "../types/dataContextType.type";
@@ -23,18 +24,19 @@ export default function FormSettings() {
   const nextId: number = data.size ? keysArray[keysArray.length - 1] + 1 : 1;
 
   const defaultValues = {
+    id: 0,
     category: 0,
     type: 0,
     question: "",
-    explanation: "",
-    priority: 1,
     answer: [true, false],
     numberOfOptions: 2,
+    options: [{ isActive: false, value: "" }],
+    explanation: "",
+    priority: 1,
     notes: "",
     areCorrectAnswers: [false],
   };
 
-  const answerArrayText = ["まる", "ばつ"];
   const [answerArray, setAnswerArray] = useState<boolean[]>([true, false]);
 
   const handleAnswer = (aIndex: number) => {
@@ -58,6 +60,7 @@ export default function FormSettings() {
     values.answer = answerArray;
     localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
     setData(data);
+    setQuestionTypeNumber(0);
   };
   const onerror: SubmitErrorHandler<Inputs> = (err) => console.log(err);
 
@@ -144,10 +147,18 @@ export default function FormSettings() {
             .map((_, index) => (
               <Row className="mb-3" key={index}>
                 <Col md={1}>
-                  <Form.Check type="checkbox" id="" label="" />
+                  <Form.Check
+                    type="checkbox"
+                    id=""
+                    label=""
+                    {...register(`options.${index}.isActive`)}
+                  />
                 </Col>
                 <Col md={9}>
-                  <Form.Control type="text" />
+                  <Form.Control
+                    type="text"
+                    {...register(`options.${index}.value`)}
+                  />
                 </Col>
               </Row>
             ))}

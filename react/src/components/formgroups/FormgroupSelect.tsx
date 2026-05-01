@@ -34,7 +34,7 @@ export default function FormgroupSelect({
 
   return (
     <Form.Group className="mb-3">
-      {label && <Form.Label>{label}</Form.Label>}
+      {register && <Form.Label>{label}</Form.Label>}
       <Form.Select
         {...(register && register(name))}
         defaultValue={selectedValue}

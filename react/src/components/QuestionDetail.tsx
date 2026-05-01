@@ -16,6 +16,7 @@ export default function QuestionDetail({
 }: QuestionDetailProps) {
   const [data, setData] = useState(getData());
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [typeValue, setTypeValue] = useState<number>(0);
 
   const originalCategories = getCategories();
   const categoryNameArray = [...originalCategories.categories].map(
@@ -25,6 +26,7 @@ export default function QuestionDetail({
   const handleGoToList = () => {
     onUpdate(null);
   };
+
   const handleDelete = () => {
     const newMap = new Map(data);
     newMap.delete(selectedKey);
@@ -33,8 +35,11 @@ export default function QuestionDetail({
     onUpdate(newMap);
   };
 
-  const handleIsDisabled = (aIsUnderEdit: boolean) => {
+  const handleIsDisabled = (aIsUnderEdit: boolean, aTypeValue?: number) => {
     setIsDisabled(aIsUnderEdit);
+    if (aTypeValue !== undefined) {
+      setTypeValue(aTypeValue);
+    }
   };
 
   return (
@@ -60,13 +65,14 @@ export default function QuestionDetail({
         formType={"textarea"}
         formInfo={[null, [], "問題", "question"]}
       />
-      {/* <QuestionDetailParts
+      <QuestionDetailParts
         selectedKey={selectedKey}
         isDisabled={isDisabled}
         onUpdate={handleIsDisabled}
-        formType={"other"}
-        formInfo={[null, categoryNameArray, "答え", "answer"]}
-      /> */}
+        formType={"answer"}
+        formInfo={[null, [], "答え", "answer"]}
+        typeValue={typeValue}
+      />
       <QuestionDetailParts
         selectedKey={selectedKey}
         isDisabled={isDisabled}

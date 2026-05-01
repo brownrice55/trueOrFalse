@@ -1,6 +1,7 @@
 import { useState } from "react";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
+import FormgroupForAnswer from "./formgroups/FormgroupForAnswer";
 import type { Inputs, InputsOmit } from "../types/inputs.type";
 import { getData } from "../utils/common";
 import Row from "react-bootstrap/Row";
@@ -10,9 +11,10 @@ import Button from "react-bootstrap/Button";
 type QuestionDetailPartsProps = {
   selectedKey: number;
   isDisabled: boolean;
-  onUpdate: (value: boolean) => void;
+  onUpdate: (value: boolean, value2: number | undefined) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
+  typeValue?: number;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -20,6 +22,7 @@ export default function QuestionDetailParts({
   onUpdate,
   formType,
   formInfo,
+  typeValue,
 }: QuestionDetailPartsProps) {
   const data = getData();
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
@@ -29,7 +32,7 @@ export default function QuestionDetailParts({
 
   const handleEdit = () => {
     setIsUnderEdit((prev) => !prev);
-    onUpdate(!isUnderEdit);
+    onUpdate(!isUnderEdit, undefined);
   };
 
   const handleOverwrite = (
@@ -48,13 +51,20 @@ export default function QuestionDetailParts({
       localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
     }
     setIsUnderEdit((prev) => !prev);
-    onUpdate(!isUnderEdit);
+    const type =
+      aFormType === "select" && aProperty === "type"
+        ? parseInt(targetElm.value)
+        : undefined;
+    onUpdate(!isUnderEdit, type);
   };
 
   const handleCancel = () => {
     setIsUnderEdit((prev) => !prev);
-    onUpdate(!isUnderEdit);
+    onUpdate(!isUnderEdit, typeValue);
   };
+
+  const lookupKey = selectedVal?.[formInfo[3]];
+
   return (
     <>
       <div>
@@ -113,16 +123,27 @@ export default function QuestionDetailParts({
                   }
                 />
               ) : (
-                ""
+                <FormgroupForAnswer
+                  register={formInfo[0]}
+                  selectedValues={[selectedVal?.answer, selectedVal?.options]}
+                  questionTypeNumber={typeValue as number}
+                />
               )}
             </Col>
           ) : (
             <Col>
               {formType === "select"
-                ? selectedVal && formInfo[1][selectedVal[formInfo[3]]]
+                ? selectedVal &&
+                  (typeof lookupKey === "string" ||
+                    typeof lookupKey === "number") &&
+                  formInfo[1][lookupKey]
                 : formType === "textarea"
-                  ? selectedVal && selectedVal[formInfo[3]]
-                  : ""}
+                  ? selectedVal && lookupKey
+                  : !typeValue
+                    ? selectedVal?.answer[0]
+                      ? "まる"
+                      : "ばつ"
+                    : "selection"}
             </Col>
           )}
         </Row>
