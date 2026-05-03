@@ -10,7 +10,7 @@ type FormgroupForAnswerProps = {
   register?: UseFormRegister<Inputs>;
   selectedValues: any;
   onUpdate?: (value: number) => void;
-  questionTypeNumber: number;
+  questionTypeNumber?: number;
 };
 
 export default function FormgroupForAnswer({

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
 import FormgroupForAnswer from "./formgroups/FormgroupForAnswer";
 import type { Inputs, InputsOmit } from "../types/inputs.type";
-import { getData } from "../utils/common";
+import { DataContext } from "../contexts/context";
+import type { DataContextType } from "../types/dataContextType.type";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -12,14 +13,16 @@ type QuestionDetailPartsProps = {
   selectedKey: number;
   isDisabled: boolean;
   onUpdate: (
-    value: boolean,
+    value: boolean | undefined,
     value2: number | undefined,
     value3: boolean | undefined,
+    value4: number | undefined,
   ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
   typeValue?: number;
   isIndex1UnderEdit?: boolean;
+  typeValueTemp?: number;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -29,17 +32,21 @@ export default function QuestionDetailParts({
   formInfo,
   typeValue,
   isIndex1UnderEdit,
+  typeValueTemp,
 }: QuestionDetailPartsProps) {
-  const data = getData();
+  const { data } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
     data.get(selectedKey),
   );
   const [isUnderEdit, setIsUnderEdit] = useState<boolean>(false);
+  const [questionTypeNumber, setQuestionTypeNumber] = useState<
+    number | undefined
+  >(typeValue);
 
   const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? true : undefined;
-    onUpdate(!isUnderEdit, undefined, isFormOpened);
+    onUpdate(!isUnderEdit, undefined, isFormOpened, undefined);
   };
 
   const handleOverwrite = (
@@ -63,16 +70,32 @@ export default function QuestionDetailParts({
         ? parseInt(targetElm.value)
         : undefined;
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, type, isFormOpened);
+    onUpdate(!isUnderEdit, type, isFormOpened, undefined);
   };
 
   const handleCancel = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, typeValue, isFormOpened);
+    onUpdate(!isUnderEdit, typeValue, isFormOpened, undefined);
   };
 
   const lookupKey = selectedVal?.[formInfo[3]];
+
+  const handleSwitchValueForAnswers = (aTypeValueTemp: number) => {
+    onUpdate(undefined, undefined, undefined, aTypeValueTemp);
+  };
+
+  const handleAnswer = () => {
+    console.log("answer");
+  };
+
+  useEffect(() => {
+    setQuestionTypeNumber(typeValue);
+  }, [typeValue]);
+
+  useEffect(() => {
+    setQuestionTypeNumber(typeValueTemp);
+  }, [typeValueTemp]);
 
   return (
     <>
@@ -121,6 +144,7 @@ export default function QuestionDetailParts({
                   selectedValue={
                     selectedVal && (selectedVal[formInfo[3]] as number)
                   }
+                  onUpdate={handleSwitchValueForAnswers}
                 />
               ) : formType === "textarea" ? (
                 <FormgroupTextarea
@@ -135,7 +159,8 @@ export default function QuestionDetailParts({
                 <FormgroupForAnswer
                   register={formInfo[0]}
                   selectedValues={[selectedVal?.answer, selectedVal?.options]}
-                  questionTypeNumber={typeValue as number}
+                  onUpdate={handleAnswer}
+                  questionTypeNumber={questionTypeNumber}
                 />
               )}
             </Col>
