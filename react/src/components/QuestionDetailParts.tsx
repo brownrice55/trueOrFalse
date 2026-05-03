@@ -16,13 +16,11 @@ type QuestionDetailPartsProps = {
     value: boolean | undefined,
     value2: number | undefined,
     value3: boolean | undefined,
-    value4: number | undefined,
   ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
   typeValue?: number;
   isIndex1UnderEdit?: boolean;
-  typeValueTemp?: number;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -32,7 +30,6 @@ export default function QuestionDetailParts({
   formInfo,
   typeValue,
   isIndex1UnderEdit,
-  typeValueTemp,
 }: QuestionDetailPartsProps) {
   const { data } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
@@ -46,7 +43,7 @@ export default function QuestionDetailParts({
   const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? true : undefined;
-    onUpdate(!isUnderEdit, undefined, isFormOpened, undefined);
+    onUpdate(!isUnderEdit, undefined, isFormOpened);
   };
 
   const handleOverwrite = (
@@ -58,7 +55,12 @@ export default function QuestionDetailParts({
       e.currentTarget?.parentNode?.parentNode?.parentNode?.querySelector(
         aFormType,
       ) as HTMLSelectElement | HTMLTextAreaElement;
-    if (selectedVal && targetElm) {
+    if (
+      selectedVal &&
+      targetElm &&
+      aProperty !== "type" &&
+      aProperty !== "answer"
+    ) {
       const newVal = { ...selectedVal, [aProperty]: targetElm.value };
       setSelectedVal(newVal);
       data.set(selectedKey, newVal);
@@ -70,19 +72,19 @@ export default function QuestionDetailParts({
         ? parseInt(targetElm.value)
         : undefined;
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, type, isFormOpened, undefined);
+    onUpdate(!isUnderEdit, type, isFormOpened);
   };
 
   const handleCancel = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, typeValue, isFormOpened, undefined);
+    onUpdate(!isUnderEdit, typeValue, isFormOpened);
   };
 
   const lookupKey = selectedVal?.[formInfo[3]];
 
-  const handleSwitchValueForAnswers = (aTypeValueTemp: number) => {
-    onUpdate(undefined, undefined, undefined, aTypeValueTemp);
+  const handleSwitchValueForAnswers = (aTypeValue: number) => {
+    onUpdate(undefined, aTypeValue, undefined);
   };
 
   const handleAnswer = () => {
@@ -93,9 +95,14 @@ export default function QuestionDetailParts({
     setQuestionTypeNumber(typeValue);
   }, [typeValue]);
 
-  useEffect(() => {
-    setQuestionTypeNumber(typeValueTemp);
-  }, [typeValueTemp]);
+  const displayAnswersForSelection = selectedVal?.type
+    ? selectedVal.options
+      ? selectedVal.options
+          .filter((val) => val.isActive)
+          .map((val) => val.value)
+          .join("、")
+      : ""
+    : "";
 
   return (
     <>
@@ -173,11 +180,11 @@ export default function QuestionDetailParts({
                   formInfo[1][lookupKey]
                 : formType === "textarea"
                   ? selectedVal && lookupKey
-                  : !typeValue
+                  : !questionTypeNumber
                     ? selectedVal?.answer[0]
                       ? "まる"
                       : "ばつ"
-                    : "selection"}
+                    : displayAnswersForSelection}
             </Col>
           )}
         </Row>

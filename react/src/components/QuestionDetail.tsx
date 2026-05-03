@@ -18,8 +18,10 @@ export default function QuestionDetail({
 }: QuestionDetailProps) {
   const { data, setData } = useContext(DataContext) as DataContextType;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const [typeValue, setTypeValue] = useState<number>(0);
-  const [typeValueTemp, setTypeValueTemp] = useState<number>(0);
+  const selectedVal = data.get(selectedKey);
+  const [typeValue, setTypeValue] = useState<number | undefined>(
+    selectedVal?.type,
+  );
 
   const originalCategories = getCategories();
   const categoryNameArray = [...originalCategories.categories].map(
@@ -43,7 +45,6 @@ export default function QuestionDetail({
     aIsUnderEdit?: boolean,
     aTypeValue?: number,
     aIsFormOpened?: boolean,
-    aTypeValueTemp?: number,
   ) => {
     if (aIsUnderEdit !== undefined) {
       setIsDisabled(aIsUnderEdit);
@@ -53,9 +54,6 @@ export default function QuestionDetail({
     }
     if (aIsFormOpened !== undefined) {
       setIsIndex1UnderEdit(aIsFormOpened);
-    }
-    if (aTypeValueTemp !== undefined) {
-      setTypeValueTemp(aTypeValueTemp);
     }
   };
 
@@ -90,7 +88,6 @@ export default function QuestionDetail({
         formType={"answer"}
         formInfo={[null, [], "答え", "answer"]}
         typeValue={typeValue}
-        typeValueTemp={typeValueTemp}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
