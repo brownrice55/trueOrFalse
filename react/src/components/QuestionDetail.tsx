@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import QuestionDetailParts from "./QuestionDetailParts";
-import { getData, getCategories } from "../utils/common";
+import { getCategories } from "../utils/common";
+import { DataContext } from "../contexts/context";
+import type { DataContextType } from "../types/dataContextType.type";
 import type { Inputs } from "../types/inputs.type";
 import { typeOptionArray, priorityOptionArray } from "../utils/labels";
 import Button from "react-bootstrap/Button";
@@ -14,7 +16,7 @@ export default function QuestionDetail({
   selectedKey,
   onUpdate,
 }: QuestionDetailProps) {
-  const [data, setData] = useState(getData());
+  const { data, setData } = useContext(DataContext) as DataContextType;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [typeValue, setTypeValue] = useState<number>(0);
 
@@ -35,10 +37,18 @@ export default function QuestionDetail({
     onUpdate(newMap);
   };
 
-  const handleIsDisabled = (aIsUnderEdit: boolean, aTypeValue?: number) => {
+  const [isIndex1UnderEdit, setIsIndex1UnderEdit] = useState<boolean>(false);
+  const handleIsDisabled = (
+    aIsUnderEdit: boolean,
+    aTypeValue?: number,
+    aIsFormOpened?: boolean,
+  ) => {
     setIsDisabled(aIsUnderEdit);
     if (aTypeValue !== undefined) {
       setTypeValue(aTypeValue);
+    }
+    if (aIsFormOpened !== undefined) {
+      setIsIndex1UnderEdit(aIsFormOpened);
     }
   };
 
@@ -68,6 +78,7 @@ export default function QuestionDetail({
       <QuestionDetailParts
         selectedKey={selectedKey}
         isDisabled={isDisabled}
+        isIndex1UnderEdit={isIndex1UnderEdit}
         onUpdate={handleIsDisabled}
         formType={"answer"}
         formInfo={[null, [], "答え", "answer"]}

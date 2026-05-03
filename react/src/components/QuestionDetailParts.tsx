@@ -11,10 +11,15 @@ import Button from "react-bootstrap/Button";
 type QuestionDetailPartsProps = {
   selectedKey: number;
   isDisabled: boolean;
-  onUpdate: (value: boolean, value2: number | undefined) => void;
+  onUpdate: (
+    value: boolean,
+    value2: number | undefined,
+    value3: boolean | undefined,
+  ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
   typeValue?: number;
+  isIndex1UnderEdit?: boolean;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -23,6 +28,7 @@ export default function QuestionDetailParts({
   formType,
   formInfo,
   typeValue,
+  isIndex1UnderEdit,
 }: QuestionDetailPartsProps) {
   const data = getData();
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
@@ -30,9 +36,10 @@ export default function QuestionDetailParts({
   );
   const [isUnderEdit, setIsUnderEdit] = useState<boolean>(false);
 
-  const handleEdit = () => {
+  const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
-    onUpdate(!isUnderEdit, undefined);
+    const isFormOpened = aProperty === "type" ? true : undefined;
+    onUpdate(!isUnderEdit, undefined, isFormOpened);
   };
 
   const handleOverwrite = (
@@ -55,12 +62,14 @@ export default function QuestionDetailParts({
       aFormType === "select" && aProperty === "type"
         ? parseInt(targetElm.value)
         : undefined;
-    onUpdate(!isUnderEdit, type);
+    const isFormOpened = aProperty === "type" ? false : undefined;
+    onUpdate(!isUnderEdit, type, isFormOpened);
   };
 
-  const handleCancel = () => {
+  const handleCancel = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
-    onUpdate(!isUnderEdit, typeValue);
+    const isFormOpened = aProperty === "type" ? false : undefined;
+    onUpdate(!isUnderEdit, typeValue, isFormOpened);
   };
 
   const lookupKey = selectedVal?.[formInfo[3]];
@@ -82,7 +91,7 @@ export default function QuestionDetailParts({
               <Button
                 variant="secondary"
                 className="py-1 px-2"
-                onClick={() => handleCancel()}
+                onClick={() => handleCancel(formInfo[3])}
               >
                 キャンセル
               </Button>
@@ -92,7 +101,7 @@ export default function QuestionDetailParts({
               <Button
                 variant="primary"
                 className="py-1 px-2"
-                onClick={() => handleEdit()}
+                onClick={() => handleEdit(formInfo[3])}
                 disabled={isDisabled}
               >
                 編集する
@@ -101,7 +110,7 @@ export default function QuestionDetailParts({
           )}
         </Row>
         <Row className="mb-3">
-          {isUnderEdit ? (
+          {isUnderEdit || isIndex1UnderEdit ? (
             <Col className="pt-2">
               {formType === "select" ? (
                 <FormgroupSelect
