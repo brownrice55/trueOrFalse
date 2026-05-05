@@ -11,7 +11,6 @@ type QuestionDetailProps = {
   selectedKey: number;
   onUpdate: (updatedData: Map<number, Inputs> | null) => void;
 };
-
 export default function QuestionDetail({
   selectedKey,
   onUpdate,
@@ -41,10 +40,15 @@ export default function QuestionDetail({
   };
 
   const [isIndex1UnderEdit, setIsIndex1UnderEdit] = useState<boolean>(false);
+  const [answerArray, setAnswerArray] = useState<boolean[]>(
+    selectedVal?.answer ?? [true, false],
+  );
+
   const handleIsDisabled = (
     aIsUnderEdit?: boolean,
     aTypeValue?: number,
     aIsFormOpened?: boolean,
+    aAnswerArray?: boolean[],
   ) => {
     if (aIsUnderEdit !== undefined) {
       setIsDisabled(aIsUnderEdit);
@@ -54,6 +58,9 @@ export default function QuestionDetail({
     }
     if (aIsFormOpened !== undefined) {
       setIsIndex1UnderEdit(aIsFormOpened);
+    }
+    if (aAnswerArray !== undefined) {
+      setAnswerArray(aAnswerArray);
     }
   };
 
@@ -72,6 +79,7 @@ export default function QuestionDetail({
         onUpdate={handleIsDisabled}
         formType={"select"}
         formInfo={[null, typeOptionArray, "クイズの種類", "type"]}
+        answerArray={answerArray}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
@@ -88,6 +96,7 @@ export default function QuestionDetail({
         formType={"answer"}
         formInfo={[null, [], "答え", "answer"]}
         typeValue={typeValue}
+        answerArray={answerArray}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}

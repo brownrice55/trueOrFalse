@@ -40,8 +40,7 @@ export default function FormSettings() {
   const [answerArray, setAnswerArray] = useState<boolean[]>([true, false]);
 
   const handleAnswer = (aIndex: number) => {
-    const resetArray = Array(2).fill(false);
-    resetArray[aIndex] = true;
+    const resetArray = answerArray.map((_, idx) => idx === aIndex);
     setAnswerArray(resetArray);
   };
 

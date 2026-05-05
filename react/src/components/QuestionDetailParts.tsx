@@ -16,11 +16,13 @@ type QuestionDetailPartsProps = {
     value: boolean | undefined,
     value2: number | undefined,
     value3: boolean | undefined,
+    value4: boolean[] | undefined,
   ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
   typeValue?: number;
   isIndex1UnderEdit?: boolean;
+  answerArray?: boolean[];
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -30,6 +32,7 @@ export default function QuestionDetailParts({
   formInfo,
   typeValue,
   isIndex1UnderEdit,
+  answerArray,
 }: QuestionDetailPartsProps) {
   const { data } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
@@ -43,7 +46,7 @@ export default function QuestionDetailParts({
   const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? true : undefined;
-    onUpdate(!isUnderEdit, undefined, isFormOpened);
+    onUpdate(!isUnderEdit, undefined, isFormOpened, undefined);
   };
 
   const handleOverwrite = (
@@ -55,40 +58,46 @@ export default function QuestionDetailParts({
       e.currentTarget?.parentNode?.parentNode?.parentNode?.querySelector(
         aFormType,
       ) as HTMLSelectElement | HTMLTextAreaElement;
-    if (
-      selectedVal &&
-      targetElm &&
-      aProperty !== "type" &&
-      aProperty !== "answer"
-    ) {
-      const newVal = { ...selectedVal, [aProperty]: targetElm.value };
-      setSelectedVal(newVal);
+    if (selectedVal && targetElm) {
+      const newVal = { ...selectedVal } as Inputs;
+      if (aProperty !== "type" && aProperty !== "answer") {
+        (newVal as any)[aProperty] =
+          aProperty === "category" || aProperty === "priority"
+            ? (parseInt(targetElm.value) as number)
+            : (targetElm.value as string);
+      } else if (aProperty === "type") {
+        newVal.type = parseInt(targetElm.value);
+        newVal.answer = answerArray as boolean[]; // in the case of type===1 *** later
+      }
+
       data.set(selectedKey, newVal);
+      setSelectedVal(newVal);
       localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
     }
+
     setIsUnderEdit((prev) => !prev);
     const type =
       aFormType === "select" && aProperty === "type"
         ? parseInt(targetElm.value)
         : undefined;
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, type, isFormOpened);
+    onUpdate(!isUnderEdit, type, isFormOpened, undefined);
   };
 
   const handleCancel = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, typeValue, isFormOpened);
+    onUpdate(!isUnderEdit, typeValue, isFormOpened, undefined);
   };
 
   const lookupKey = selectedVal?.[formInfo[3]];
 
-  const handleSwitchValueForAnswers = (aTypeValue: number) => {
-    onUpdate(undefined, aTypeValue, undefined);
+  const handleSwitchTypeForAnswers = (aTypeValue: number) => {
+    onUpdate(undefined, aTypeValue, undefined, undefined);
   };
 
-  const handleAnswer = () => {
-    console.log("answer");
+  const handleUpdateRadioValue = (aAnswerArray: boolean[]) => {
+    onUpdate(undefined, undefined, undefined, aAnswerArray);
   };
 
   useEffect(() => {
@@ -151,7 +160,7 @@ export default function QuestionDetailParts({
                   selectedValue={
                     selectedVal && (selectedVal[formInfo[3]] as number)
                   }
-                  onUpdate={handleSwitchValueForAnswers}
+                  onUpdate={handleSwitchTypeForAnswers}
                 />
               ) : formType === "textarea" ? (
                 <FormgroupTextarea
@@ -164,10 +173,9 @@ export default function QuestionDetailParts({
                 />
               ) : (
                 <FormgroupForAnswer
-                  register={formInfo[0]}
-                  selectedValues={[selectedVal?.answer, selectedVal?.options]}
-                  onUpdate={handleAnswer}
-                  questionTypeNumber={questionTypeNumber}
+                  questionTypeNumber={questionTypeNumber as number}
+                  onUpdate={handleUpdateRadioValue}
+                  answerArray={answerArray as boolean[]}
                 />
               )}
             </Col>

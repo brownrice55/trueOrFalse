@@ -2,24 +2,20 @@ import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import type { UseFormRegister } from "react-hook-form";
 import { answerArrayText } from "../../utils/labels";
-import type { Inputs } from "../../types/inputs.type";
 
 type FormgroupForAnswerProps = {
-  register?: UseFormRegister<Inputs>;
-  selectedValues: any;
-  onUpdate?: (value: number) => void;
-  questionTypeNumber?: number;
+  questionTypeNumber: number;
+  onUpdate: (value: boolean[]) => void;
+  answerArray: boolean[];
 };
 
 export default function FormgroupForAnswer({
-  register,
-  selectedValues,
-  onUpdate,
   questionTypeNumber,
+  onUpdate,
+  answerArray,
 }: FormgroupForAnswerProps) {
-  const [answerArray, setAnswerArray] = useState<boolean[]>([true, false]);
+  const [radioValue, setRadioValue] = useState<boolean[]>(answerArray);
 
   const [theNumberOfOptions, setTheNumberOfOptions] = useState<number>(2);
   const handleNumberOfOptions = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -29,25 +25,12 @@ export default function FormgroupForAnswer({
   const handleAnswer = (aIndex: number) => {
     const resetArray = Array(2).fill(false);
     resetArray[aIndex] = true;
-    setAnswerArray(resetArray);
+    setRadioValue(resetArray);
+    onUpdate(resetArray);
   };
-
-  // const handleOnChange = (
-  //   e: React.ChangeEvent<HTMLRadioElement>,
-  //   aName: string,
-  // ) => {
-  //   if (aName !== "type") {
-  //     return;
-  //   }
-  //   const eventTargetValue = (e.currentTarget as HTMLSelectElement).value;
-  //   if (onUpdate) {
-  //     onUpdate(parseInt(eventTargetValue));
-  //   }
-  // };
 
   return questionTypeNumber === 0 ? (
     <Form.Group className="mb-3">
-      {register && <Form.Label>答え</Form.Label>}
       <div className="d-flex">
         {answerArrayText.map((val, index) => (
           <Form.Check
@@ -56,8 +39,7 @@ export default function FormgroupForAnswer({
             id={`answer-${index}`}
             label={val}
             className="pe-4"
-            {...(register && register(`answer`))}
-            checked={answerArray[index]}
+            checked={radioValue[index]}
             onChange={() => handleAnswer(index)}
           />
         ))}
@@ -66,10 +48,7 @@ export default function FormgroupForAnswer({
   ) : (
     <Form.Group className="mb-3">
       <Form.Label>選択肢の数</Form.Label>
-      <Form.Select
-        {...(register && register("numberOfOptions"))}
-        onChange={(e) => handleNumberOfOptions(e)}
-      >
+      <Form.Select onChange={(e) => handleNumberOfOptions(e)}>
         {Array(9)
           .fill(0)
           .map((_, index) => (
@@ -87,18 +66,10 @@ export default function FormgroupForAnswer({
         .map((_, index) => (
           <Row className="mb-3" key={index}>
             <Col md={1}>
-              <Form.Check
-                type="checkbox"
-                id=""
-                label=""
-                {...(register && register(`options.${index}.isActive`))}
-              />
+              <Form.Check type="checkbox" id="" label="" />
             </Col>
             <Col md={9}>
-              <Form.Control
-                type="text"
-                {...(register && register(`options.${index}.value`))}
-              />
+              <Form.Control type="text" />
             </Col>
           </Row>
         ))}
