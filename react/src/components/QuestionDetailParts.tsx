@@ -16,13 +16,18 @@ type QuestionDetailPartsProps = {
     value: boolean | undefined,
     value2: number | undefined,
     value3: boolean | undefined,
-    value4: boolean[] | undefined,
+    value4: boolean[] | { isActive: boolean; value: string }[] | undefined,
+    value5: number | undefined,
+    value6: string | undefined,
   ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
   typeValue?: number;
   isIndex1UnderEdit?: boolean;
   answerArray?: boolean[];
+  numberOfOptions?: number;
+  options?: { isActive: boolean; value: string }[];
+  displayAnswersForSelection?: string;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -33,6 +38,9 @@ export default function QuestionDetailParts({
   typeValue,
   isIndex1UnderEdit,
   answerArray,
+  numberOfOptions,
+  options,
+  displayAnswersForSelection,
 }: QuestionDetailPartsProps) {
   const { data } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
@@ -46,7 +54,14 @@ export default function QuestionDetailParts({
   const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? true : undefined;
-    onUpdate(!isUnderEdit, undefined, isFormOpened, undefined);
+    onUpdate(
+      !isUnderEdit,
+      undefined,
+      isFormOpened,
+      undefined,
+      undefined,
+      undefined,
+    );
   };
 
   const handleOverwrite = (
@@ -65,11 +80,43 @@ export default function QuestionDetailParts({
           aProperty === "category" || aProperty === "priority"
             ? (parseInt(targetElm.value) as number)
             : (targetElm.value as string);
-      } else if (aProperty === "type") {
-        newVal.type = parseInt(targetElm.value);
-        newVal.answer = answerArray as boolean[]; // in the case of type===1 *** later
-      }
+      } else {
+        if (aProperty === "type") {
+          newVal.type = parseInt(targetElm.value);
+        }
+        newVal.answer =
+          typeValue === 0 ? (answerArray as boolean[]) : [true, false];
+        newVal.numberOfOptions = (
+          typeValue === 1 ? numberOfOptions : 2
+        ) as number;
+        newVal.options = (
+          typeValue === 1
+            ? options
+            : [
+                { isActive: false, value: "" },
+                { isActive: false, value: "" },
+              ]
+        ) as { isActive: boolean; value: string }[];
 
+        if (typeValue === 1) {
+          const newDisplayAnswersForSelection = selectedVal?.type
+            ? selectedVal.options
+              ? selectedVal.options
+                  .filter((val) => val.isActive)
+                  .map((val) => val.value)
+                  .join("、")
+              : ""
+            : "";
+          onUpdate(
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            newDisplayAnswersForSelection,
+          );
+        }
+      }
       data.set(selectedKey, newVal);
       setSelectedVal(newVal);
       localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
@@ -81,37 +128,46 @@ export default function QuestionDetailParts({
         ? parseInt(targetElm.value)
         : undefined;
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, type, isFormOpened, undefined);
+    onUpdate(!isUnderEdit, type, isFormOpened, undefined, undefined, undefined);
   };
 
   const handleCancel = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, typeValue, isFormOpened, undefined);
+    onUpdate(
+      !isUnderEdit,
+      typeValue,
+      isFormOpened,
+      undefined,
+      undefined,
+      undefined,
+    );
   };
 
   const lookupKey = selectedVal?.[formInfo[3]];
 
   const handleSwitchTypeForAnswers = (aTypeValue: number) => {
-    onUpdate(undefined, aTypeValue, undefined, undefined);
+    onUpdate(undefined, aTypeValue, undefined, undefined, undefined, undefined);
   };
 
-  const handleUpdateRadioValue = (aAnswerArray: boolean[]) => {
-    onUpdate(undefined, undefined, undefined, aAnswerArray);
+  const handleUpdateFromAnswerForm = (
+    aTypeValue: number,
+    aAnswerArray: boolean[] | { isActive: boolean; value: string }[],
+    aNumberOfOptions: number,
+  ) => {
+    onUpdate(
+      undefined,
+      aTypeValue,
+      undefined,
+      aAnswerArray,
+      aNumberOfOptions,
+      undefined,
+    );
   };
 
   useEffect(() => {
     setQuestionTypeNumber(typeValue);
   }, [typeValue]);
-
-  const displayAnswersForSelection = selectedVal?.type
-    ? selectedVal.options
-      ? selectedVal.options
-          .filter((val) => val.isActive)
-          .map((val) => val.value)
-          .join("、")
-      : ""
-    : "";
 
   return (
     <>
@@ -174,8 +230,10 @@ export default function QuestionDetailParts({
               ) : (
                 <FormgroupForAnswer
                   questionTypeNumber={questionTypeNumber as number}
-                  onUpdate={handleUpdateRadioValue}
+                  onUpdate={handleUpdateFromAnswerForm}
                   answerArray={answerArray as boolean[]}
+                  numberOfOptions={numberOfOptions as number}
+                  options={options as { isActive: boolean; value: string }[]}
                 />
               )}
             </Col>

@@ -43,12 +43,37 @@ export default function QuestionDetail({
   const [answerArray, setAnswerArray] = useState<boolean[]>(
     selectedVal?.answer ?? [true, false],
   );
+  const [numberOfOptions, setNumberOfOptions] = useState<number>(
+    selectedVal?.numberOfOptions ?? 2,
+  );
+  const [options, setOptions] = useState<
+    { isActive: boolean; value: string }[]
+  >(
+    selectedVal?.options ?? [
+      { isActive: false, value: "" },
+      { isActive: false, value: "" },
+    ],
+  );
+
+  const [displayAnswersForSelection, setDisplayAnswersForSelection] =
+    useState<string>(
+      selectedVal?.type
+        ? selectedVal.options
+          ? selectedVal.options
+              .filter((val) => val.isActive)
+              .map((val) => val.value)
+              .join("、")
+          : ""
+        : "",
+    );
 
   const handleIsDisabled = (
     aIsUnderEdit?: boolean,
     aTypeValue?: number,
     aIsFormOpened?: boolean,
-    aAnswerArray?: boolean[],
+    aAnswerArray?: boolean[] | { isActive: boolean; value: string }[],
+    aNumberOfOptions?: number,
+    aDisplayAnswersForSelection?: string,
   ) => {
     if (aIsUnderEdit !== undefined) {
       setIsDisabled(aIsUnderEdit);
@@ -60,7 +85,17 @@ export default function QuestionDetail({
       setIsIndex1UnderEdit(aIsFormOpened);
     }
     if (aAnswerArray !== undefined) {
-      setAnswerArray(aAnswerArray);
+      if (aTypeValue === 0) {
+        setAnswerArray(aAnswerArray as boolean[]);
+      } else if (aTypeValue === 1) {
+        setOptions(aAnswerArray as { isActive: boolean; value: string }[]);
+      }
+    }
+    if (aNumberOfOptions !== undefined) {
+      setNumberOfOptions(aNumberOfOptions);
+    }
+    if (aDisplayAnswersForSelection !== undefined) {
+      setDisplayAnswersForSelection(aDisplayAnswersForSelection);
     }
   };
 
@@ -80,6 +115,9 @@ export default function QuestionDetail({
         formType={"select"}
         formInfo={[null, typeOptionArray, "クイズの種類", "type"]}
         answerArray={answerArray}
+        numberOfOptions={numberOfOptions}
+        options={options}
+        typeValue={typeValue}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
@@ -97,6 +135,9 @@ export default function QuestionDetail({
         formInfo={[null, [], "答え", "answer"]}
         typeValue={typeValue}
         answerArray={answerArray}
+        numberOfOptions={numberOfOptions}
+        options={options}
+        displayAnswersForSelection={displayAnswersForSelection}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}

@@ -6,27 +6,58 @@ import { answerArrayText } from "../../utils/labels";
 
 type FormgroupForAnswerProps = {
   questionTypeNumber: number;
-  onUpdate: (value: boolean[]) => void;
+  onUpdate: (
+    value: number,
+    value2: boolean[] | { isActive: boolean; value: string }[],
+    value3: number,
+  ) => void;
   answerArray: boolean[];
+  numberOfOptions: number;
+  options: { isActive: boolean; value: string }[];
 };
 
 export default function FormgroupForAnswer({
   questionTypeNumber,
   onUpdate,
   answerArray,
+  numberOfOptions,
+  options,
 }: FormgroupForAnswerProps) {
   const [radioValue, setRadioValue] = useState<boolean[]>(answerArray);
+  const [selectionValue, setSelectionValue] =
+    useState<{ isActive: boolean; value: string }[]>(options);
 
-  const [theNumberOfOptions, setTheNumberOfOptions] = useState<number>(2);
+  const [numberOfOptionsValue, setNumberOfOptionsValue] =
+    useState<number>(numberOfOptions);
   const handleNumberOfOptions = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setTheNumberOfOptions(parseInt(e.target.value));
+    const newNumberOfOptions = parseInt(e.target.value);
+    setNumberOfOptionsValue(newNumberOfOptions);
+    onUpdate(questionTypeNumber, [true, false], newNumberOfOptions);
   };
 
   const handleAnswer = (aIndex: number) => {
     const resetArray = Array(2).fill(false);
     resetArray[aIndex] = true;
     setRadioValue(resetArray);
-    onUpdate(resetArray);
+    onUpdate(questionTypeNumber, resetArray, 2);
+  };
+
+  const handleOptions = (
+    aValue: boolean | string,
+    aIndexIsActive: number | undefined,
+    aIndexValue: number | undefined,
+  ) => {
+    const newOptions = [...options];
+    if (aIndexIsActive !== undefined) {
+      //checkbox
+      newOptions[aIndexIsActive].isActive = aValue as boolean;
+    }
+    if (aIndexValue !== undefined) {
+      //input
+      newOptions[aIndexValue].value = aValue as string;
+    }
+    setSelectionValue(newOptions);
+    onUpdate(questionTypeNumber, newOptions, numberOfOptions);
   };
 
   return questionTypeNumber === 0 ? (
@@ -48,7 +79,10 @@ export default function FormgroupForAnswer({
   ) : (
     <Form.Group className="mb-3">
       <Form.Label>選択肢の数</Form.Label>
-      <Form.Select onChange={(e) => handleNumberOfOptions(e)}>
+      <Form.Select
+        defaultValue={numberOfOptions}
+        onChange={(e) => handleNumberOfOptions(e)}
+      >
         {Array(9)
           .fill(0)
           .map((_, index) => (
@@ -61,15 +95,41 @@ export default function FormgroupForAnswer({
       <p className="pt-2">
         選択肢を入力して、正解の選択肢にチェックを入れてください。
       </p>
-      {Array(theNumberOfOptions)
+      {Array(numberOfOptionsValue)
         .fill("")
         .map((_, index) => (
           <Row className="mb-3" key={index}>
             <Col md={1}>
-              <Form.Check type="checkbox" id="" label="" />
+              <Form.Check
+                type="checkbox"
+                id=""
+                label=""
+                checked={
+                  selectionValue.length
+                    ? selectionValue[index]
+                      ? selectionValue[index].isActive
+                      : false
+                    : false
+                }
+                onChange={(e) =>
+                  handleOptions(e.target.checked, index, undefined)
+                }
+              />
             </Col>
             <Col md={9}>
-              <Form.Control type="text" />
+              <Form.Control
+                type="text"
+                defaultValue={
+                  selectionValue.length
+                    ? selectionValue[index]
+                      ? selectionValue[index].value
+                      : ""
+                    : ""
+                }
+                onChange={(e) =>
+                  handleOptions(e.target.value, undefined, index)
+                }
+              />
             </Col>
           </Row>
         ))}
