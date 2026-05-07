@@ -9,6 +9,7 @@ type FormgroupSelectProps = {
   name: keyof Inputs;
   selectedValue: number | undefined;
   onUpdate?: (value: number) => void;
+  isLabelNeeded?: boolean;
 };
 
 export default function FormgroupSelect({
@@ -18,6 +19,7 @@ export default function FormgroupSelect({
   name,
   selectedValue,
   onUpdate,
+  isLabelNeeded,
 }: FormgroupSelectProps) {
   const handleOnChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -34,7 +36,7 @@ export default function FormgroupSelect({
 
   return (
     <Form.Group className="mb-3">
-      {register && <Form.Label>{label}</Form.Label>}
+      {isLabelNeeded && <Form.Label>{label}</Form.Label>}
       <Form.Select
         {...(register && register(name))}
         defaultValue={selectedValue}

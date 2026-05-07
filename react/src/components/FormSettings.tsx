@@ -88,6 +88,7 @@ export default function FormSettings() {
         label={"カテゴリー"}
         name={"category"}
         selectedValue={0}
+        isLabelNeeded={true}
       />
       <FormgroupSelect
         register={register}
@@ -96,6 +97,7 @@ export default function FormSettings() {
         name={"type"}
         selectedValue={0}
         onUpdate={handleUpdate}
+        isLabelNeeded={true}
       />
       <FormgroupTextarea
         register={register}
@@ -176,6 +178,7 @@ export default function FormSettings() {
         label={"優先順位"}
         name={"priority"}
         selectedValue={0}
+        isLabelNeeded={true}
       />
       <Form.Control type="hidden" {...register("notes")} value="" />
       <Form.Control

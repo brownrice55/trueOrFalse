@@ -22,12 +22,14 @@ export default function QuizStartIndex0({ onUpdate }: QuizStartIndex0Props) {
         label={"カテゴリー"}
         name={"category"}
         selectedValue={0}
+        isLabelNeeded={true}
       />
       <FormgroupSelect
         textArray={typeOptionArray}
         label={"クイズの種類"}
         name={"type"}
         selectedValue={0}
+        isLabelNeeded={true}
       />
       <Form.Group className="mb-3">
         <Form.Label>問題数</Form.Label>
