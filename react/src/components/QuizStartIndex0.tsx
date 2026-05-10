@@ -1,18 +1,68 @@
+import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
-import { getData } from "../utils/common";
 import { typeOptionArray, categoryNameArray } from "../utils/labels";
+import type { Inputs, InputsForResult } from "../types/inputs.type";
 
 type QuizStartIndex0Props = {
-  onUpdate: (aNextPageNumber: number) => void;
+  onUpdate: (
+    nextPageNumber?: number,
+    categoryValue?: number,
+    typeValue?: number,
+    numberOfQuestions?: number,
+    priorityValue?: number,
+  ) => void;
+  quizDataForPractice?: Map<number, Inputs> | Map<number, InputsForResult>;
 };
 
-export default function QuizStartIndex0({ onUpdate }: QuizStartIndex0Props) {
-  const data = getData();
-  const length = Math.floor(data.size / 5);
+export default function QuizStartIndex0({
+  onUpdate,
+  quizDataForPractice,
+}: QuizStartIndex0Props) {
+  const remainder = (quizDataForPractice?.size ?? 0) % 5;
+  const length = remainder
+    ? Math.floor((quizDataForPractice?.size ?? 0) / 5) + 1
+    : Math.floor((quizDataForPractice?.size ?? 0) / 5);
+
   const handleUpdatePageNo = () => {
     onUpdate(1);
+  };
+
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+
+  const handleSelectValue = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    aName: string,
+  ) => {
+    if (aName === "numberOfQuestions") {
+      onUpdate(
+        undefined,
+        undefined,
+        undefined,
+        parseInt(e.target.value),
+        undefined,
+      );
+    } else {
+      onUpdate(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        parseInt(e.target.value),
+      );
+    }
+  };
+
+  const handleSelectedValueFromForm = (
+    aSelectedValue: number,
+    aName: string | undefined,
+  ) => {
+    if (aName === "category") {
+      onUpdate(undefined, aSelectedValue, undefined, undefined, undefined);
+    } else if (aName === "type") {
+      onUpdate(undefined, undefined, aSelectedValue, undefined, undefined);
+    }
   };
 
   return (
@@ -21,41 +71,65 @@ export default function QuizStartIndex0({ onUpdate }: QuizStartIndex0Props) {
         textArray={categoryNameArray}
         label={"カテゴリー"}
         name={"category"}
-        selectedValue={0}
+        selectedValue={100000}
         isLabelNeeded={true}
+        from={"quizStart"}
+        onUpdate={handleSelectedValueFromForm}
       />
       <FormgroupSelect
         textArray={typeOptionArray}
         label={"クイズの種類"}
         name={"type"}
-        selectedValue={0}
+        selectedValue={100000}
         isLabelNeeded={true}
+        from={"quizStart"}
+        onUpdate={handleSelectedValueFromForm}
       />
       <Form.Group className="mb-3">
         <Form.Label>問題数</Form.Label>
-        <Form.Select>
-          {Array(length)
-            .fill("")
-            .map((_, index: number) => {
-              const value = 5 * index + 5;
-              return (
-                <option value={value} key={value}>
-                  {value}
-                </option>
-              );
-            })}
-          {length * 5 < data.size && (
-            <option value={data.size} key={data.size}>
-              全て（{data.size}問）
+        <Form.Select
+          onChange={(e) => handleSelectValue(e, "numberOfQuestions")}
+          disabled={!quizDataForPractice?.size}
+        >
+          {quizDataForPractice?.size ? (
+            quizDataForPractice?.size <= 5 ? (
+              <option value="100000" key="100000">
+                全て（{quizDataForPractice && quizDataForPractice.size}
+                問）
+              </option>
+            ) : (
+              Array(length)
+                .fill("")
+                .map((_, index: number) => {
+                  const value = 5 * index + 5;
+                  if (value <= quizDataForPractice?.size) {
+                    return (
+                      <option value="100000" key="100000">
+                        全て（{quizDataForPractice && quizDataForPractice.size}
+                        問）
+                      </option>
+                    );
+                  } else {
+                    return (
+                      <option value={value} key={value}>
+                        {value}問
+                      </option>
+                    );
+                  }
+                })
+            )
+          ) : (
+            <option value="0" key="0">
+              問題がありません
             </option>
           )}
         </Form.Select>
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>優先順位</Form.Label>
-        <Form.Select>
-          <option value="random">指定しない（ランダムで表示）</option>
-          <option value="highPriority">優先順位が高いものから表示</option>
+        <Form.Select onChange={(e) => handleSelectValue(e, "priority")}>
+          <option value="0">指定しない（ランダムで表示）</option>
+          <option value="1">優先順位が高いものから表示</option>
         </Form.Select>
       </Form.Group>
 
@@ -64,6 +138,7 @@ export default function QuizStartIndex0({ onUpdate }: QuizStartIndex0Props) {
           variant="primary"
           className="py-2 px-3 mt-3"
           onClick={() => handleUpdatePageNo()}
+          disabled={isDisabled}
         >
           スタート
         </Button>

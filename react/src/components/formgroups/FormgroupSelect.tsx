@@ -7,9 +7,10 @@ type FormgroupSelectProps = {
   textArray: string[];
   label: string;
   name: keyof Inputs;
-  selectedValue: number | undefined;
-  onUpdate?: (value: number) => void;
+  selectedValue?: number;
+  onUpdate?: (value: number, value2?: string) => void;
   isLabelNeeded?: boolean;
+  from?: string;
 };
 
 export default function FormgroupSelect({
@@ -20,17 +21,21 @@ export default function FormgroupSelect({
   selectedValue,
   onUpdate,
   isLabelNeeded,
+  from,
 }: FormgroupSelectProps) {
-  const handleOnChange = (
-    e: React.ChangeEvent<HTMLSelectElement>,
-    aName: string,
-  ) => {
-    if (aName !== "type") {
+  const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (name !== "type" && from !== "quizStart") {
       return;
     }
     const eventTargetValue = (e.currentTarget as HTMLSelectElement).value;
-    if (onUpdate) {
-      onUpdate(parseInt(eventTargetValue));
+    if (from === "quizStart") {
+      if (onUpdate) {
+        onUpdate(parseInt(eventTargetValue), name);
+      }
+    } else {
+      if (onUpdate) {
+        onUpdate(parseInt(eventTargetValue), undefined);
+      }
     }
   };
 
@@ -38,16 +43,17 @@ export default function FormgroupSelect({
     <Form.Group className="mb-3">
       {isLabelNeeded && <Form.Label>{label}</Form.Label>}
       <Form.Select
-        {...(register && register(name))}
+        {...(register && register(name, { valueAsNumber: true }))}
         defaultValue={selectedValue}
-        onChange={(e) => handleOnChange(e, name)}
+        onChange={(e) => handleOnChange(e)}
       >
+        {from === "quizStart" && <option value="100000">指定しない</option>}
         {textArray.map((val: string, index) => (
           <option value={index} key={index}>
             {val}
           </option>
         ))}
-        {label === "カテゴリー" && (
+        {label === "カテゴリー" && from !== "quizStart" && (
           <option value="">カテゴリーを追加する</option>
         )}
       </Form.Select>

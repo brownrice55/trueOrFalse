@@ -1,7 +1,7 @@
 import Button from "react-bootstrap/Button";
 
 type QuizStartIndex1Props = {
-  onUpdate: (aNextPageNumber: number) => void;
+  onUpdate: (nextPageNumber: number) => void;
 };
 
 export default function QuizStartIndex1({ onUpdate }: QuizStartIndex1Props) {

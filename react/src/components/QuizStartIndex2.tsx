@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
 
 type QuizStartIndex2Props = {
-  onUpdate: (aNextPageNumber: number) => void;
+  onUpdate: (nextPageNumber: number) => void;
 };
 
 export default function QuizStartIndex2({ onUpdate }: QuizStartIndex2Props) {

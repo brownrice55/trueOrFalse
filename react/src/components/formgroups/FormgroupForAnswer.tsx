@@ -47,7 +47,11 @@ export default function FormgroupForAnswer({
     aIndexIsActive: number | undefined,
     aIndexValue: number | undefined,
   ) => {
-    const newOptions = [...options];
+    const newOptions = Array.from(
+      { length: numberOfOptions },
+      (_, idx) => options[idx] ?? { isActive: false, value: "" },
+    );
+
     if (aIndexIsActive !== undefined) {
       //checkbox
       newOptions[aIndexIsActive].isActive = aValue as boolean;
