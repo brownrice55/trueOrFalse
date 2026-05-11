@@ -1,24 +1,40 @@
 import Button from "react-bootstrap/Button";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
+import type { InputsForResult } from "../types/inputs.type";
 
 type QuizStartIndex2Props = {
   onUpdate: (nextPageNumber: number) => void;
+  currentQuizDataForPractice: InputsForResult;
 };
 
-export default function QuizStartIndex2({ onUpdate }: QuizStartIndex2Props) {
+export default function QuizStartIndex2({
+  onUpdate,
+  currentQuizDataForPractice,
+}: QuizStartIndex2Props) {
   const handleUpdatePageNo = () => {
     onUpdate(3);
   };
 
+  const displayAnswers = !currentQuizDataForPractice.type
+    ? currentQuizDataForPractice.answer[0]
+      ? "まる"
+      : "ばつ"
+    : currentQuizDataForPractice.options
+      ? currentQuizDataForPractice.options
+          .filter((val) => val.isActive)
+          .map((val) => val.value)
+          .join("、")
+      : "";
+
   return (
     <>
       <h2>Answer</h2>
-      <p>不正解！答えは「文言が入ります」です。</p>
+      <p>不正解！答えは「{displayAnswers}」です。</p>
 
       <p>
         解説
         <br />
-        文言が入ります。文言が入ります。文言が入ります。文言が入ります。
+        {currentQuizDataForPractice.explanation}
       </p>
 
       <p>この問題の現在の正解率は「33%」です。</p>

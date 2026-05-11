@@ -1,18 +1,22 @@
 import Button from "react-bootstrap/Button";
+import type { InputsForResult } from "../types/inputs.type";
 
 type QuizStartIndex1Props = {
   onUpdate: (nextPageNumber: number) => void;
+  currentQuizDataForPractice: InputsForResult;
 };
 
-export default function QuizStartIndex1({ onUpdate }: QuizStartIndex1Props) {
+export default function QuizStartIndex1({
+  onUpdate,
+  currentQuizDataForPractice,
+}: QuizStartIndex1Props) {
   const handleUpdatePageNo = () => {
     onUpdate(2);
   };
-
   return (
     <>
       <h2>Question</h2>
-      <p>問題名</p>
+      <p>{currentQuizDataForPractice.question}</p>
 
       <div className="text-center">
         <Button

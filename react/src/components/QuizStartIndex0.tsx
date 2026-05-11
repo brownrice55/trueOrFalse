@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
@@ -28,8 +27,6 @@ export default function QuizStartIndex0({
   const handleUpdatePageNo = () => {
     onUpdate(1);
   };
-
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   const handleSelectValue = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -127,7 +124,10 @@ export default function QuizStartIndex0({
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>優先順位</Form.Label>
-        <Form.Select onChange={(e) => handleSelectValue(e, "priority")}>
+        <Form.Select
+          onChange={(e) => handleSelectValue(e, "priority")}
+          disabled={!quizDataForPractice?.size}
+        >
           <option value="0">指定しない（ランダムで表示）</option>
           <option value="1">優先順位が高いものから表示</option>
         </Form.Select>
@@ -138,7 +138,7 @@ export default function QuizStartIndex0({
           variant="primary"
           className="py-2 px-3 mt-3"
           onClick={() => handleUpdatePageNo()}
-          disabled={isDisabled}
+          disabled={!quizDataForPractice?.size}
         >
           スタート
         </Button>

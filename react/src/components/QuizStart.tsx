@@ -19,6 +19,12 @@ export default function QuizStart() {
   const [quizDataForPractice, setQuizDataForPractice] = useState<
     Map<number, Inputs> | Map<number, InputsForResult> | undefined
   >(data);
+  const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>(0);
+
+  const [currentQuizDataForPractice, setCurrentQuizDataForPractice] = useState<
+    Inputs | InputsForResult | undefined
+  >(undefined);
+
   const handleUpdatePageNo = (
     aNextPageNumber?: number,
     aCategoryValue?: number,
@@ -28,6 +34,11 @@ export default function QuizStart() {
   ) => {
     if (aNextPageNumber !== undefined) {
       setPageNo(aNextPageNumber);
+      if (aNextPageNumber === 1) {
+        setCurrentQuizDataForPractice(
+          quizDataForPractice?.get(currentQuestionNumber),
+        );
+      }
     } else if (aCategoryValue !== undefined) {
       setCategoryValue(aCategoryValue);
     } else if (aTypeValue !== undefined) {
@@ -59,9 +70,19 @@ export default function QuizStart() {
           quizDataForPractice={quizDataForPractice}
         />
       ) : pageNo === 1 ? (
-        <QuizStartIndex1 onUpdate={handleUpdatePageNo} />
+        <QuizStartIndex1
+          onUpdate={handleUpdatePageNo}
+          currentQuizDataForPractice={
+            currentQuizDataForPractice as InputsForResult
+          }
+        />
       ) : pageNo === 2 ? (
-        <QuizStartIndex2 onUpdate={handleUpdatePageNo} />
+        <QuizStartIndex2
+          onUpdate={handleUpdatePageNo}
+          currentQuizDataForPractice={
+            currentQuizDataForPractice as InputsForResult
+          }
+        />
       ) : (
         <QuizStartIndex3 onUpdate={handleUpdatePageNo} />
       )}
