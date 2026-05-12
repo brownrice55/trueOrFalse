@@ -28,7 +28,7 @@ export default function FormgroupTextarea({
         </Form.Label>
       )}
       <Form.Control
-        id="question"
+        id={name}
         as="textarea"
         rows={5}
         defaultValue={selectedValue}

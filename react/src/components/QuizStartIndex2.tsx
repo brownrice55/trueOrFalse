@@ -1,10 +1,18 @@
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
-import FormgroupTextarea from "./formgroups/FormgroupTextarea";
+import Form from "react-bootstrap/Form";
 import type { InputsForResult } from "../types/inputs.type";
 import { getAccuracyRate } from "../utils/common";
 
 type QuizStartIndex2Props = {
-  onUpdate: (nextPageNumber: number) => void;
+  onUpdate: (
+    nextPageNumber?: number,
+    categoryValue?: number,
+    typeValue?: number,
+    numberOfQuestions?: number,
+    priorityValue?: number,
+    currentQuizDataForPractice?: InputsForResult,
+  ) => void;
   currentQuizDataForPractice: InputsForResult;
 };
 
@@ -12,8 +20,22 @@ export default function QuizStartIndex2({
   onUpdate,
   currentQuizDataForPractice,
 }: QuizStartIndex2Props) {
+  const [notes, setNotes] = useState<string>(currentQuizDataForPractice.notes);
+
   const handleUpdatePageNo = () => {
-    onUpdate(3);
+    currentQuizDataForPractice.notes = notes;
+    onUpdate(
+      3,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      currentQuizDataForPractice,
+    );
+  };
+
+  const handleNotes = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNotes(e.currentTarget.value);
   };
 
   return (
@@ -35,11 +57,16 @@ export default function QuizStartIndex2({
         」です。
       </p>
       <label>何かメモしておきたいことがあったら書いてください</label>
-      <FormgroupTextarea
-        label={"メモ"}
-        name={"notes"}
-        selectedValue={currentQuizDataForPractice.notes}
-      />
+
+      <Form.Group className="mb-3">
+        <Form.Control
+          id="notes"
+          as="textarea"
+          rows={5}
+          defaultValue={notes}
+          onChange={handleNotes}
+        />
+      </Form.Group>
 
       <div className="text-center mt-3">
         <Button variant="primary" className="py-2 px-3 mt-3 me-3">

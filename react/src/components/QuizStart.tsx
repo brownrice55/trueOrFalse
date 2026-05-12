@@ -76,6 +76,33 @@ export default function QuizStart() {
         }
       } else if (aNextPageNumber === 3) {
         // save notes
+        const newDataForPractice = new Map(
+          quizDataForPractice as Map<number, InputsForResult>,
+        );
+        newDataForPractice.set(
+          aCurrentQuizDataForPractice?.id as number,
+          aCurrentQuizDataForPractice as InputsForResult,
+        );
+        setQuizDataForPractice(newDataForPractice);
+        localStorage.setItem(
+          "TrueOrFalseDataForPractice",
+          JSON.stringify([...newDataForPractice]),
+        );
+        setCurrentQuizDataForPractice(aCurrentQuizDataForPractice);
+
+        const newData = new Map<number, Inputs>(data);
+        const currentVal = newData.get(
+          aCurrentQuizDataForPractice?.id as number,
+        );
+        if (currentVal) {
+          currentVal.notes = aCurrentQuizDataForPractice?.notes as string;
+          newData.set(
+            aCurrentQuizDataForPractice?.id as number,
+            currentVal as Inputs,
+          );
+          setData(newData);
+          localStorage.setItem("TrueOrFalseData", JSON.stringify([...newData]));
+        }
       }
     } else if (aCategoryValue !== undefined) {
       setCategoryValue(aCategoryValue);
