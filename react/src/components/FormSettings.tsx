@@ -21,10 +21,12 @@ export default function FormSettings() {
   const { data, setData } = useContext(DataContext) as DataContextType;
 
   const keysArray: number[] = data.size ? Array.from(data.keys()) : [];
-  const nextId: number = data.size ? keysArray[keysArray.length - 1] + 1 : 1;
+  const [nextId, setNextId] = useState<number>(
+    data.size ? keysArray[keysArray.length - 1] + 1 : 1,
+  );
 
   const defaultValues = {
-    id: 0,
+    id: nextId,
     category: 0,
     type: 0,
     question: "",
@@ -55,11 +57,13 @@ export default function FormSettings() {
   });
 
   const onsubmit: SubmitHandler<Inputs> = (values) => {
+    values.id = nextId;
     data.set(nextId, values);
     values.answer = answerArray;
     localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
     setData(data);
     setQuestionTypeNumber(0);
+    setNextId((prev) => prev + 1);
   };
   const onerror: SubmitErrorHandler<Inputs> = (err) => console.log(err);
 

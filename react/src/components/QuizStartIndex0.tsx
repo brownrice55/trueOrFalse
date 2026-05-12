@@ -117,7 +117,7 @@ export default function QuizStartIndex0({
             )
           ) : (
             <option value="0" key="0">
-              問題がありません
+              問題がありません。条件を変更してください。
             </option>
           )}
         </Form.Select>

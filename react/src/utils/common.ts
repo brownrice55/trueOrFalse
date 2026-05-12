@@ -1,4 +1,4 @@
-import type { Inputs } from "../types/inputs.type";
+import type { Inputs, InputsForResult } from "../types/inputs.type";
 import type { InputsCategory } from "../types/inputsCategory.type";
 
 export function getData() {
@@ -27,4 +27,15 @@ export function getCategories(): InputsCategory {
     ? JSON.parse(raw)
     : [{ categoryId: 0, categoryName: "", isActive: false }];
   return { categories: data };
+}
+
+export function getAccuracyRate(aVal: Inputs | InputsForResult) {
+  const correctAnswers = aVal.areCorrectAnswers.filter((val) => val);
+  return (
+    (correctAnswers.length
+      ? Math.round(
+          (correctAnswers.length / aVal.areCorrectAnswers.length) * 100,
+        )
+      : "0") + "%"
+  );
 }

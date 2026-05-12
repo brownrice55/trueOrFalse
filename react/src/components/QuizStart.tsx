@@ -9,7 +9,7 @@ import { getQuizDataForPractice } from "../utils/getQuizDataForPractice";
 import type { Inputs, InputsForResult } from "../types/inputs.type";
 
 export default function QuizStart() {
-  const { data } = useContext(DataContext) as DataContextType;
+  const { data, setData } = useContext(DataContext) as DataContextType;
   const [pageNo, setPageNo] = useState<number>(0);
 
   const [categoryValue, setCategoryValue] = useState<number>(100000);
@@ -31,6 +31,7 @@ export default function QuizStart() {
     aTypeValue?: number,
     aNumberOfQuestions?: number,
     aPriorityValue?: number,
+    aCurrentQuizDataForPractice?: InputsForResult,
   ) => {
     if (aNextPageNumber !== undefined) {
       setPageNo(aNextPageNumber);
@@ -38,6 +39,43 @@ export default function QuizStart() {
         setCurrentQuizDataForPractice(
           quizDataForPractice?.get(currentQuestionNumber),
         );
+        localStorage.setItem(
+          "TrueOrFalseDataForPractice",
+          JSON.stringify([...(quizDataForPractice ?? [])]),
+        );
+      } else if (
+        aNextPageNumber === 2 &&
+        aCurrentQuizDataForPractice !== undefined
+      ) {
+        // save isCorrectAnswer and areCorrectAnswers
+        const newDataForPractice = new Map(
+          quizDataForPractice as Map<number, InputsForResult>,
+        );
+        newDataForPractice.set(
+          aCurrentQuizDataForPractice?.id,
+          aCurrentQuizDataForPractice,
+        );
+        setQuizDataForPractice(newDataForPractice);
+        localStorage.setItem(
+          "TrueOrFalseDataForPractice",
+          JSON.stringify([...newDataForPractice]),
+        );
+        setCurrentQuizDataForPractice(aCurrentQuizDataForPractice);
+
+        // save areCorrectAnswers
+        const newData = new Map<number, Inputs>(data);
+        const currentVal = newData.get(
+          aCurrentQuizDataForPractice?.id as number,
+        );
+        if (currentVal) {
+          currentVal.areCorrectAnswers =
+            aCurrentQuizDataForPractice.areCorrectAnswers as boolean[];
+          newData.set(aCurrentQuizDataForPractice?.id, currentVal as Inputs);
+          setData(newData);
+          localStorage.setItem("TrueOrFalseData", JSON.stringify([...newData]));
+        }
+      } else if (aNextPageNumber === 3) {
+        // save notes
       }
     } else if (aCategoryValue !== undefined) {
       setCategoryValue(aCategoryValue);

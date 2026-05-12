@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
 import type { InputsForResult } from "../types/inputs.type";
+import { getAccuracyRate } from "../utils/common";
 
 type QuizStartIndex2Props = {
   onUpdate: (nextPageNumber: number) => void;
@@ -15,21 +16,13 @@ export default function QuizStartIndex2({
     onUpdate(3);
   };
 
-  const displayAnswers = !currentQuizDataForPractice.type
-    ? currentQuizDataForPractice.answer[0]
-      ? "まる"
-      : "ばつ"
-    : currentQuizDataForPractice.options
-      ? currentQuizDataForPractice.options
-          .filter((val) => val.isActive)
-          .map((val) => val.value)
-          .join("、")
-      : "";
-
   return (
     <>
       <h2>Answer</h2>
-      <p>不正解！答えは「{displayAnswers}」です。</p>
+      <p>
+        {currentQuizDataForPractice.isCorrectAnswer ? "正解" : "不正解"}
+        ！答えは「{currentQuizDataForPractice.answerForDisplay}」です。
+      </p>
 
       <p>
         解説
@@ -37,9 +30,16 @@ export default function QuizStartIndex2({
         {currentQuizDataForPractice.explanation}
       </p>
 
-      <p>この問題の現在の正解率は「33%」です。</p>
+      <p>
+        この問題の現在の正解率は「{getAccuracyRate(currentQuizDataForPractice)}
+        」です。
+      </p>
       <label>何かメモしておきたいことがあったら書いてください</label>
-      <FormgroupTextarea label={"メモ"} name={"notes"} selectedValue={""} />
+      <FormgroupTextarea
+        label={"メモ"}
+        name={"notes"}
+        selectedValue={currentQuizDataForPractice.notes}
+      />
 
       <div className="text-center mt-3">
         <Button variant="primary" className="py-2 px-3 mt-3 me-3">

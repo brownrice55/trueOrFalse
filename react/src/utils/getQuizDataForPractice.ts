@@ -4,7 +4,7 @@ import { answerArrayText } from "./labels";
 const getAnswerOfSelectionForDisplay = (aCurrentVal: Inputs) => {
   let answerOfSelection = "";
   aCurrentVal.options.forEach((arr) => {
-    if (arr.isActive) {
+    if (arr.isActive === true) {
       if (answerOfSelection) {
         answerOfSelection += "、";
       }
@@ -71,6 +71,7 @@ const retrieveNecessaryData = (
           explanation: currentVal.explanation,
           notes: currentVal.notes,
           isCorrectAnswer: false,
+          areCorrectAnswers: currentVal.areCorrectAnswers,
           answerForDisplay:
             currentVal.type === 0
               ? answerArrayText[currentVal.answer[0] ? 0 : 1]

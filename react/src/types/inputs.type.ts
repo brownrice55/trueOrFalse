@@ -24,5 +24,6 @@ export type InputsForResult = {
   explanation: string;
   notes: string;
   isCorrectAnswer: boolean;
+  areCorrectAnswers: boolean[] | [];
   answerForDisplay: string;
 };
