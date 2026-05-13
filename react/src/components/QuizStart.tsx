@@ -27,6 +27,8 @@ export default function QuizStart() {
 
   const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
 
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
+
   const handleUpdatePageNo = (
     aNextPageNumber?: number,
     aCategoryValue?: number,
@@ -34,6 +36,7 @@ export default function QuizStart() {
     aNumberOfQuestions?: number,
     aPriorityValue?: number,
     aCurrentQuizDataForPractice?: InputsForResult,
+    aIsStopped?: boolean,
   ) => {
     if (aNextPageNumber !== undefined) {
       if (aNextPageNumber !== 3) {
@@ -88,6 +91,7 @@ export default function QuizStart() {
           localStorage.setItem("TrueOrFalseData", JSON.stringify([...newData]));
         }
       } else if (aNextPageNumber === 3) {
+        setIsCompleted(!aIsStopped);
         // after clicking display nextQuestion button
         // save notes
         const newDataForPractice = new Map(
@@ -116,8 +120,7 @@ export default function QuizStart() {
           setData(newData);
           localStorage.setItem("TrueOrFalseData", JSON.stringify([...newData]));
         }
-
-        if (currentQuestionIndex === quizDataForPractice?.size) {
+        if (currentQuestionIndex === quizDataForPractice?.size || aIsStopped) {
           // go to result
           setPageNo(3);
           setIsLastQuestion(false);
@@ -184,6 +187,8 @@ export default function QuizStart() {
           quizDataForPractice={
             quizDataForPractice as Map<number, InputsForResult>
           }
+          currentQuestionIndex={currentQuestionIndex}
+          isCompleted={isCompleted}
         />
       )}
     </>

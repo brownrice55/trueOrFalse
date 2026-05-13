@@ -12,6 +12,7 @@ type QuizStartIndex2Props = {
     numberOfQuestions?: number,
     priorityValue?: number,
     currentQuizDataForPractice?: InputsForResult,
+    isStopped?: boolean,
   ) => void;
   currentQuizDataForPractice: InputsForResult;
   isLastQuestion: boolean;
@@ -24,7 +25,7 @@ export default function QuizStartIndex2({
 }: QuizStartIndex2Props) {
   const [notes, setNotes] = useState<string>(currentQuizDataForPractice.notes);
 
-  const handleUpdatePageNo = () => {
+  const handleUpdatePageNo = (aIsStopped: boolean) => {
     currentQuizDataForPractice.notes = notes;
     onUpdate(
       3,
@@ -33,6 +34,7 @@ export default function QuizStartIndex2({
       undefined,
       undefined,
       currentQuizDataForPractice,
+      aIsStopped,
     );
   };
 
@@ -71,13 +73,17 @@ export default function QuizStartIndex2({
       </Form.Group>
 
       <div className="text-center mt-3">
-        <Button variant="primary" className="py-2 px-3 mt-3 me-3">
-          クイズを終了する
+        <Button
+          variant="primary"
+          className="py-2 px-3 mt-3 me-3"
+          onClick={() => handleUpdatePageNo(true)}
+        >
+          終了する
         </Button>
         <Button
           variant="primary"
           className="py-2 px-3 mt-3"
-          onClick={() => handleUpdatePageNo()}
+          onClick={() => handleUpdatePageNo(false)}
         >
           {isLastQuestion ? "結果を見る" : "次の問題を解く"}
         </Button>
