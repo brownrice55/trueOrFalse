@@ -14,11 +14,13 @@ type QuizStartIndex2Props = {
     currentQuizDataForPractice?: InputsForResult,
   ) => void;
   currentQuizDataForPractice: InputsForResult;
+  isLastQuestion: boolean;
 };
 
 export default function QuizStartIndex2({
   onUpdate,
   currentQuizDataForPractice,
+  isLastQuestion,
 }: QuizStartIndex2Props) {
   const [notes, setNotes] = useState<string>(currentQuizDataForPractice.notes);
 
@@ -77,7 +79,7 @@ export default function QuizStartIndex2({
           className="py-2 px-3 mt-3"
           onClick={() => handleUpdatePageNo()}
         >
-          次の問題を解く
+          {isLastQuestion ? "結果を見る" : "次の問題を解く"}
         </Button>
       </div>
     </>

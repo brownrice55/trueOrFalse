@@ -1,10 +1,15 @@
 import Button from "react-bootstrap/Button";
+import type { InputsForResult } from "../types/inputs.type";
 
 type QuizStartIndex3Props = {
   onUpdate: (nextPageNumber: number) => void;
+  quizDataForPractice: Map<number, InputsForResult>;
 };
 
-export default function QuizStartIndex3({ onUpdate }: QuizStartIndex3Props) {
+export default function QuizStartIndex3({
+  onUpdate,
+  quizDataForPractice,
+}: QuizStartIndex3Props) {
   const handleUpdatePageNo = () => {
     onUpdate(0);
   };
@@ -20,21 +25,26 @@ export default function QuizStartIndex3({ onUpdate }: QuizStartIndex3Props) {
         見直しをしましょう。
       </p>
 
-      <div className="bg-success-subtle mb-4 p-4 pb-3">
-        問題1（正解）
-        <br /> 問題：文言が入ります。 <br />
-        答え：まる <br />
-        解説：解説が入ります。 <br />
-        メモ：メモが入ります。
-      </div>
-
-      <div className="bg-secondary-subtle mb-4 p-4 pb-3">
-        問題1（正解）
-        <br /> 問題：文言が入ります。 <br />
-        答え：まる <br />
-        解説：解説が入ります。 <br />
-        メモ：メモが入ります。
-      </div>
+      {[...quizDataForPractice].map(([idx, val]) => {
+        const classname = val.isCorrectAnswer
+          ? "bg-success-subtle mb-4 p-4 pb-3"
+          : "bg-secondary-subtle mb-4 p-4 pb-3";
+        return (
+          <div className={classname} key={idx}>
+            問題{idx + 1}（{val.isCorrectAnswer ? "正解" : "不正解"}）
+            <br /> 問題：{val.question}
+            <br />
+            答え：{val.answerForDisplay} <br />
+            解説：{val.explanation}
+            {val.notes && (
+              <>
+                <br />
+                メモ：{val.notes}
+              </>
+            )}
+          </div>
+        );
+      })}
 
       <div className="text-center mt-3">
         <Button

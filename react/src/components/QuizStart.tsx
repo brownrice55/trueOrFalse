@@ -19,11 +19,13 @@ export default function QuizStart() {
   const [quizDataForPractice, setQuizDataForPractice] = useState<
     Map<number, Inputs> | Map<number, InputsForResult> | undefined
   >(data);
-  const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
   const [currentQuizDataForPractice, setCurrentQuizDataForPractice] = useState<
     Inputs | InputsForResult | undefined
   >(undefined);
+
+  const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
 
   const handleUpdatePageNo = (
     aNextPageNumber?: number,
@@ -34,19 +36,31 @@ export default function QuizStart() {
     aCurrentQuizDataForPractice?: InputsForResult,
   ) => {
     if (aNextPageNumber !== undefined) {
-      setPageNo(aNextPageNumber);
-      if (aNextPageNumber === 1) {
-        setCurrentQuizDataForPractice(
-          quizDataForPractice?.get(currentQuestionNumber),
-        );
+      if (aNextPageNumber !== 3) {
+        setPageNo(aNextPageNumber);
+      }
+      if (aNextPageNumber === 0) {
+        setCurrentQuestionIndex(0);
+      } else if (aNextPageNumber === 1) {
+        // after clicking start button
+        // set quizDataForPractice into localStorage
         localStorage.setItem(
           "TrueOrFalseDataForPractice",
           JSON.stringify([...(quizDataForPractice ?? [])]),
         );
+
+        // set first question
+        setCurrentQuizDataForPractice(
+          quizDataForPractice?.get(currentQuestionIndex),
+        );
+
+        // prepare for next question
+        setCurrentQuestionIndex((prev) => prev + 1);
       } else if (
         aNextPageNumber === 2 &&
         aCurrentQuizDataForPractice !== undefined
       ) {
+        // after clicking display answer button
         // save isCorrectAnswer and areCorrectAnswers
         const newDataForPractice = new Map(
           quizDataForPractice as Map<number, InputsForResult>,
@@ -60,7 +74,6 @@ export default function QuizStart() {
           "TrueOrFalseDataForPractice",
           JSON.stringify([...newDataForPractice]),
         );
-        setCurrentQuizDataForPractice(aCurrentQuizDataForPractice);
 
         // save areCorrectAnswers
         const newData = new Map<number, Inputs>(data);
@@ -75,6 +88,7 @@ export default function QuizStart() {
           localStorage.setItem("TrueOrFalseData", JSON.stringify([...newData]));
         }
       } else if (aNextPageNumber === 3) {
+        // after clicking display nextQuestion button
         // save notes
         const newDataForPractice = new Map(
           quizDataForPractice as Map<number, InputsForResult>,
@@ -88,7 +102,6 @@ export default function QuizStart() {
           "TrueOrFalseDataForPractice",
           JSON.stringify([...newDataForPractice]),
         );
-        setCurrentQuizDataForPractice(aCurrentQuizDataForPractice);
 
         const newData = new Map<number, Inputs>(data);
         const currentVal = newData.get(
@@ -102,6 +115,22 @@ export default function QuizStart() {
           );
           setData(newData);
           localStorage.setItem("TrueOrFalseData", JSON.stringify([...newData]));
+        }
+
+        if (currentQuestionIndex === quizDataForPractice?.size) {
+          // go to result
+          setPageNo(3);
+          setIsLastQuestion(false);
+        } else {
+          // display nextQuestion
+          if (currentQuestionIndex + 1 === quizDataForPractice?.size) {
+            setIsLastQuestion(true);
+          }
+          setPageNo(1);
+          setCurrentQuizDataForPractice(
+            quizDataForPractice?.get(currentQuestionIndex),
+          );
+          setCurrentQuestionIndex((prev) => prev + 1);
         }
       }
     } else if (aCategoryValue !== undefined) {
@@ -147,9 +176,15 @@ export default function QuizStart() {
           currentQuizDataForPractice={
             currentQuizDataForPractice as InputsForResult
           }
+          isLastQuestion={isLastQuestion}
         />
       ) : (
-        <QuizStartIndex3 onUpdate={handleUpdatePageNo} />
+        <QuizStartIndex3
+          onUpdate={handleUpdatePageNo}
+          quizDataForPractice={
+            quizDataForPractice as Map<number, InputsForResult>
+          }
+        />
       )}
     </>
   );
