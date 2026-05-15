@@ -169,6 +169,16 @@ export default function QuestionDetailParts({
     setQuestionTypeNumber(typeValue);
   }, [typeValue]);
 
+  const [isEditBtnDisabled, setIsEditBtnDisabled] =
+    useState<boolean>(isUnderEdit);
+  const handleValidation = (aIsEmpty: boolean) => {
+    setIsEditBtnDisabled(aIsEmpty);
+  };
+
+  useEffect(() => {
+    setIsEditBtnDisabled(isUnderEdit);
+  }, [isUnderEdit]);
+
   return (
     <>
       <div>
@@ -180,6 +190,7 @@ export default function QuestionDetailParts({
                 variant="primary"
                 className="py-1 px-2 me-2"
                 onClick={(e) => handleOverwrite(e, formType, formInfo[3])}
+                disabled={isEditBtnDisabled}
               >
                 上書きする
               </Button>
@@ -197,7 +208,7 @@ export default function QuestionDetailParts({
                 variant="primary"
                 className="py-1 px-2"
                 onClick={() => handleEdit(formInfo[3])}
-                disabled={isDisabled}
+                disabled={isUnderEdit ? isEditBtnDisabled : isDisabled}
               >
                 編集する
               </Button>
@@ -226,6 +237,8 @@ export default function QuestionDetailParts({
                   selectedValue={
                     selectedVal && (selectedVal[formInfo[3]] as string)
                   }
+                  from={"list"}
+                  onUpdate={handleValidation}
                 />
               ) : (
                 <FormgroupForAnswer

@@ -8,6 +8,8 @@ type FormgroupTextareaProps = {
   label: string;
   name: keyof Inputs;
   selectedValue: string | undefined;
+  from?: string;
+  onUpdate?: (isEmpty: boolean) => void;
 };
 
 export default function FormgroupTextarea({
@@ -16,7 +18,19 @@ export default function FormgroupTextarea({
   label,
   name,
   selectedValue,
+  from,
+  onUpdate,
 }: FormgroupTextareaProps) {
+  const handleValidation = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (from !== "list") {
+      return;
+    }
+    const targetValue = e.currentTarget.value;
+    if (onUpdate) {
+      onUpdate(targetValue === "" || targetValue === selectedValue);
+    }
+  };
+
   return (
     <Form.Group className="mb-3">
       {register && (
@@ -36,6 +50,9 @@ export default function FormgroupTextarea({
           register(name, {
             required: "必須です",
           }))}
+        onChange={(e) =>
+          handleValidation(e as React.ChangeEvent<HTMLTextAreaElement>)
+        }
       />
     </Form.Group>
   );
