@@ -179,6 +179,10 @@ export default function QuestionDetailParts({
     setIsEditBtnDisabled(isUnderEdit);
   }, [isUnderEdit]);
 
+  const handleSelectValidation = (aIsChanged: boolean) => {
+    setIsEditBtnDisabled(!aIsChanged);
+  };
+
   return (
     <>
       <div>
@@ -208,7 +212,13 @@ export default function QuestionDetailParts({
                 variant="primary"
                 className="py-1 px-2"
                 onClick={() => handleEdit(formInfo[3])}
-                disabled={isUnderEdit ? isEditBtnDisabled : isDisabled}
+                disabled={
+                  isUnderEdit
+                    ? formType === "textarea" || formType === "select"
+                      ? isEditBtnDisabled
+                      : isDisabled
+                    : isDisabled
+                }
               >
                 編集する
               </Button>
@@ -228,6 +238,8 @@ export default function QuestionDetailParts({
                     selectedVal && (selectedVal[formInfo[3]] as number)
                   }
                   onUpdate={handleSwitchTypeForAnswers}
+                  from={"quizList"}
+                  onUpdateForList={handleSelectValidation}
                 />
               ) : formType === "textarea" ? (
                 <FormgroupTextarea
@@ -237,7 +249,7 @@ export default function QuestionDetailParts({
                   selectedValue={
                     selectedVal && (selectedVal[formInfo[3]] as string)
                   }
-                  from={"list"}
+                  from={"quizList"}
                   onUpdate={handleValidation}
                 />
               ) : (

@@ -11,6 +11,7 @@ type FormgroupSelectProps = {
   onUpdate?: (value: number, value2?: string) => void;
   isLabelNeeded?: boolean;
   from?: string;
+  onUpdateForList?: (isChanged: boolean) => void;
 };
 
 export default function FormgroupSelect({
@@ -22,9 +23,12 @@ export default function FormgroupSelect({
   onUpdate,
   isLabelNeeded,
   from,
+  onUpdateForList,
 }: FormgroupSelectProps) {
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (name !== "type" && from !== "quizStart") {
+    if (from === "quizList" && onUpdateForList) {
+      onUpdateForList(parseInt(e.currentTarget.value) !== selectedValue);
+    } else if (name !== "type" && from !== "quizStart") {
       return;
     }
     const eventTargetValue = (e.currentTarget as HTMLSelectElement).value;

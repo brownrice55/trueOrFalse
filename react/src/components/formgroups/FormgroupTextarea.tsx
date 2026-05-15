@@ -22,7 +22,7 @@ export default function FormgroupTextarea({
   onUpdate,
 }: FormgroupTextareaProps) {
   const handleValidation = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (from !== "list") {
+    if (from !== "quizList") {
       return;
     }
     const targetValue = e.currentTarget.value;
