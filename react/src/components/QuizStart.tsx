@@ -48,6 +48,7 @@ export default function QuizStart() {
         setCategoryValue(100000);
         setTypeValue(100000);
         setNumberOfQuestions(100000);
+        setPriorityValue(0);
       } else if (aNextPageNumber === 1) {
         // after clicking start button
         // set quizDataForPractice into localStorage
