@@ -43,7 +43,11 @@ export default function QuizStart() {
         setPageNo(aNextPageNumber);
       }
       if (aNextPageNumber === 0) {
+        // reset
         setCurrentQuestionIndex(0);
+        setCategoryValue(100000);
+        setTypeValue(100000);
+        setNumberOfQuestions(100000);
       } else if (aNextPageNumber === 1) {
         // after clicking start button
         // set quizDataForPractice into localStorage
@@ -57,8 +61,13 @@ export default function QuizStart() {
           quizDataForPractice?.get(currentQuestionIndex),
         );
 
-        // prepare for next question
-        setCurrentQuestionIndex((prev) => prev + 1);
+        if (
+          currentQuestionIndex + 1 === quizDataForPractice?.size ||
+          aIsStopped
+        ) {
+          // display go to result on a button
+          setIsLastQuestion(true);
+        }
       } else if (
         aNextPageNumber === 2 &&
         aCurrentQuizDataForPractice !== undefined
@@ -69,7 +78,7 @@ export default function QuizStart() {
           quizDataForPractice as Map<number, InputsForResult>,
         );
         newDataForPractice.set(
-          aCurrentQuizDataForPractice?.id,
+          currentQuestionIndex,
           aCurrentQuizDataForPractice,
         );
         setQuizDataForPractice(newDataForPractice);
@@ -98,7 +107,7 @@ export default function QuizStart() {
           quizDataForPractice as Map<number, InputsForResult>,
         );
         newDataForPractice.set(
-          aCurrentQuizDataForPractice?.id as number,
+          currentQuestionIndex as number,
           aCurrentQuizDataForPractice as InputsForResult,
         );
         setQuizDataForPractice(newDataForPractice);
@@ -106,6 +115,9 @@ export default function QuizStart() {
           "TrueOrFalseDataForPractice",
           JSON.stringify([...newDataForPractice]),
         );
+
+        // prepare for next question
+        setCurrentQuestionIndex((prev) => prev + 1);
 
         const newData = new Map<number, Inputs>(data);
         const currentVal = newData.get(
@@ -120,20 +132,22 @@ export default function QuizStart() {
           setData(newData);
           localStorage.setItem("TrueOrFalseData", JSON.stringify([...newData]));
         }
-        if (currentQuestionIndex === quizDataForPractice?.size || aIsStopped) {
-          // go to result
+        if (
+          currentQuestionIndex + 1 === quizDataForPractice?.size ||
+          aIsStopped
+        ) {
+          // go to the result
           setPageNo(3);
           setIsLastQuestion(false);
         } else {
-          // display nextQuestion
-          if (currentQuestionIndex + 1 === quizDataForPractice?.size) {
-            setIsLastQuestion(true);
-          }
+          // go to the next question
           setPageNo(1);
           setCurrentQuizDataForPractice(
-            quizDataForPractice?.get(currentQuestionIndex),
+            quizDataForPractice?.get(currentQuestionIndex + 1),
           );
-          setCurrentQuestionIndex((prev) => prev + 1);
+          if (currentQuestionIndex + 2 === quizDataForPractice?.size) {
+            setIsLastQuestion(true);
+          }
         }
       }
     } else if (aCategoryValue !== undefined) {
@@ -148,15 +162,14 @@ export default function QuizStart() {
   };
 
   useEffect(() => {
-    setQuizDataForPractice(
-      getQuizDataForPractice(
-        data,
-        categoryValue,
-        typeValue,
-        numberOfQuestions,
-        priorityValue,
-      ),
+    const newQuizDataForPractice = getQuizDataForPractice(
+      data,
+      categoryValue,
+      typeValue,
+      numberOfQuestions,
+      priorityValue,
     );
+    setQuizDataForPractice(newQuizDataForPractice);
   }, [categoryValue, typeValue, numberOfQuestions, priorityValue]);
 
   return (
