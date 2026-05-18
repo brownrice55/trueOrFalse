@@ -48,8 +48,11 @@ export default function FormSettings() {
 
   const {
     register,
+    watch,
+    trigger,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors, isSubmitSuccessful },
   } = useForm({
     defaultValues,
@@ -83,6 +86,8 @@ export default function FormSettings() {
   const handleUpdate = (aNumber: number) => {
     setQuestionTypeNumber(aNumber);
   };
+
+  const optionValues = watch("options") || [];
 
   return (
     <Form onSubmit={handleSubmit(onsubmit, onerror)} noValidate>
@@ -149,24 +154,57 @@ export default function FormSettings() {
           </p>
           {Array(theNumberOfOptions)
             .fill("")
-            .map((_, index) => (
-              <Row className="mb-3" key={index}>
-                <Col md={1}>
-                  <Form.Check
-                    type="checkbox"
-                    id=""
-                    label=""
-                    {...register(`options.${index}.isActive`)}
-                  />
-                </Col>
-                <Col md={9}>
-                  <Form.Control
-                    type="text"
-                    {...register(`options.${index}.value`)}
-                  />
-                </Col>
-              </Row>
-            ))}
+            .map((_, index) => {
+              const errorMsg = errors?.options?.[index]?.value?.message;
+              const errorMsgForIsActive =
+                errors?.options?.[index]?.isActive?.message;
+              return (
+                <Row className="mb-3" key={index}>
+                  <Col md={1}>
+                    <Form.Check
+                      type="checkbox"
+                      id=""
+                      label=""
+                      {...register(`options.${index}.isActive`, {
+                        onChange: () => {
+                          trigger("options");
+                        },
+                        validate: () => {
+                          const atLeastOneChecked = optionValues.some(
+                            (val) => val?.isActive,
+                          );
+                          return atLeastOneChecked
+                            ? true
+                            : "正解の選択肢にチェックを入れてください。";
+                        },
+                      })}
+                    />
+                  </Col>
+                  <Col md={9}>
+                    <Form.Control
+                      type="text"
+                      {...register(`options.${index}.value`, {
+                        required: "必須です。",
+                        validate: (currentVal) => {
+                          const allOptions = getValues("options") || [];
+                          const duplicates = allOptions.filter(
+                            (item) => item.value === currentVal,
+                          );
+                          if (duplicates.length > 1) {
+                            return "異なる値を入力してください。";
+                          }
+                          return true;
+                        },
+                      })}
+                    />
+                    <span className="text-danger small ms-2 mt-2">
+                      {errorMsg}
+                      {errorMsgForIsActive}
+                    </span>
+                  </Col>
+                </Row>
+              );
+            })}
         </Form.Group>
       )}
       <FormgroupTextarea

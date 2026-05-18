@@ -48,7 +48,7 @@ export default function FormgroupTextarea({
         defaultValue={selectedValue}
         {...(register &&
           register(name, {
-            required: "必須です",
+            required: "必須です。",
           }))}
         onChange={(e) =>
           handleValidation(e as React.ChangeEvent<HTMLTextAreaElement>)
