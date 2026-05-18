@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import QuestionDetailParts from "./QuestionDetailParts";
+import QuestionDetailPartsForCorrectAnswers from "./QuestionDetailPartsForCorrectAnswers";
 import { getCategories } from "../utils/common";
 import { DataContext } from "../contexts/context";
 import type { DataContextType } from "../types/dataContextType.type";
@@ -159,6 +160,9 @@ export default function QuestionDetail({
         onUpdate={handleIsDisabled}
         formType={"textarea"}
         formInfo={[null, [], "メモ", "notes"]}
+      />
+      <QuestionDetailPartsForCorrectAnswers
+        selectedKey={selectedKey as number}
       />
       <div className="text-center mt-5">
         <Button
