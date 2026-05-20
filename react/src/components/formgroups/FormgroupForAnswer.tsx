@@ -29,6 +29,10 @@ export default function FormgroupForAnswer({
 
   const [numberOfOptionsValue, setNumberOfOptionsValue] =
     useState<number>(numberOfOptions);
+
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [errorMsgForValue, setErrorMsgForValue] = useState<string>("");
+
   const handleNumberOfOptions = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newNumberOfOptions = parseInt(e.target.value);
     setNumberOfOptionsValue(newNumberOfOptions);
@@ -60,8 +64,41 @@ export default function FormgroupForAnswer({
       //input
       newOptions[aIndexValue].value = aValue as string;
     }
+
+    const { isActives, values } = newOptions.reduce(
+      (acc, val) => {
+        acc.isActives.push(val.isActive);
+        acc.values.push(val.value);
+        return acc;
+      },
+      { isActives: [] as boolean[], values: [] as string[] },
+    );
+
+    const uniqueValues = [...new Set(values)];
     setSelectionValue(newOptions);
-    onUpdate(questionTypeNumber, newOptions, numberOfOptions);
+    const allFalse = isActives.every((val) => !val);
+    const areBlanks = values.some((val) => !val);
+    if (allFalse || areBlanks || uniqueValues.length !== options.length) {
+      if (allFalse) {
+        setErrorMsg("正解の選択肢にチェックを入れてください。");
+      } else {
+        setErrorMsg("");
+      }
+      if (areBlanks || uniqueValues.length !== options.length) {
+        let errorMsg = "";
+        if (areBlanks) {
+          errorMsg = "選択肢を入力してください。";
+        }
+        if (uniqueValues.length !== options.length) {
+          errorMsg += "異なる選択肢を入力してください。";
+        }
+        setErrorMsgForValue(errorMsg);
+      }
+    } else {
+      setErrorMsg("");
+      setErrorMsgForValue("");
+      onUpdate(questionTypeNumber, newOptions, numberOfOptions);
+    }
   };
 
   return questionTypeNumber === 0 ? (
@@ -98,6 +135,10 @@ export default function FormgroupForAnswer({
 
       <p className="pt-2">
         選択肢を入力して、正解の選択肢にチェックを入れてください。
+        <span className="text-danger d-block small ms-2 mt-2">
+          {errorMsg}
+          {errorMsgForValue}
+        </span>
       </p>
       {Array(numberOfOptionsValue)
         .fill("")

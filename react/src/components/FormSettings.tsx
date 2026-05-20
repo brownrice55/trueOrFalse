@@ -191,7 +191,7 @@ export default function FormSettings() {
                             (item) => item.value === currentVal,
                           );
                           if (duplicates.length > 1) {
-                            return "異なる値を入力してください。";
+                            return "異なる選択肢を入力してください。";
                           }
                           return true;
                         },
