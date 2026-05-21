@@ -11,6 +11,7 @@ import Button from "react-bootstrap/Button";
 
 type QuestionDetailPartsProps = {
   selectedKey: number;
+  originalSelectedVal?: Inputs;
   isDisabled: boolean;
   onUpdate: (
     value: boolean | undefined,
@@ -33,6 +34,7 @@ type QuestionDetailPartsProps = {
 };
 export default function QuestionDetailParts({
   selectedKey,
+  originalSelectedVal,
   isDisabled,
   onUpdate,
   formType,
@@ -47,7 +49,7 @@ export default function QuestionDetailParts({
 }: QuestionDetailPartsProps) {
   const { data } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
-    data.get(selectedKey),
+    originalSelectedVal,
   );
   const [isUnderEdit, setIsUnderEdit] = useState<boolean>(false);
   const [questionTypeNumber, setQuestionTypeNumber] = useState<

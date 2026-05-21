@@ -111,6 +111,7 @@ export default function QuestionDetail({
     <>
       <QuestionDetailParts
         selectedKey={selectedKey}
+        originalSelectedVal={selectedVal}
         isDisabled={isDisabled}
         onUpdate={handleIsDisabled}
         formType={"select"}
@@ -118,6 +119,7 @@ export default function QuestionDetail({
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
+        originalSelectedVal={selectedVal}
         isDisabled={isDisabled}
         onUpdate={handleIsDisabled}
         formType={"select"}
@@ -130,6 +132,7 @@ export default function QuestionDetail({
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
+        originalSelectedVal={selectedVal}
         isDisabled={isDisabled}
         onUpdate={handleIsDisabled}
         formType={"textarea"}
@@ -137,6 +140,7 @@ export default function QuestionDetail({
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
+        originalSelectedVal={selectedVal}
         isDisabled={isDisabled}
         isIndex1UnderEdit={isIndex1UnderEdit}
         onUpdate={handleIsDisabled}
@@ -150,6 +154,7 @@ export default function QuestionDetail({
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
+        originalSelectedVal={selectedVal}
         isDisabled={isDisabled}
         onUpdate={handleIsDisabled}
         formType={"textarea"}
@@ -157,6 +162,7 @@ export default function QuestionDetail({
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
+        originalSelectedVal={selectedVal}
         isDisabled={isDisabled}
         onUpdate={handleIsDisabled}
         formType={"select"}
@@ -164,14 +170,13 @@ export default function QuestionDetail({
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
+        originalSelectedVal={selectedVal}
         isDisabled={isDisabled}
         onUpdate={handleIsDisabled}
         formType={"textarea"}
         formInfo={[null, [], "メモ", "notes"]}
       />
-      <QuestionDetailPartsForCorrectAnswers
-        selectedKey={selectedKey as number}
-      />
+      <QuestionDetailPartsForCorrectAnswers originalSelectedVal={selectedVal} />
       <div className="text-center mt-5">
         <Button
           variant="primary"
