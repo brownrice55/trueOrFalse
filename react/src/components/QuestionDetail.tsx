@@ -68,6 +68,9 @@ export default function QuestionDetail({
         : "",
     );
 
+  const [isChangedForAnswersInEditMode, setIsChangedForAnswersInEditMode] =
+    useState<boolean>(false);
+
   const handleIsDisabled = (
     aIsUnderEdit?: boolean,
     aTypeValue?: number,
@@ -75,6 +78,7 @@ export default function QuestionDetail({
     aAnswerArray?: boolean[] | { isActive: boolean; value: string }[],
     aNumberOfOptions?: number,
     aDisplayAnswersForSelection?: string,
+    aAreAnswersChanged?: boolean,
   ) => {
     if (aIsUnderEdit !== undefined) {
       setIsDisabled(aIsUnderEdit);
@@ -98,6 +102,9 @@ export default function QuestionDetail({
     if (aDisplayAnswersForSelection !== undefined) {
       setDisplayAnswersForSelection(aDisplayAnswersForSelection);
     }
+    if (aAreAnswersChanged !== undefined) {
+      setIsChangedForAnswersInEditMode(aAreAnswersChanged);
+    }
   };
 
   return (
@@ -119,6 +126,7 @@ export default function QuestionDetail({
         numberOfOptions={numberOfOptions}
         options={options}
         typeValue={typeValue}
+        isChangedForAnswersInEditMode={isChangedForAnswersInEditMode}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}

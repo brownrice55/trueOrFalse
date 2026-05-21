@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -14,6 +14,7 @@ type FormgroupForAnswerProps = {
   answerArray: boolean[];
   numberOfOptions: number;
   options: { isActive: boolean; value: string }[];
+  onUpdateForList?: (aAreAnswersChanged: boolean) => void;
 };
 
 export default function FormgroupForAnswer({
@@ -22,10 +23,14 @@ export default function FormgroupForAnswer({
   answerArray,
   numberOfOptions,
   options,
+  onUpdateForList,
 }: FormgroupForAnswerProps) {
-  const [radioValue, setRadioValue] = useState<boolean[]>(answerArray);
-  const [selectionValue, setSelectionValue] =
-    useState<{ isActive: boolean; value: string }[]>(options);
+  const originalRadioValue = useRef(structuredClone(answerArray));
+  const originalSelectionValue = useRef(structuredClone(options));
+  const [radioValue, setRadioValue] = useState<boolean[]>([...answerArray]);
+  const [selectionValue, setSelectionValue] = useState<
+    { isActive: boolean; value: string }[]
+  >([...options]);
 
   const [numberOfOptionsValue, setNumberOfOptionsValue] =
     useState<number>(numberOfOptions);
@@ -53,7 +58,7 @@ export default function FormgroupForAnswer({
   ) => {
     const newOptions = Array.from(
       { length: numberOfOptions },
-      (_, idx) => options[idx] ?? { isActive: false, value: "" },
+      (_, idx) => selectionValue[idx] ?? { isActive: false, value: "" },
     );
 
     if (aIndexIsActive !== undefined) {
@@ -74,30 +79,47 @@ export default function FormgroupForAnswer({
       { isActives: [] as boolean[], values: [] as string[] },
     );
 
-    const uniqueValues = [...new Set(values)];
     setSelectionValue(newOptions);
-    const allFalse = isActives.every((val) => !val);
     const areBlanks = values.some((val) => !val);
-    if (allFalse || areBlanks || uniqueValues.length !== options.length) {
+    const uniqueValues = [...new Set(values)];
+    const allFalse = isActives.every((val) => !val);
+    if (allFalse || areBlanks || uniqueValues.length !== newOptions.length) {
       if (allFalse) {
         setErrorMsg("正解の選択肢にチェックを入れてください。");
       } else {
         setErrorMsg("");
       }
-      if (areBlanks || uniqueValues.length !== options.length) {
+
+      if (areBlanks || uniqueValues.length !== newOptions.length) {
         let errorMsg = "";
         if (areBlanks) {
           errorMsg = "選択肢を入力してください。";
         }
-        if (uniqueValues.length !== options.length) {
+        if (uniqueValues.length !== newOptions.length) {
           errorMsg += "異なる選択肢を入力してください。";
         }
         setErrorMsgForValue(errorMsg);
+      } else {
+        setErrorMsgForValue("");
+      }
+      if (onUpdateForList) {
+        onUpdateForList(false);
       }
     } else {
       setErrorMsg("");
       setErrorMsgForValue("");
       onUpdate(questionTypeNumber, newOptions, numberOfOptions);
+
+      const isChanged =
+        JSON.stringify(originalRadioValue.current) !==
+          JSON.stringify(radioValue) ||
+        numberOfOptions !== numberOfOptionsValue ||
+        JSON.stringify(originalSelectionValue.current) !==
+          JSON.stringify(newOptions);
+
+      if (onUpdateForList) {
+        onUpdateForList(isChanged);
+      }
     }
   };
 

@@ -19,6 +19,7 @@ type QuestionDetailPartsProps = {
     value4: boolean[] | { isActive: boolean; value: string }[] | undefined,
     value5: number | undefined,
     value6: string | undefined,
+    aAreAnswersChanged?: boolean,
   ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
@@ -28,6 +29,7 @@ type QuestionDetailPartsProps = {
   numberOfOptions?: number;
   options?: { isActive: boolean; value: string }[];
   displayAnswersForSelection?: string;
+  isChangedForAnswersInEditMode?: boolean;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -41,6 +43,7 @@ export default function QuestionDetailParts({
   numberOfOptions,
   options,
   displayAnswersForSelection,
+  isChangedForAnswersInEditMode,
 }: QuestionDetailPartsProps) {
   const { data } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
@@ -183,6 +186,22 @@ export default function QuestionDetailParts({
     setIsEditBtnDisabled(!aIsChanged);
   };
 
+  const handleValidationForAnswers = (aAreAnswersChanged: boolean) => {
+    if (isUnderEdit) {
+      setIsEditBtnDisabled(!aAreAnswersChanged);
+    } else {
+      onUpdate(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        aAreAnswersChanged,
+      );
+    }
+  };
+
   return (
     <>
       <div>
@@ -194,7 +213,13 @@ export default function QuestionDetailParts({
                 variant="primary"
                 className="py-1 px-2 me-2"
                 onClick={(e) => handleOverwrite(e, formType, formInfo[3])}
-                disabled={isEditBtnDisabled}
+                disabled={
+                  isUnderEdit
+                    ? isChangedForAnswersInEditMode
+                      ? !isChangedForAnswersInEditMode && formInfo[3] === "type"
+                      : isEditBtnDisabled
+                    : isEditBtnDisabled
+                }
               >
                 上書きする
               </Button>
@@ -259,6 +284,7 @@ export default function QuestionDetailParts({
                   answerArray={answerArray as boolean[]}
                   numberOfOptions={numberOfOptions as number}
                   options={options as { isActive: boolean; value: string }[]}
+                  onUpdateForList={handleValidationForAnswers}
                 />
               )}
             </Col>
