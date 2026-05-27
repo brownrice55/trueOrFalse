@@ -50,20 +50,29 @@ export default function QuizStart() {
         setNumberOfQuestions(100000);
         setPriorityValue(0);
       } else if (aNextPageNumber === 1) {
+        const newQuizDataForPractice = getQuizDataForPractice(
+          data,
+          categoryValue,
+          typeValue,
+          aNumberOfQuestions as number,
+          aPriorityValue as number,
+        );
+        setQuizDataForPractice(newQuizDataForPractice);
+
         // after clicking start button
         // set quizDataForPractice into localStorage
         localStorage.setItem(
           "TrueOrFalseDataForPractice",
-          JSON.stringify([...(quizDataForPractice ?? [])]),
+          JSON.stringify([...(newQuizDataForPractice ?? [])]),
         );
 
         // set first question
         setCurrentQuizDataForPractice(
-          quizDataForPractice?.get(currentQuestionIndex),
+          newQuizDataForPractice?.get(currentQuestionIndex),
         );
 
         if (
-          currentQuestionIndex + 1 === quizDataForPractice?.size ||
+          currentQuestionIndex + 1 === newQuizDataForPractice?.size ||
           aIsStopped
         ) {
           // display go to result on a button
@@ -155,10 +164,6 @@ export default function QuizStart() {
       setCategoryValue(aCategoryValue);
     } else if (aTypeValue !== undefined) {
       setTypeValue(aTypeValue);
-    } else if (aNumberOfQuestions !== undefined) {
-      setNumberOfQuestions(aNumberOfQuestions);
-    } else if (aPriorityValue !== undefined) {
-      setPriorityValue(aPriorityValue);
     }
   };
 

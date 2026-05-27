@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
@@ -25,29 +26,23 @@ export default function QuizStartIndex0({
     : Math.floor((quizDataForPractice?.size ?? 0) / 5);
 
   const handleUpdatePageNo = () => {
-    onUpdate(1);
+    onUpdate(1, undefined, undefined, number, priority);
   };
 
+  const [number, setNumber] = useState<number>(
+    quizDataForPractice && quizDataForPractice?.size < 5
+      ? quizDataForPractice?.size
+      : 5,
+  );
+  const [priority, setPriority] = useState<number>(0);
   const handleSelectValue = (
     e: React.ChangeEvent<HTMLSelectElement>,
     aName: string,
   ) => {
     if (aName === "numberOfQuestions") {
-      onUpdate(
-        undefined,
-        undefined,
-        undefined,
-        parseInt(e.target.value),
-        undefined,
-      );
+      setNumber(parseInt(e.target.value));
     } else {
-      onUpdate(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        parseInt(e.target.value),
-      );
+      setPriority(parseInt(e.target.value));
     }
   };
 
@@ -99,7 +94,10 @@ export default function QuizStartIndex0({
                 .fill("")
                 .map((_, index: number) => {
                   const value = 5 * index + 5;
-                  if (value <= quizDataForPractice?.size) {
+                  if (
+                    value == quizDataForPractice?.size ||
+                    (remainder && value > quizDataForPractice?.size)
+                  ) {
                     return (
                       <option value="100000" key="100000">
                         全て（{quizDataForPractice && quizDataForPractice.size}
