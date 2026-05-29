@@ -47,7 +47,7 @@ export default function QuestionDetailParts({
   displayAnswersForSelection,
   isChangedForAnswersInEditMode,
 }: QuestionDetailPartsProps) {
-  const { data } = useContext(DataContext) as DataContextType;
+  const { data, setData } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
     originalSelectedVal,
   );
@@ -82,53 +82,57 @@ export default function QuestionDetailParts({
       e.currentTarget?.parentNode?.parentNode?.parentNode?.querySelector(
         aFormType,
       ) as HTMLSelectElement | HTMLTextAreaElement;
-    if (selectedVal && targetElm) {
+    if (selectedVal) {
       const newVal = { ...selectedVal } as Inputs;
       if (aProperty !== "type" && aProperty !== "answer") {
         (newVal as any)[aProperty] =
           aProperty === "category" || aProperty === "priority"
             ? (parseInt(targetElm.value) as number)
-            : (targetElm.value as string);
+            : (targetElm?.value as string);
       } else {
         if (aProperty === "type") {
           newVal.type = parseInt(targetElm.value);
-        }
-        newVal.answer =
-          typeValue === 0 ? (answerArray as boolean[]) : [true, false];
-        newVal.numberOfOptions = (
-          typeValue === 1 ? numberOfOptions : 2
-        ) as number;
-        newVal.options = (
-          typeValue === 1
-            ? options
-            : [
-                { isActive: false, value: "" },
-                { isActive: false, value: "" },
-              ]
-        ) as { isActive: boolean; value: string }[];
-
-        if (typeValue === 1) {
-          const newDisplayAnswersForSelection = selectedVal?.type
-            ? selectedVal.options
+          if (newVal.type === 1) {
+            const newDisplayAnswersForSelection = selectedVal?.type
               ? selectedVal.options
-                  .filter((val) => val.isActive)
-                  .map((val) => val.value)
-                  .join("、")
-              : ""
-            : "";
-          onUpdate(
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            newDisplayAnswersForSelection,
-          );
+                ? selectedVal.options
+                    .filter((val) => val.isActive)
+                    .map((val) => val.value)
+                    .join("、")
+                : ""
+              : "";
+            onUpdate(
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              newDisplayAnswersForSelection,
+            );
+          }
+        } else {
+          // aProperty === answer
+          newVal.answer =
+            typeValue === 0 ? (answerArray as boolean[]) : [true, false];
+          newVal.numberOfOptions = (
+            typeValue === 1 ? numberOfOptions : 2
+          ) as number;
+          newVal.options = (
+            typeValue === 1
+              ? options
+              : [
+                  { isActive: false, value: "" },
+                  { isActive: false, value: "" },
+                ]
+          ) as { isActive: boolean; value: string }[];
         }
       }
-      data.set(selectedKey, newVal);
-      setSelectedVal(newVal);
-      localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
+      if (aProperty !== "type") {
+        data.set(selectedKey, newVal);
+        setData(data);
+        setSelectedVal(newVal);
+        localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
+      }
     }
 
     setIsUnderEdit((prev) => !prev);
@@ -310,7 +314,7 @@ export default function QuestionDetailParts({
                 : formType === "textarea"
                   ? selectedVal && lookupKey
                   : !questionTypeNumber
-                    ? selectedVal?.answer[0]
+                    ? answerArray[0]
                       ? "まる"
                       : "ばつ"
                     : displayAnswersForSelection}
