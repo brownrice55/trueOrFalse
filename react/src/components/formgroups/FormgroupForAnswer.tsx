@@ -14,7 +14,10 @@ type FormgroupForAnswerProps = {
   answerArray: boolean[];
   numberOfOptions: number;
   options: { isActive: boolean; value: string }[];
-  onUpdateForList?: (aAreAnswersChanged: boolean) => void;
+  onUpdateForList?: (
+    aAreAnswersChanged: boolean,
+    resetArray?: boolean[],
+  ) => void;
 };
 
 export default function FormgroupForAnswer({
@@ -45,8 +48,16 @@ export default function FormgroupForAnswer({
   };
 
   const handleAnswer = (aIndex: number) => {
-    const resetArray = Array(2).fill(false);
-    resetArray[aIndex] = true;
+    const resetArray = radioValue.map((_, idx) => idx === aIndex);
+
+    if (onUpdateForList) {
+      onUpdateForList(
+        JSON.stringify(originalRadioValue.current) !==
+          JSON.stringify(resetArray),
+        resetArray,
+      );
+    }
+
     setRadioValue(resetArray);
     onUpdate(questionTypeNumber, resetArray, 2);
   };

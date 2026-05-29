@@ -26,7 +26,7 @@ type QuestionDetailPartsProps = {
   formInfo: [any, any, string, keyof InputsOmit];
   typeValue?: number;
   isIndex1UnderEdit?: boolean;
-  answerArray?: boolean[];
+  answerArrayForIndex1?: boolean[];
   numberOfOptions?: number;
   options?: { isActive: boolean; value: string }[];
   displayAnswersForSelection?: string;
@@ -41,7 +41,7 @@ export default function QuestionDetailParts({
   formInfo,
   typeValue,
   isIndex1UnderEdit,
-  answerArray,
+  answerArrayForIndex1,
   numberOfOptions,
   options,
   displayAnswersForSelection,
@@ -55,6 +55,10 @@ export default function QuestionDetailParts({
   const [questionTypeNumber, setQuestionTypeNumber] = useState<
     number | undefined
   >(typeValue);
+
+  const [answerArray, setAnswerArray] = useState<boolean[]>(
+    selectedVal?.answer ?? [true, false],
+  );
 
   const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
@@ -188,8 +192,14 @@ export default function QuestionDetailParts({
     setIsEditBtnDisabled(!aIsChanged);
   };
 
-  const handleValidationForAnswers = (aAreAnswersChanged: boolean) => {
+  const handleValidationForAnswers = (
+    aAreAnswersChanged: boolean,
+    aResetArray?: boolean[],
+  ) => {
     if (isUnderEdit) {
+      if (aResetArray) {
+        setAnswerArray(aResetArray);
+      }
       setIsEditBtnDisabled(!aAreAnswersChanged);
     } else {
       onUpdate(

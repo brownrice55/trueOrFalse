@@ -124,7 +124,7 @@ export default function QuestionDetail({
         onUpdate={handleIsDisabled}
         formType={"select"}
         formInfo={[null, typeOptionArray, "クイズの種類", "type"]}
-        answerArray={answerArray}
+        answerArrayForIndex1={answerArray}
         numberOfOptions={numberOfOptions}
         options={options}
         typeValue={typeValue}
@@ -147,7 +147,7 @@ export default function QuestionDetail({
         formType={"answer"}
         formInfo={[null, [], "答え", "answer"]}
         typeValue={typeValue}
-        answerArray={answerArray}
+        answerArrayForIndex1={answerArray}
         numberOfOptions={numberOfOptions}
         options={options}
         displayAnswersForSelection={displayAnswersForSelection}
