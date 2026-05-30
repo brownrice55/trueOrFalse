@@ -92,7 +92,16 @@ export default function QuestionDetailParts({
       } else {
         if (aProperty === "type") {
           newVal.type = parseInt(targetElm.value);
-          if (newVal.type === 1) {
+          if (newVal.type === 0) {
+            onUpdate(
+              undefined,
+              newVal.type,
+              undefined,
+              answerArray,
+              undefined,
+              undefined,
+            );
+          } else {
             const newDisplayAnswersForSelection = selectedVal?.type
               ? selectedVal.options
                 ? selectedVal.options
@@ -157,7 +166,13 @@ export default function QuestionDetailParts({
     );
   };
 
-  const lookupKey = selectedVal?.[formInfo[3]];
+  const [lookupKey, setLookupKey] = useState<
+    | string
+    | number
+    | boolean[]
+    | { isActive: boolean; value: string }[]
+    | undefined
+  >(selectedVal?.[formInfo[3]]);
 
   const handleSwitchTypeForAnswers = (aTypeValue: number) => {
     onUpdate(undefined, aTypeValue, undefined, undefined, undefined, undefined);
@@ -191,6 +206,28 @@ export default function QuestionDetailParts({
   useEffect(() => {
     setIsEditBtnDisabled(isUnderEdit);
   }, [isUnderEdit]);
+
+  useEffect(() => {
+    if (answerArrayForIndex1) {
+      setAnswerArray(answerArrayForIndex1);
+    }
+    // property===type
+    if (formInfo[3] === "type") {
+      const newVal = { ...selectedVal } as Inputs;
+      newVal.type = typeValue as number;
+      if (!typeValue) {
+        // trueOrFalse
+        if (answerArrayForIndex1) {
+          newVal.answer = answerArrayForIndex1;
+        }
+      }
+      data.set(selectedKey, newVal);
+      setData(data);
+      setSelectedVal(newVal);
+      localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
+      setLookupKey(newVal?.["type"]);
+    }
+  }, [answerArrayForIndex1, typeValue]);
 
   const handleSelectValidation = (aIsChanged: boolean) => {
     setIsEditBtnDisabled(!aIsChanged);
