@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
 import FormgroupForAnswer from "./formgroups/FormgroupForAnswer";
@@ -31,6 +32,7 @@ type QuestionDetailPartsProps = {
   optionsForIndex1?: { isActive: boolean; value: string }[];
   displayAnswersForSelectionForIndex1?: string;
   isChangedForAnswersInEditMode?: boolean;
+  setIsChangedForAnswersInEditMode?: Dispatch<SetStateAction<boolean>>;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -46,6 +48,7 @@ export default function QuestionDetailParts({
   optionsForIndex1,
   displayAnswersForSelectionForIndex1,
   isChangedForAnswersInEditMode,
+  setIsChangedForAnswersInEditMode,
 }: QuestionDetailPartsProps) {
   const { data, setData } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
@@ -91,6 +94,7 @@ export default function QuestionDetailParts({
     aFormType: string,
     aProperty: string,
   ) => {
+    setReset(true);
     const targetElm =
       e.currentTarget?.parentNode?.parentNode?.parentNode?.querySelector(
         aFormType,
@@ -179,6 +183,7 @@ export default function QuestionDetailParts({
   };
 
   const handleCancel = (aProperty: string) => {
+    setReset(true);
     setIsUnderEdit((prev) => !prev);
     const isFormOpened = aProperty === "type" ? false : undefined;
     onUpdate(
@@ -293,6 +298,14 @@ export default function QuestionDetailParts({
       );
     }
   };
+
+  const [reset, setReset] = useState<boolean>(false);
+  useEffect(() => {
+    if (reset && setIsChangedForAnswersInEditMode) {
+      setIsChangedForAnswersInEditMode(false);
+      setReset(false);
+    }
+  }, [reset]);
 
   return (
     <>

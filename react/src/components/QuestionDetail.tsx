@@ -131,6 +131,7 @@ export default function QuestionDetail({
         optionsForIndex1={options}
         typeValue={typeValue}
         isChangedForAnswersInEditMode={isChangedForAnswersInEditMode}
+        setIsChangedForAnswersInEditMode={setIsChangedForAnswersInEditMode}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
