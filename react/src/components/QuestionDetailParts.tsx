@@ -28,8 +28,8 @@ type QuestionDetailPartsProps = {
   isIndex1UnderEdit?: boolean;
   answerArrayForIndex1?: boolean[];
   numberOfOptions?: number;
-  options?: { isActive: boolean; value: string }[];
-  displayAnswersForSelection?: string;
+  optionsForIndex1?: { isActive: boolean; value: string }[];
+  displayAnswersForSelectionForIndex1?: string;
   isChangedForAnswersInEditMode?: boolean;
 };
 export default function QuestionDetailParts({
@@ -43,8 +43,8 @@ export default function QuestionDetailParts({
   isIndex1UnderEdit,
   answerArrayForIndex1,
   numberOfOptions,
-  options,
-  displayAnswersForSelection,
+  optionsForIndex1,
+  displayAnswersForSelectionForIndex1,
   isChangedForAnswersInEditMode,
 }: QuestionDetailPartsProps) {
   const { data, setData } = useContext(DataContext) as DataContextType;
@@ -59,6 +59,19 @@ export default function QuestionDetailParts({
   const [answerArray, setAnswerArray] = useState<boolean[]>(
     selectedVal?.answer ?? [true, false],
   );
+
+  const [options, setOptions] = useState<
+    { isActive: boolean; value: string }[]
+  >(
+    selectedVal?.options ?? [
+      { isActive: false, value: "" },
+      { isActive: false, value: "" },
+    ],
+  );
+
+  const [displayAnswersForSelection, setDisplayAnswersForSelection] = useState<
+    string | undefined
+  >(displayAnswersForSelectionForIndex1);
 
   const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
@@ -112,7 +125,7 @@ export default function QuestionDetailParts({
               : "";
             onUpdate(
               undefined,
-              undefined,
+              newVal.type,
               undefined,
               undefined,
               undefined,
@@ -134,6 +147,18 @@ export default function QuestionDetailParts({
                   { isActive: false, value: "" },
                 ]
           ) as { isActive: boolean; value: string }[];
+          if (typeValue === 1) {
+            const newDisplayAnswersForSelection = typeValue
+              ? newVal.options
+                ? newVal.options
+                    .filter((val) => val.isActive)
+                    .map((val) => val.value)
+                    .join("、")
+                : ""
+              : "";
+
+            setDisplayAnswersForSelection(newDisplayAnswersForSelection);
+          }
         }
       }
       if (aProperty !== "type") {
@@ -220,14 +245,28 @@ export default function QuestionDetailParts({
         if (answerArrayForIndex1) {
           newVal.answer = answerArrayForIndex1;
         }
+      } else {
+        // selection
+        if (optionsForIndex1) {
+          setOptions(optionsForIndex1);
+        }
       }
       data.set(selectedKey, newVal);
       setData(data);
       setSelectedVal(newVal);
       localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
       setLookupKey(newVal?.["type"]);
+    } else if (formInfo[3] === "answer") {
+      if (displayAnswersForSelectionForIndex1) {
+        setDisplayAnswersForSelection(displayAnswersForSelectionForIndex1);
+      }
     }
-  }, [answerArrayForIndex1, typeValue]);
+  }, [
+    answerArrayForIndex1,
+    typeValue,
+    displayAnswersForSelectionForIndex1,
+    optionsForIndex1,
+  ]);
 
   const handleSelectValidation = (aIsChanged: boolean) => {
     setIsEditBtnDisabled(!aIsChanged);

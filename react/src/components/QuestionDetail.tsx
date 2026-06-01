@@ -56,17 +56,19 @@ export default function QuestionDetail({
     ],
   );
 
-  const [displayAnswersForSelection, setDisplayAnswersForSelection] =
-    useState<string>(
-      selectedVal?.type
+  const [
+    displayAnswersForSelectionForIndex1,
+    setDisplayAnswersForSelectionForIndex1,
+  ] = useState<string>(
+    selectedVal?.type
+      ? selectedVal.options
         ? selectedVal.options
-          ? selectedVal.options
-              .filter((val) => val.isActive)
-              .map((val) => val.value)
-              .join("、")
-          : ""
-        : "",
-    );
+            .filter((val) => val.isActive)
+            .map((val) => val.value)
+            .join("、")
+        : ""
+      : "",
+  );
 
   const [isChangedForAnswersInEditMode, setIsChangedForAnswersInEditMode] =
     useState<boolean>(false);
@@ -100,7 +102,7 @@ export default function QuestionDetail({
       setNumberOfOptions(aNumberOfOptions);
     }
     if (aDisplayAnswersForSelection !== undefined) {
-      setDisplayAnswersForSelection(aDisplayAnswersForSelection);
+      setDisplayAnswersForSelectionForIndex1(aDisplayAnswersForSelection);
     }
     if (aAreAnswersChanged !== undefined) {
       setIsChangedForAnswersInEditMode(aAreAnswersChanged);
@@ -126,7 +128,7 @@ export default function QuestionDetail({
         formInfo={[null, typeOptionArray, "クイズの種類", "type"]}
         answerArrayForIndex1={answerArray}
         numberOfOptions={numberOfOptions}
-        options={options}
+        optionsForIndex1={options}
         typeValue={typeValue}
         isChangedForAnswersInEditMode={isChangedForAnswersInEditMode}
       />
@@ -149,8 +151,9 @@ export default function QuestionDetail({
         typeValue={typeValue}
         answerArrayForIndex1={answerArray}
         numberOfOptions={numberOfOptions}
-        options={options}
-        displayAnswersForSelection={displayAnswersForSelection}
+        displayAnswersForSelectionForIndex1={
+          displayAnswersForSelectionForIndex1
+        }
       />
       <QuestionDetailParts
         selectedKey={selectedKey}
