@@ -22,12 +22,17 @@ export function setAddNew(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
   aListDtElms: NodeListOf<HTMLElement>,
   aDivIdx3DivElms: NodeListOf<HTMLElement>,
-  aInputCategoryAreaElm: HTMLElement
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>,
+  aListUlElm: HTMLElement
 ) {
   const addNewCategorySelectElm = document.querySelector(
     '.js-addNewCategorySelect'
@@ -131,19 +136,24 @@ export function setAddNew(
     aModalForDeleteElms,
     aButtonCancelElm,
     aSectionElms,
-    aCurrentValKeys as (keyof Inputs)[],
     aBsModal,
     aButtonSaveElm,
+    aInputCategoryAreaElm,
+    aButtonAddInputElm,
+    aListDivElms,
+    aCurrentValKeys,
+    aListDdElms,
     aListDtElms,
     aDivIdx3DivElms,
-    aInputCategoryAreaElm
+    aButtonBackToListElms,
+    aListUlElm
   );
 
   const buttonBackToListFromAddNewElm = document.querySelector(
     '.js-buttonBackToListFromAddNew'
   );
   buttonBackToListFromAddNewElm?.addEventListener('click', function () {
-    switchPage(1, false, {}, null, aSectionElms);
+    switchPage(1, false, {}, null, aSectionElms, aListDivElms);
   });
 
   addNewCategorySelectElm?.addEventListener('change', function (e) {
@@ -153,7 +163,8 @@ export function setAddNew(
         aSectionElms,
         'addNew',
         aButtonSaveElm,
-        aButtonCancelElm
+        aButtonCancelElm,
+        aListDivElms
       );
     }
   });
