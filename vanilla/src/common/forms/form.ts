@@ -18,7 +18,7 @@ export function getCategoryOptions(
   aButtonSaveElm: HTMLButtonElement,
   aIsAddNeeded: boolean
 ) {
-  if (aButtonSaveElm?.classList.contains('js-categoryNameIsUpdated')) {
+  if (aButtonSaveElm.dataset.iscategorynameupdated === 'true') {
     aQuizCategory = getDataFromLocalStorage('quizCategory');
   }
   let optionHTML2 = '';
@@ -275,7 +275,8 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
   aListDdElms: NodeListOf<HTMLElement>,
   aDivElmsIndex1: HTMLElement,
   aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement
+  aButtonCancelElm: HTMLButtonElement,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   const formElementsArray = getFormElements(
     aQuizCategory,
@@ -293,7 +294,8 @@ export function setDivIndex1FormForQuizDetailIdx0Category(
         aSectionElms,
         'quizList',
         aButtonSaveElm,
-        aButtonCancelElm
+        aButtonCancelElm,
+        aListDivElms
       );
     }
   });
@@ -307,12 +309,12 @@ export function getFormElements(
 ) {
   const formElements: string[] = aCurrentVal
     ? [
-        `<select class="form-select js-formSelect" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm, true)}</select>`,
+        `<select class="form-select" aria-label="category" id="detailCategory">${getCategoryOptions(aQuizCategory, aCurrentVal.category, aButtonSaveElm, true)}</select>`,
         `<select class="form-select js-detailType" aria-label="type" id="detailType" value="${aCurrentVal.type}">${getTypeOptions(aCurrentVal.type, false)}</select>`,
         getTextArea(aCurrentVal.question, 'detailQuestion'),
         '',
         getTextArea(aCurrentVal.explanation, 'detailExplanation'),
-        `<select class="form-select js-formSelect" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
+        `<select class="form-select" aria-label="priority" id="detailPriority" value="${aCurrentVal.priority}">${getPriorityOptions(aCurrentVal.priority)}</select>`,
         getTextArea(aCurrentVal.notes, 'detailNotes'),
       ]
     : [''];

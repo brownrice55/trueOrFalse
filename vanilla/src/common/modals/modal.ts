@@ -1,9 +1,14 @@
 import * as bootstrap from 'bootstrap';
 import { displayPage } from '../utils';
-import { displayList } from '../../quizList/utils';
-import { getCategoryInputHTML } from '../../categorySettings/setup';
-import { resetCategoryForm } from '../../categorySettings/utils';
+import { addCategoryNameInputField } from '../../categorySettings/setup';
+import { displayList, setEventForDisplayDetail } from '../../quizList/utils';
+import {
+  getCategoryInputHTML,
+  resetCategoryForm,
+  editOrDeleteCategoryNamesAndSetValidationForInput,
+} from '../../categorySettings/utils';
 import { resetIsActiveInTheCategoryData } from '../../quizList/utils';
+import { getInputValues } from '../forms/validation';
 import { resetEditQuizBtns } from '../utils';
 import type { Inputs } from '../types/inputs.type';
 import type { InputsCategory } from '../types/inputsCategory.type';
@@ -71,18 +76,18 @@ export function displayModalToSelectWhatToDoNextAfterSavingData(
   }
 }
 
-const resetAndDisplayList = () => {
+const resetAndDisplayList = (aListDivElms: NodeListOf<HTMLElement>) => {
   resetEditQuizBtns(true);
-  const listDivElms = document.querySelectorAll('.js-listDiv');
-  listDivElms[0].classList.remove('d-none');
-  listDivElms[1].classList.add('d-none');
+  aListDivElms[0].classList.remove('d-none');
+  aListDivElms[1].classList.add('d-none');
 };
 
 export function displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingData(
   aButtonSaveElm: HTMLButtonElement,
   aText: string,
   aText2: string,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   const modalForPageTransitionDivElm = document.querySelector(
     '.js-modalForPageTransitionDiv'
@@ -115,19 +120,22 @@ export function displayModalToSelectWhetherToGoBackToPrecedingPageAfterSavingDat
     buttonPageTransitionElms[0].innerHTML = aText2
       ? 'ページを移動しない※'
       : 'ページを移動しない';
-    buttonPageTransitionElms[1].innerHTML = 'クイズ詳細へ戻る';
+    buttonPageTransitionElms[1].innerHTML = aText2
+      ? 'クイズ詳細へ戻る'
+      : '新規登録へ戻る';
   }
 
   buttonPageTransitionElms?.forEach((elm, idx) => {
     elm.addEventListener('click', function () {
       if (!idx) {
         if (aText2) {
-          resetAndDisplayList();
+          resetAndDisplayList(aListDivElms);
         }
       } else {
-        displayPage(1, aSectionElms);
+        const nextPageIndex = aText2 ? 1 : 2;
+        displayPage(nextPageIndex, aSectionElms);
       }
-      aButtonSaveElm.classList.remove('js-quizDataIsUnderEdit');
+      aButtonSaveElm.dataset.isquizdataunderedit = 'false';
       bsModal.hide();
     });
   });
@@ -138,7 +146,8 @@ export function displayModalForPageTransition(
   aButtonCancelElm: HTMLButtonElement,
   aPatternIndex: number,
   aModalForPageTransitionElms: modalForPageTransitionElmsType,
-  aSectionElms: NodeListOf<HTMLElement>
+  aSectionElms: NodeListOf<HTMLElement>,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   const globalMenuName = [
     'クイズスタート',
@@ -233,15 +242,15 @@ export function displayModalForPageTransition(
             if (idx === 1) {
               displayPage(1, aSectionElms);
             } else if (idx === 2) {
-              categoryButtonElms[1].classList.remove('js-quizDataIsUnderEdit');
-              resetAndDisplayList();
+              categoryButtonElms[1].dataset.isquizdataunderedit = 'false';
+              resetAndDisplayList(aListDivElms);
               displayPage(aIndex, aSectionElms);
             }
           } else if (aPatternIndex === 2 || aPatternIndex === 5) {
             if (idx === 2) {
-              categoryButtonElms[1]?.classList.remove('js-quizDataIsUnderEdit');
+              categoryButtonElms[1].dataset.isquizdataunderedit = 'false';
               if (aPatternIndex === 2) {
-                resetAndDisplayList();
+                resetAndDisplayList(aListDivElms);
               }
               resetCategoryFormAndDisplayPage(
                 categoryButtonElms as NodeListOf<HTMLButtonElement>,
@@ -255,7 +264,7 @@ export function displayModalForPageTransition(
             aPatternIndex === 6
           ) {
             if (idx === 2) {
-              categoryButtonElms[1]?.classList.remove('js-newDataIsUnderEdit');
+              categoryButtonElms[1].dataset.isnewdataunderedit = 'false';
               displayPage(aIndex, aSectionElms);
               if (aPatternIndex === 4 || aPatternIndex === 6) {
                 resetCategoryFormAndDisplayPage(
@@ -287,7 +296,7 @@ export function showModalForDelete(
   if (modalTextDivElm) {
     modalTextDivElm.innerHTML = aTargetInputElm
       ? `「${(aTargetInputElm as HTMLInputElement).value}」を削除して、問題に設定済みのカテゴリー名を「指定なし」に変更しますか？`
-      : `「${aListDdElms && aListDdElms[2].textContent}」を削除しますか？`;
+      : `「${aListDdElms && (aListDdElms[2].querySelector(':scope > div') as HTMLElement).textContent}」を削除しますか？`;
   }
   if (modalTitleH1Elm) {
     modalTitleH1Elm.innerHTML = aTargetInputElm
@@ -308,6 +317,10 @@ export function showModalForDelete(
     modalForDeleteDivElm.dataset.key = aTargetInputElm
       ? aTargetInputElm.dataset.index
       : '10000';
+
+    modalForDeleteDivElm.dataset.cnt = aTargetInputElm
+      ? aTargetInputElm.dataset.cnt
+      : '10000';
   }
 
   aBsModal.show();
@@ -316,26 +329,41 @@ export function showModalForDelete(
 export function deleteDataThroughDeleteBtnInTheModal(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
-  aButtonCancelElm: HTMLButtonElement | null,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
   aModalForDeleteElms: modalForDeleteElmsType,
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
   aListDtElms: NodeListOf<HTMLElement>,
   aDivIdx3DivElms: NodeListOf<HTMLElement>,
-  aInputCategoryAreaElm: HTMLElement
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>,
+  aListUlElm: HTMLElement
 ) {
   const modalForDeleteDivElm = aModalForDeleteElms.containerDiv;
   const deleteButtonElm = aModalForDeleteElms.deleteButton;
-  const listDivElms = document.querySelectorAll('.js-listDiv');
-  const listUlElm = document.querySelector('.js-listUl');
 
   const deleteQuizDetailWhenClickingDeleteButton = function (this: any) {
     if (
       modalForDeleteDivElm &&
       modalForDeleteDivElm.dataset.page === 'category'
     ) {
+      // get present input values before delete
+      let inputCategoryElms: NodeListOf<HTMLInputElement> =
+        aInputCategoryAreaElm?.querySelectorAll('input');
+      let deletedInitialInputValues: string[] = getInputValues(
+        inputCategoryElms as NodeListOf<HTMLInputElement>,
+        true
+      );
+      deletedInitialInputValues.splice(
+        parseInt(modalForDeleteDivElm.dataset.cnt ?? '10000'),
+        1
+      );
+
       //delete a category name
       const keyNumber = parseInt(modalForDeleteDivElm.dataset.key ?? '10000');
       aQuizCategory.delete(keyNumber);
@@ -349,18 +377,56 @@ export function deleteDataThroughDeleteBtnInTheModal(
       localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
       // reset category inputs : start
+
       if (aInputCategoryAreaElm !== null) {
         aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
       }
+      inputCategoryElms = aInputCategoryAreaElm?.querySelectorAll('input');
+      const initialInputValues: string[] = getInputValues(
+        inputCategoryElms as NodeListOf<HTMLInputElement>,
+        true
+      );
+      const diffs: [string, number][] = deletedInitialInputValues
+        .map<
+          [string, number]
+        >((val, idx) => (val !== initialInputValues[idx] ? [val, idx] : ['', -1]))
+        .filter(([_, idx]) => idx !== -1);
+      diffs.forEach(([val, idx]) => {
+        if (inputCategoryElms && inputCategoryElms[idx]) {
+          inputCategoryElms[idx].value = val;
+        } else {
+          addCategoryNameInputField(aInputCategoryAreaElm, val);
+        }
+      });
+
+      editOrDeleteCategoryNamesAndSetValidationForInput(
+        aQuizData,
+        aQuizCategory,
+        aInputCategoryAreaElm,
+        aButtonAddInputElm,
+        initialInputValues,
+        aButtonCancelElm,
+        aButtonSaveElm,
+        aModalForDeleteElms,
+        aBsModal,
+        aSectionElms,
+        aListDivElms,
+        aListUlElm,
+        aCurrentValKeys,
+        aListDdElms,
+        aListDtElms,
+        aDivIdx3DivElms,
+        aButtonBackToListElms
+      );
       // reset category inputs : end
     } else if (
       modalForDeleteDivElm &&
       modalForDeleteDivElm.dataset.page === 'quizlist'
     ) {
       // delete a question
-      if (listDivElms) {
+      if (aListDivElms) {
         const key: number = parseInt(
-          (listDivElms[1] as HTMLElement).dataset.key ?? '10000',
+          (aListDivElms[1] as HTMLElement).dataset.key ?? '10000',
           10
         );
         aQuizData.delete(key);
@@ -370,25 +436,37 @@ export function deleteDataThroughDeleteBtnInTheModal(
           aQuizData,
           aQuizCategory,
           aButtonSaveElm,
-          aInputCategoryAreaElm
-        );
-
-        listDivElms[0].classList.remove('d-none');
-        listDivElms[1].classList.add('d-none');
-
-        displayList(
-          aQuizData,
-          aQuizCategory,
-          listDivElms as NodeListOf<Element>,
-          listUlElm as HTMLElement,
+          aInputCategoryAreaElm,
+          aButtonAddInputElm,
+          aButtonCancelElm,
           aModalForDeleteElms,
-          aCurrentValKeys,
           aBsModal,
           aSectionElms,
-          aButtonSaveElm,
-          aButtonCancelElm as HTMLButtonElement,
+          aListDivElms,
+          aListUlElm,
+          aCurrentValKeys,
+          aListDdElms,
           aListDtElms,
-          aDivIdx3DivElms as NodeListOf<HTMLElement>
+          aDivIdx3DivElms,
+          aButtonBackToListElms
+        );
+
+        aListDivElms[0].classList.remove('d-none');
+        aListDivElms[1].classList.add('d-none');
+
+        displayList(aQuizData, aListUlElm as HTMLElement);
+        setEventForDisplayDetail(
+          aQuizData,
+          aQuizCategory,
+          aListDivElms,
+          aCurrentValKeys,
+          aListDdElms,
+          aSectionElms,
+          aButtonSaveElm,
+          aButtonCancelElm,
+          aListDtElms,
+          aDivIdx3DivElms,
+          aButtonBackToListElms
         );
       }
     }

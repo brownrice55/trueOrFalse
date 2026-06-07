@@ -1,3 +1,4 @@
+import { displayList, setEventForDisplayDetail } from '../quizList/utils';
 import {
   getCategoryOptions,
   getTypeOptions,
@@ -134,7 +135,7 @@ const retrieveNecessaryData = (
         );
 
   let cnt = 0;
-  data.forEach((val: Inputs, idx: number) => {
+  [...data].forEach(([_, val], idx) => {
     const currentVal =
       aPriority === 'random'
         ? (data.get(keys[randomIndices[idx]]) as Inputs)
@@ -256,7 +257,18 @@ export function displayQuizAnswers(
   aQuizIndex: number,
   aQuizDataForPractice: Map<number, InputsForResult>,
   aQuizStartQuestionButtonElms: NodeListOf<HTMLButtonElement>,
-  aQuizStartNotesTextAreaDivElm: HTMLElement
+  aQuizStartNotesTextAreaDivElm: HTMLElement,
+  aListUlElm: HTMLElement,
+  aQuizCategory: Map<number, InputsCategory>,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) {
   if (quizStartAnswerSpanElm) {
     quizStartAnswerSpanElm.innerHTML =
@@ -301,6 +313,20 @@ export function displayQuizAnswers(
     originalVal.areCorrectAnswers = areCorrectAnswers;
     aQuizData.set(id, originalVal);
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
+    displayList(aQuizData, aListUlElm as HTMLElement);
+    setEventForDisplayDetail(
+      aQuizData,
+      aQuizCategory,
+      aListDivElms,
+      aCurrentValKeys,
+      aListDdElms,
+      aSectionElms,
+      aButtonSaveElm,
+      aButtonCancelElm,
+      aListDtElms,
+      aDivIdx3DivElms,
+      aButtonBackToListElms
+    );
   }
   // save data: areCorrectAnswers to the original data / end
 

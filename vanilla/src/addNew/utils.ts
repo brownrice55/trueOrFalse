@@ -1,5 +1,8 @@
-import { displayList } from '../quizList/utils';
-import { getCategoryInputHTML } from '../categorySettings/setup';
+import { displayList, setEventForDisplayDetail } from '../quizList/utils';
+import {
+  getCategoryInputHTML,
+  editOrDeleteCategoryNamesAndSetValidationForInput,
+} from '../categorySettings/utils';
 import { displayModalToSelectWhatToDoNextAfterSavingData } from '../common/modals/modal';
 import {
   getHTMLForOptionInputsOfSelection,
@@ -8,6 +11,7 @@ import {
 import {
   setDisabled,
   setValidationForDataEntry,
+  getInputValues,
 } from '../common/forms/validation';
 import type { InputsCategory } from '../common/types/inputsCategory.type';
 import type { Inputs } from '../common/types/inputs.type';
@@ -98,12 +102,17 @@ export function saveQuizData(
   aModalForDeleteElms: modalForDeleteElmsType,
   aButtonCancelElm: HTMLButtonElement,
   aSectionElms: NodeListOf<HTMLElement>,
-  aCurrentValKeys: (keyof Inputs)[],
   aBsModal: bootstrap.Modal,
   aButtonSaveElm: HTMLButtonElement,
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
   aListDtElms: NodeListOf<HTMLElement>,
   aDivIdx3DivElms: NodeListOf<HTMLElement>,
-  aInputCategoryAreaElm: HTMLElement
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>,
+  aListUlElm: HTMLElement
 ) {
   aButtonAddNewElm.addEventListener('click', function () {
     const newValue: Inputs = {
@@ -159,7 +168,7 @@ export function saveQuizData(
     localStorage.setItem('quizData', JSON.stringify([...aQuizData]));
 
     const key = parseInt(newValue.category, 10);
-    if (!Number.isNaN(key)) {
+    if (Number.isInteger(key)) {
       const currentQuizCategoryVal = aQuizCategory.get(key);
       if (currentQuizCategoryVal) {
         currentQuizCategoryVal.isActive = true;
@@ -171,6 +180,33 @@ export function saveQuizData(
         if (aInputCategoryAreaElm !== null) {
           aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(aQuizCategory);
         }
+        const inputCategoryElms: NodeListOf<HTMLInputElement> =
+          aInputCategoryAreaElm?.querySelectorAll('input');
+
+        const initialInputValues: string[] = getInputValues(
+          inputCategoryElms as NodeListOf<HTMLInputElement>,
+          true
+        );
+        editOrDeleteCategoryNamesAndSetValidationForInput(
+          aQuizData,
+          aQuizCategory,
+          aInputCategoryAreaElm,
+          aButtonAddInputElm,
+          initialInputValues,
+          aButtonCancelElm,
+          aButtonSaveElm,
+          aModalForDeleteElms,
+          aBsModal,
+          aSectionElms,
+          aListDivElms,
+          aListUlElm,
+          aCurrentValKeys,
+          aListDdElms,
+          aListDtElms,
+          aDivIdx3DivElms,
+          aButtonBackToListElms
+        );
+        // reset category inputs : end
       }
     }
 
@@ -180,9 +216,11 @@ export function saveQuizData(
     });
     inputTextElms.forEach((elm) => {
       (elm as HTMLInputElement).value = '';
+      (elm as HTMLInputElement).dataset.texttemporary = '';
     });
     checkboxElms.forEach((elm) => {
       (elm as HTMLInputElement).checked = false;
+      (elm as HTMLInputElement).dataset.checktemporary = 'false';
     });
 
     aAddNewCategoryElm.value = 'unspecified';
@@ -206,21 +244,19 @@ export function saveQuizData(
     this.disabled = true;
     // reset end
 
-    const listDivElms = document.querySelectorAll('.js-listDiv');
-    const listUlElm = document.querySelector('.js-listUl');
-    displayList(
+    displayList(aQuizData, aListUlElm as HTMLElement);
+    setEventForDisplayDetail(
       aQuizData,
       aQuizCategory,
-      listDivElms,
-      listUlElm as HTMLElement,
-      aModalForDeleteElms,
+      aListDivElms,
       aCurrentValKeys,
-      aBsModal,
+      aListDdElms,
       aSectionElms,
       aButtonSaveElm,
       aButtonCancelElm,
       aListDtElms,
-      aDivIdx3DivElms
+      aDivIdx3DivElms,
+      aButtonBackToListElms
     );
 
     displayModalToSelectWhatToDoNextAfterSavingData(

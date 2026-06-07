@@ -1,4 +1,7 @@
-import { getCategoryInputHTML } from '../categorySettings/setup';
+import {
+  getCategoryInputHTML,
+  editOrDeleteCategoryNamesAndSetValidationForInput,
+} from '../categorySettings/utils';
 import { getDataFromLocalStorage } from '../common/dataManagement';
 import {
   getHTMLForOptionInputsOfSelection,
@@ -6,15 +9,12 @@ import {
   setDivIndex1FormForQuizDetailIdx0Category,
   getFormElements,
 } from '../common/forms/form';
-import { setDisabled } from '../common/forms/validation';
-import { showModalForDelete } from '../common/modals/modal';
-import { resetEditQuizBtns } from '../common/utils';
+import { setDisabled, getInputValues } from '../common/forms/validation';
 import { getAccuracyRate } from '../common/utils';
 import type { Inputs } from '../common/types/inputs.type';
 import type { InputsCategory } from '../common/types/inputsCategory.type';
-import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
-import type { ListenerForShowModalForDeleteType } from '../common/types/listenerForShowModalForDelete.type';
 import type { FormElementsIrregularIndex3Type } from '../common/types/formElementsIrregularIndex3.type';
+import type { modalForDeleteElmsType } from '../common/types/modalForDeleteElms.type';
 
 export function getUpdatedCurrentVal<K extends keyof Inputs>(
   aIdx: number,
@@ -151,6 +151,63 @@ export function setIdx3SelectionPartOfQuizDetailAndValidation(
   }
 }
 
+export function setEventForDisplayDetail(
+  aQuizData: Map<number, Inputs>,
+  aQuizCategory: Map<number, InputsCategory>,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aButtonSaveElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
+) {
+  const listDetailButtonElms = document.querySelectorAll(
+    '.js-listDetailButton'
+  );
+
+  listDetailButtonElms.forEach((elm) => {
+    elm.addEventListener('click', function (e) {
+      const quizCategory =
+        aButtonSaveElm.dataset.iscategorynameupdated === 'true'
+          ? getDataFromLocalStorage('quizCategory')
+          : aQuizCategory;
+      aListDivElms[0].classList.add('d-none');
+      aListDivElms[1].classList.remove('d-none');
+
+      const key = parseInt(
+        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0',
+        10
+      );
+      let currentVal: Inputs | undefined = aQuizData.get(key);
+      (aListDivElms[1] as HTMLElement).dataset.key = String(key);
+
+      if (currentVal) {
+        displayDetail(
+          currentVal,
+          aCurrentValKeys,
+          aListDdElms as NodeListOf<HTMLButtonElement>,
+          quizCategory,
+          aSectionElms,
+          aButtonSaveElm,
+          aButtonCancelElm,
+          aListDtElms,
+          aDivIdx3DivElms,
+          aListDivElms
+        );
+      }
+    });
+  });
+
+  aButtonBackToListElms.forEach((elm) => {
+    if (elm.classList.contains('js-questionIsUpdated')) {
+      elm.classList.remove('js-questionIsUpdated');
+    }
+  });
+}
+
 export function displayDetail(
   aCurrentVal: Inputs,
   aCurrentValKeys: (keyof Inputs)[],
@@ -160,7 +217,8 @@ export function displayDetail(
   aButtonSaveElm: HTMLButtonElement,
   aButtonCancelElm: HTMLButtonElement,
   aListDtElms: NodeListOf<HTMLElement>,
-  aDivIdx3DivElms: NodeListOf<HTMLElement>
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aListDivElms: NodeListOf<HTMLElement>
 ) {
   const formElementsArray = getFormElements(
     aQuizCategory,
@@ -174,7 +232,7 @@ export function displayDetail(
 
   let detailTypeElm: HTMLSelectElement | null = null;
 
-  aCurrentValKeys.forEach((_, idx: number) => {
+  aListDdElms.forEach((_, idx: number) => {
     const divElms =
       idx !== 3
         ? aListDdElms[idx].querySelectorAll('div')
@@ -246,7 +304,8 @@ export function displayDetail(
             aListDdElms,
             divElms[1] as HTMLElement,
             aButtonSaveElm,
-            aButtonCancelElm
+            aButtonCancelElm,
+            aListDivElms
           );
         } else {
           divElms[1].innerHTML = formElements[idx];
@@ -315,20 +374,22 @@ export function displayDetail(
   });
 
   // validation for 2 selects
-  const selectElms = document.querySelectorAll('.js-listDl .js-formSelect');
-  const selectElmIndices = [0, 5];
-  const keyIndices = ['category', 'priority'];
-  selectElms.forEach((elm, idx) => {
-    elm.addEventListener('change', function (e: Event) {
-      const targetSelectElm = e.currentTarget as HTMLTextAreaElement;
-      const dtIdx = selectElmIndices[idx];
-      const buttonElm = aListDtElms[dtIdx].querySelector('button');
-      if (buttonElm) {
-        const key = keyIndices[idx];
-        buttonElm.disabled =
-          aCurrentVal[key as keyof Inputs] === targetSelectElm.value;
-      }
-    });
+
+  aListDdElms[0].addEventListener('change', function (e) {
+    const targetSelectElm = e.target as HTMLSelectElement;
+    const buttonElm = aListDtElms[0].querySelector('button');
+    if (buttonElm) {
+      buttonElm.disabled = aCurrentVal.category === targetSelectElm.value;
+    }
+  });
+
+  const prioritySelectForQuizDetailElm = aListDdElms[5].querySelector('select');
+  prioritySelectForQuizDetailElm?.addEventListener('change', function (e) {
+    const targetSelectElm = e.currentTarget as HTMLSelectElement;
+    const buttonElm = aListDtElms[5].querySelector('button');
+    if (buttonElm) {
+      buttonElm.disabled = aCurrentVal.priority === targetSelectElm.value;
+    }
   });
 
   // validation for idx1 & idx3
@@ -344,7 +405,7 @@ export function displayDetail(
   if (detailTypeElm !== null) {
     detailTypeElm.addEventListener('change', function (e: Event) {
       resetIdx3Form(aCurrentVal, 1);
-      targetSelectElm = e.currentTarget as HTMLTextAreaElement;
+      targetSelectElm = e.currentTarget as HTMLSelectElement;
       if (editButton1Elm) {
         isTypeChanged = aCurrentVal.type !== targetSelectElm.value;
         editButton1Elm.disabled = !isTypeChanged;
@@ -373,33 +434,9 @@ export function displayDetail(
   });
 }
 
-const setEventForBackToListPage = (aListDivElms: NodeListOf<HTMLElement>) => {
-  const buttonBackToListElms = document.querySelectorAll(
-    '.js-buttonBackToList'
-  );
-
-  buttonBackToListElms.forEach((elm) => {
-    elm.addEventListener('click', function () {
-      aListDivElms[0].classList.remove('d-none');
-      aListDivElms[1].classList.add('d-none');
-      resetEditQuizBtns(false);
-    });
-  });
-};
-
 export function displayList(
   aQuizData: Map<number, Inputs>,
-  aQuizCategory: Map<number, InputsCategory>,
-  aListDivElms: NodeListOf<Element>,
-  aListUlElm: HTMLElement,
-  aModalForDeleteElms: modalForDeleteElmsType,
-  aCurrentValKeys: (keyof Inputs)[],
-  aBsModal: bootstrap.Modal,
-  aSectionElms: NodeListOf<HTMLElement>,
-  aButtonSaveElm: HTMLButtonElement,
-  aButtonCancelElm: HTMLButtonElement,
-  aListDtElms: NodeListOf<HTMLElement>,
-  aDivIdx3DivElms: NodeListOf<HTMLElement>
+  aListUlElm: HTMLElement
 ) {
   let liHtml = '';
   [...aQuizData].forEach(([idx, val]) => {
@@ -410,75 +447,25 @@ export function displayList(
               </li>`;
   });
   aListUlElm.innerHTML = liHtml;
-  const listDdElms = document.querySelectorAll('.js-listDd');
-
-  const listDetailButtonElms = document.querySelectorAll(
-    '.js-listDetailButton'
-  );
-
-  listDetailButtonElms.forEach((elm) => {
-    elm.addEventListener('click', function (e) {
-      const quizCategory = aButtonSaveElm.classList.contains(
-        'js-categoryNameIsUpdated'
-      )
-        ? getDataFromLocalStorage('quizCategory')
-        : aQuizCategory;
-      aListDivElms[0].classList.add('d-none');
-      aListDivElms[1].classList.remove('d-none');
-
-      const key = parseInt(
-        (e.currentTarget as HTMLButtonElement).dataset.key ?? '0',
-        10
-      );
-      let currentVal: Inputs | undefined = aQuizData.get(key);
-      (aListDivElms[1] as HTMLElement).dataset.key = String(key);
-
-      if (currentVal) {
-        displayDetail(
-          currentVal,
-          aCurrentValKeys,
-          listDdElms as NodeListOf<HTMLButtonElement>,
-          quizCategory,
-          aSectionElms,
-          aButtonSaveElm,
-          aButtonCancelElm,
-          aListDtElms,
-          aDivIdx3DivElms
-        );
-      }
-    });
-  });
-
-  setEventForBackToListPage(aListDivElms as NodeListOf<HTMLElement>);
-
-  const handleEventForshowModalForDelete: ListenerForShowModalForDeleteType['handleEvent'] =
-    function (this: any) {
-      showModalForDelete(
-        this.targetInputElm,
-        this.modalForDeleteElms,
-        this.listDdElms,
-        this.bsModal
-      );
-    };
-
-  const listener = {
-    targetInputElm: null,
-    modalForDeleteElms: aModalForDeleteElms,
-    listDdElms: listDdElms,
-    bsModal: aBsModal,
-    handleEvent: handleEventForshowModalForDelete,
-  };
-
-  const buttonDeleteQuizElm = document.querySelector('.js-buttonDeleteQuiz');
-  buttonDeleteQuizElm?.removeEventListener('click', listener, false);
-  buttonDeleteQuizElm?.addEventListener('click', listener, false);
 }
 
 export function resetIsActiveInTheCategoryData(
   aQuizData: Map<number, Inputs>,
   aQuizCategory: Map<number, InputsCategory>,
   aButtonSaveElm: HTMLButtonElement,
-  aInputCategoryAreaElm: HTMLElement
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aBsModal: bootstrap.Modal,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aCurrentValKeys: (keyof Inputs)[],
+  aListDdElms: NodeListOf<HTMLElement>,
+  aListDtElms: NodeListOf<HTMLElement>,
+  aDivIdx3DivElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>
 ) {
   let activeCategoryKeys: string[] = [];
   aQuizData.forEach((val: Inputs) => {
@@ -486,11 +473,10 @@ export function resetIsActiveInTheCategoryData(
       activeCategoryKeys.push(val.category);
     }
   });
-  const quizCategory = aButtonSaveElm.classList.contains(
-    'js-categoryNameIsUpdated'
-  )
-    ? getDataFromLocalStorage('quizCategory')
-    : aQuizCategory;
+  const quizCategory =
+    aButtonSaveElm.dataset.iscategorynameupdated === 'true'
+      ? getDataFromLocalStorage('quizCategory')
+      : aQuizCategory;
   const activeCategoryKeysSet = new Set(activeCategoryKeys);
   quizCategory.forEach((val, key) => {
     val.isActive = false;
@@ -505,6 +491,31 @@ export function resetIsActiveInTheCategoryData(
   if (aInputCategoryAreaElm !== null) {
     aInputCategoryAreaElm.innerHTML = getCategoryInputHTML(quizCategory);
   }
+  const inputCategoryElms: NodeListOf<HTMLInputElement> =
+    aInputCategoryAreaElm?.querySelectorAll('input');
+  const initialInputValues: string[] = getInputValues(
+    inputCategoryElms as NodeListOf<HTMLInputElement>,
+    true
+  );
+  editOrDeleteCategoryNamesAndSetValidationForInput(
+    aQuizData,
+    quizCategory,
+    aInputCategoryAreaElm,
+    aButtonAddInputElm,
+    initialInputValues,
+    aButtonCancelElm,
+    aButtonSaveElm,
+    aModalForDeleteElms,
+    aBsModal,
+    aSectionElms,
+    aListDivElms,
+    aListUlElm,
+    aCurrentValKeys,
+    aListDdElms,
+    aListDtElms,
+    aDivIdx3DivElms,
+    aButtonBackToListElms
+  );
   // reset category inputs : end
 }
 
@@ -564,7 +575,16 @@ export function editQuizData(
   aButtonSaveElm: HTMLButtonElement,
   aDivIdx3Elms: NodeListOf<HTMLElement>,
   aDivIdx3DivElms: NodeListOf<HTMLElement>,
-  aInputCategoryAreaElm: HTMLElement
+  aInputCategoryAreaElm: HTMLElement,
+  aButtonAddInputElm: HTMLButtonElement,
+  aButtonCancelElm: HTMLButtonElement,
+  aModalForDeleteElms: modalForDeleteElmsType,
+  aBsModal: bootstrap.Modal,
+  aSectionElms: NodeListOf<HTMLElement>,
+  aButtonBackToListElms: NodeListOf<HTMLButtonElement>,
+  aListDivElms: NodeListOf<HTMLElement>,
+  aListUlElm: HTMLElement,
+  aListDtElms: NodeListOf<HTMLElement>
 ) {
   let quizCategory = aQuizCategory;
   let isUnderEdit = false;
@@ -608,15 +628,6 @@ export function editQuizData(
           );
           elm.textContent = '上書きする';
           elm.disabled = true;
-
-          const cancelBtnElms = document.querySelectorAll('.btn-secondary');
-          if (cancelBtnElms) {
-            cancelBtnElms.forEach((elm) => {
-              if (elm) {
-                elm.remove();
-              }
-            });
-          }
 
           cancelBtnElm = document.createElement('button');
           cancelBtnElm.textContent = 'キャンセル';
@@ -675,11 +686,15 @@ export function editQuizData(
         } else if (currentVal) {
           // when clicking save button
           // save a new value
-          quizCategory = aButtonSaveElm.classList.contains(
-            'js-categoryNameIsUpdated'
-          )
-            ? getDataFromLocalStorage('quizCategory')
-            : aQuizCategory;
+          quizCategory =
+            aButtonSaveElm.dataset.iscategorynameupdated === 'true'
+              ? getDataFromLocalStorage('quizCategory')
+              : aQuizCategory;
+          if (idx === 2) {
+            aButtonBackToListElms.forEach((elm) => {
+              elm.classList.add('js-questionIsUpdated');
+            });
+          }
           if (idx === 1 || idx === 3) {
             if (currentVal.type === 'trueOrFalse') {
               const formAnswerRadioElms = document.querySelectorAll(
@@ -738,7 +753,19 @@ export function editQuizData(
               aQuizData,
               aQuizCategory,
               aButtonSaveElm,
-              aInputCategoryAreaElm
+              aInputCategoryAreaElm,
+              aButtonAddInputElm,
+              aButtonCancelElm,
+              aModalForDeleteElms,
+              aBsModal,
+              aSectionElms,
+              aListDivElms,
+              aListUlElm,
+              aCurrentValKeys,
+              aListDdElms,
+              aListDtElms,
+              aDivIdx3DivElms,
+              aButtonBackToListElms
             );
           }
 
