@@ -50,7 +50,7 @@ export default function QuestionDetail({
   const [options, setOptions] = useState<
     { isActive: boolean; value: string }[]
   >(
-    selectedVal?.options ?? [
+    structuredClone(selectedVal?.options) ?? [
       { isActive: false, value: "" },
       { isActive: false, value: "" },
     ],
@@ -72,6 +72,8 @@ export default function QuestionDetail({
 
   const [isChangedForAnswersInEditMode, setIsChangedForAnswersInEditMode] =
     useState<boolean>(false);
+  const [isCanceledForIndex1, setIsCanceledForIndex1] =
+    useState<boolean>(false);
 
   const handleIsDisabled = (
     aIsUnderEdit?: boolean,
@@ -81,6 +83,7 @@ export default function QuestionDetail({
     aNumberOfOptions?: number,
     aDisplayAnswersForSelection?: string,
     aAreAnswersChanged?: boolean,
+    aIsCanceled?: boolean,
   ) => {
     if (aIsUnderEdit !== undefined) {
       setIsDisabled(aIsUnderEdit);
@@ -106,6 +109,10 @@ export default function QuestionDetail({
     }
     if (aAreAnswersChanged !== undefined) {
       setIsChangedForAnswersInEditMode(aAreAnswersChanged);
+    }
+    if (aIsCanceled !== undefined) {
+      // when property==='type'
+      setIsCanceledForIndex1(true);
     }
   };
 
@@ -155,6 +162,8 @@ export default function QuestionDetail({
         displayAnswersForSelectionForIndex1={
           displayAnswersForSelectionForIndex1
         }
+        isCanceledForIndex1={isCanceledForIndex1}
+        setIsCanceledForIndex1={setIsCanceledForIndex1}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}

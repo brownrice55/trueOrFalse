@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
 import FormgroupTextarea from "./formgroups/FormgroupTextarea";
@@ -22,6 +22,7 @@ type QuestionDetailPartsProps = {
     value5: number | undefined,
     value6: string | undefined,
     aAreAnswersChanged?: boolean,
+    aIsCanceled?: boolean,
   ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
@@ -33,6 +34,8 @@ type QuestionDetailPartsProps = {
   displayAnswersForSelectionForIndex1?: string;
   isChangedForAnswersInEditMode?: boolean;
   setIsChangedForAnswersInEditMode?: Dispatch<SetStateAction<boolean>>;
+  isCanceledForIndex1?: boolean;
+  setIsCanceledForIndex1?: Dispatch<SetStateAction<boolean>>;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -49,7 +52,10 @@ export default function QuestionDetailParts({
   displayAnswersForSelectionForIndex1,
   isChangedForAnswersInEditMode,
   setIsChangedForAnswersInEditMode,
+  isCanceledForIndex1,
+  setIsCanceledForIndex1,
 }: QuestionDetailPartsProps) {
+  const originalVal = useRef(structuredClone(originalSelectedVal));
   const { data, setData } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
     originalSelectedVal,
@@ -66,7 +72,7 @@ export default function QuestionDetailParts({
   const [options, setOptions] = useState<
     { isActive: boolean; value: string }[]
   >(
-    selectedVal?.options ?? [
+    structuredClone(selectedVal?.options) ?? [
       { isActive: false, value: "" },
       { isActive: false, value: "" },
     ],
@@ -89,12 +95,14 @@ export default function QuestionDetailParts({
     );
   };
 
+  const [isOverWrite, setIsOverWrite] = useState<boolean>(false);
   const handleOverwrite = (
     e: React.MouseEvent<HTMLButtonElement>,
     aFormType: string,
     aProperty: string,
   ) => {
     setReset(true);
+    setIsOverWrite(true);
     const targetElm =
       e.currentTarget?.parentNode?.parentNode?.parentNode?.querySelector(
         aFormType,
@@ -185,7 +193,11 @@ export default function QuestionDetailParts({
   const handleCancel = (aProperty: string) => {
     setReset(true);
     setIsUnderEdit((prev) => !prev);
+    if (formInfo[3] === "answer" && originalSelectedVal) {
+      setOptions(originalSelectedVal?.options);
+    }
     const isFormOpened = aProperty === "type" ? false : undefined;
+    const isCanceled = aProperty === "type" ? true : undefined;
     onUpdate(
       !isUnderEdit,
       typeValue,
@@ -193,6 +205,8 @@ export default function QuestionDetailParts({
       undefined,
       undefined,
       undefined,
+      undefined,
+      isCanceled,
     );
   };
 
@@ -243,24 +257,22 @@ export default function QuestionDetailParts({
     }
     // property===type
     if (formInfo[3] === "type") {
-      const newVal = { ...selectedVal } as Inputs;
-      newVal.type = typeValue as number;
-      if (!typeValue) {
-        // trueOrFalse
-        if (answerArrayForIndex1) {
+      const newVal = { ...selectedVal, type: typeValue } as Inputs;
+      if (isOverWrite) {
+        if (typeValue === 0 && answerArrayForIndex1) {
+          // trueOrFalse
           newVal.answer = answerArrayForIndex1;
-        }
-      } else {
-        // selection
-        if (optionsForIndex1) {
+        } else if (typeValue === 1 && optionsForIndex1) {
+          // selection
           setOptions(optionsForIndex1);
         }
+        data.set(selectedKey, newVal);
+        setData(data);
+        setSelectedVal(newVal);
+        localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
+        setLookupKey(newVal?.["type"]);
+        setIsOverWrite(false);
       }
-      data.set(selectedKey, newVal);
-      setData(data);
-      setSelectedVal(newVal);
-      localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
-      setLookupKey(newVal?.["type"]);
     } else if (formInfo[3] === "answer") {
       if (displayAnswersForSelectionForIndex1) {
         setDisplayAnswersForSelection(displayAnswersForSelectionForIndex1);
@@ -271,6 +283,7 @@ export default function QuestionDetailParts({
     typeValue,
     displayAnswersForSelectionForIndex1,
     optionsForIndex1,
+    isOverWrite,
   ]);
 
   const handleSelectValidation = (aIsChanged: boolean) => {
@@ -306,6 +319,17 @@ export default function QuestionDetailParts({
       setReset(false);
     }
   }, [reset]);
+
+  useEffect(() => {
+    if (isCanceledForIndex1 && originalVal.current) {
+      setOptions(originalVal?.current?.options);
+      if (setIsCanceledForIndex1) {
+        setIsCanceledForIndex1(false);
+      }
+    } else {
+      originalVal.current = structuredClone(originalSelectedVal);
+    }
+  }, [isCanceledForIndex1]);
 
   return (
     <>
