@@ -56,23 +56,11 @@ export default function QuestionDetail({
     ],
   );
 
-  const [
-    displayAnswersForSelectionForIndex1,
-    setDisplayAnswersForSelectionForIndex1,
-  ] = useState<string>(
-    selectedVal?.type
-      ? selectedVal.options
-        ? selectedVal.options
-            .filter((val) => val.isActive)
-            .map((val) => val.value)
-            .join("、")
-        : ""
-      : "",
-  );
-
   const [isChangedForAnswersInEditMode, setIsChangedForAnswersInEditMode] =
     useState<boolean>(false);
   const [isCanceledForIndex1, setIsCanceledForIndex1] =
+    useState<boolean>(false);
+  const [isOverwirttenForIndex1, setIsOverwirttenForIndex1] =
     useState<boolean>(false);
 
   const handleIsDisabled = (
@@ -81,9 +69,9 @@ export default function QuestionDetail({
     aIsFormOpened?: boolean,
     aAnswerArray?: boolean[] | { isActive: boolean; value: string }[],
     aNumberOfOptions?: number,
-    aDisplayAnswersForSelection?: string,
     aAreAnswersChanged?: boolean,
     aIsCanceled?: boolean,
+    aIsOverwirtten?: boolean,
   ) => {
     if (aIsUnderEdit !== undefined) {
       setIsDisabled(aIsUnderEdit);
@@ -104,15 +92,16 @@ export default function QuestionDetail({
     if (aNumberOfOptions !== undefined) {
       setNumberOfOptions(aNumberOfOptions);
     }
-    if (aDisplayAnswersForSelection !== undefined) {
-      setDisplayAnswersForSelectionForIndex1(aDisplayAnswersForSelection);
-    }
     if (aAreAnswersChanged !== undefined) {
       setIsChangedForAnswersInEditMode(aAreAnswersChanged);
     }
     if (aIsCanceled !== undefined) {
       // when property==='type'
       setIsCanceledForIndex1(true);
+    }
+    if (aTypeValue !== undefined && aIsOverwirtten !== undefined) {
+      setIsOverwirttenForIndex1(aIsOverwirtten);
+      setTypeValue(aTypeValue);
     }
   };
 
@@ -159,11 +148,10 @@ export default function QuestionDetail({
         typeValue={typeValue}
         answerArrayForIndex1={answerArray}
         numberOfOptions={numberOfOptions}
-        displayAnswersForSelectionForIndex1={
-          displayAnswersForSelectionForIndex1
-        }
         isCanceledForIndex1={isCanceledForIndex1}
         setIsCanceledForIndex1={setIsCanceledForIndex1}
+        isOverwirttenForIndex1={isOverwirttenForIndex1}
+        setIsOverwirttenForIndex1={setIsOverwirttenForIndex1}
       />
       <QuestionDetailParts
         selectedKey={selectedKey}

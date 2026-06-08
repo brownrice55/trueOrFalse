@@ -20,9 +20,9 @@ type QuestionDetailPartsProps = {
     value3: boolean | undefined,
     value4: boolean[] | { isActive: boolean; value: string }[] | undefined,
     value5: number | undefined,
-    value6: string | undefined,
     aAreAnswersChanged?: boolean,
     aIsCanceled?: boolean,
+    aIsOverwritten?: boolean,
   ) => void;
   formType: string;
   formInfo: [any, any, string, keyof InputsOmit];
@@ -31,11 +31,12 @@ type QuestionDetailPartsProps = {
   answerArrayForIndex1?: boolean[];
   numberOfOptions?: number;
   optionsForIndex1?: { isActive: boolean; value: string }[];
-  displayAnswersForSelectionForIndex1?: string;
   isChangedForAnswersInEditMode?: boolean;
   setIsChangedForAnswersInEditMode?: Dispatch<SetStateAction<boolean>>;
   isCanceledForIndex1?: boolean;
   setIsCanceledForIndex1?: Dispatch<SetStateAction<boolean>>;
+  isOverwirttenForIndex1?: boolean;
+  setIsOverwirttenForIndex1?: Dispatch<SetStateAction<boolean>>;
 };
 export default function QuestionDetailParts({
   selectedKey,
@@ -49,17 +50,19 @@ export default function QuestionDetailParts({
   answerArrayForIndex1,
   numberOfOptions,
   optionsForIndex1,
-  displayAnswersForSelectionForIndex1,
   isChangedForAnswersInEditMode,
   setIsChangedForAnswersInEditMode,
   isCanceledForIndex1,
   setIsCanceledForIndex1,
+  isOverwirttenForIndex1,
+  setIsOverwirttenForIndex1,
 }: QuestionDetailPartsProps) {
   const originalVal = useRef(structuredClone(originalSelectedVal));
   const { data, setData } = useContext(DataContext) as DataContextType;
   const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
     originalSelectedVal,
   );
+
   const [isUnderEdit, setIsUnderEdit] = useState<boolean>(false);
   const [questionTypeNumber, setQuestionTypeNumber] = useState<
     number | undefined
@@ -80,7 +83,16 @@ export default function QuestionDetailParts({
 
   const [displayAnswersForSelection, setDisplayAnswersForSelection] = useState<
     string | undefined
-  >(displayAnswersForSelectionForIndex1);
+  >(
+    selectedVal?.type
+      ? selectedVal.options
+        ? selectedVal.options
+            .filter((val) => val.isActive)
+            .map((val) => val.value)
+            .join("、")
+        : ""
+      : "",
+  );
 
   const handleEdit = (aProperty: string) => {
     setIsUnderEdit((prev) => !prev);
@@ -92,73 +104,64 @@ export default function QuestionDetailParts({
       undefined,
       undefined,
       undefined,
+      undefined,
+      undefined,
     );
   };
 
-  const [isOverWrite, setIsOverWrite] = useState<boolean>(false);
+  const [isOverwritten, setIsOverwritten] = useState<boolean>(false);
   const handleOverwrite = (
     e: React.MouseEvent<HTMLButtonElement>,
     aFormType: string,
     aProperty: string,
   ) => {
     setReset(true);
-    setIsOverWrite(true);
+    setIsOverwritten(true);
     const targetElm =
       e.currentTarget?.parentNode?.parentNode?.parentNode?.querySelector(
         aFormType,
       ) as HTMLSelectElement | HTMLTextAreaElement;
     if (selectedVal) {
-      const newVal = { ...selectedVal } as Inputs;
+      let newVal: Inputs;
       if (aProperty !== "type" && aProperty !== "answer") {
-        (newVal as any)[aProperty] =
-          aProperty === "category" || aProperty === "priority"
-            ? (parseInt(targetElm.value) as number)
-            : (targetElm?.value as string);
+        newVal = {
+          ...selectedVal,
+          [aProperty]:
+            aProperty === "category" || aProperty === "priority"
+              ? (parseInt(targetElm.value) as number)
+              : (targetElm?.value as string),
+        };
       } else {
         if (aProperty === "type") {
-          newVal.type = parseInt(targetElm.value);
-          if (newVal.type === 0) {
-            onUpdate(
-              undefined,
-              newVal.type,
-              undefined,
-              answerArray,
-              undefined,
-              undefined,
-            );
-          } else {
-            const newDisplayAnswersForSelection = selectedVal?.type
-              ? selectedVal.options
-                ? selectedVal.options
-                    .filter((val) => val.isActive)
-                    .map((val) => val.value)
-                    .join("、")
-                : ""
-              : "";
-            onUpdate(
-              undefined,
-              newVal.type,
-              undefined,
-              undefined,
-              undefined,
-              newDisplayAnswersForSelection,
-            );
-          }
+          newVal = {
+            ...selectedVal,
+            type: parseInt(targetElm.value),
+          };
+          onUpdate(
+            undefined,
+            newVal.type,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            true,
+          );
         } else {
           // aProperty === answer
-          newVal.answer =
-            typeValue === 0 ? (answerArray as boolean[]) : [true, false];
-          newVal.numberOfOptions = (
-            typeValue === 1 ? numberOfOptions : 2
-          ) as number;
-          newVal.options = (
-            typeValue === 1
-              ? options
-              : [
-                  { isActive: false, value: "" },
-                  { isActive: false, value: "" },
-                ]
-          ) as { isActive: boolean; value: string }[];
+          newVal = {
+            ...selectedVal,
+            answer:
+              typeValue === 0 ? (answerArray as boolean[]) : [true, false],
+            numberOfOptions: typeValue === 1 ? (numberOfOptions as number) : 2,
+            options:
+              typeValue === 1
+                ? options
+                : [
+                    { isActive: false, value: "" },
+                    { isActive: false, value: "" },
+                  ],
+          };
           if (typeValue === 1) {
             const newDisplayAnswersForSelection = typeValue
               ? newVal.options
@@ -168,7 +171,6 @@ export default function QuestionDetailParts({
                     .join("、")
                 : ""
               : "";
-
             setDisplayAnswersForSelection(newDisplayAnswersForSelection);
           }
         }
@@ -187,7 +189,16 @@ export default function QuestionDetailParts({
         ? parseInt(targetElm.value)
         : undefined;
     const isFormOpened = aProperty === "type" ? false : undefined;
-    onUpdate(!isUnderEdit, type, isFormOpened, undefined, undefined, undefined);
+    onUpdate(
+      !isUnderEdit,
+      type,
+      isFormOpened,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    );
   };
 
   const handleCancel = (aProperty: string) => {
@@ -205,7 +216,6 @@ export default function QuestionDetailParts({
       undefined,
       undefined,
       undefined,
-      undefined,
       isCanceled,
     );
   };
@@ -219,7 +229,16 @@ export default function QuestionDetailParts({
   >(selectedVal?.[formInfo[3]]);
 
   const handleSwitchTypeForAnswers = (aTypeValue: number) => {
-    onUpdate(undefined, aTypeValue, undefined, undefined, undefined, undefined);
+    onUpdate(
+      undefined,
+      aTypeValue,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    );
   };
 
   const handleUpdateFromAnswerForm = (
@@ -227,14 +246,7 @@ export default function QuestionDetailParts({
     aAnswerArray: boolean[] | { isActive: boolean; value: string }[],
     aNumberOfOptions: number,
   ) => {
-    onUpdate(
-      undefined,
-      aTypeValue,
-      undefined,
-      aAnswerArray,
-      aNumberOfOptions,
-      undefined,
-    );
+    onUpdate(undefined, aTypeValue, undefined, aAnswerArray, aNumberOfOptions);
   };
 
   useEffect(() => {
@@ -258,7 +270,7 @@ export default function QuestionDetailParts({
     // property===type
     if (formInfo[3] === "type") {
       const newVal = { ...selectedVal, type: typeValue } as Inputs;
-      if (isOverWrite) {
+      if (isOverwritten) {
         if (typeValue === 0 && answerArrayForIndex1) {
           // trueOrFalse
           newVal.answer = answerArrayForIndex1;
@@ -270,21 +282,40 @@ export default function QuestionDetailParts({
         setData(data);
         setSelectedVal(newVal);
         localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
-        setLookupKey(newVal?.["type"]);
-        setIsOverWrite(false);
-      }
-    } else if (formInfo[3] === "answer") {
-      if (displayAnswersForSelectionForIndex1) {
-        setDisplayAnswersForSelection(displayAnswersForSelectionForIndex1);
+        setLookupKey(newVal?.type);
+        setIsOverwritten(false);
       }
     }
-  }, [
-    answerArrayForIndex1,
-    typeValue,
-    displayAnswersForSelectionForIndex1,
-    optionsForIndex1,
-    isOverWrite,
-  ]);
+  }, [answerArrayForIndex1, typeValue]);
+
+  // overwrite answers when clicking the overwrite button in the type section
+  useEffect(() => {
+    if (formInfo[3] === "answer" && isOverwirttenForIndex1) {
+      let newVal;
+      if (typeValue === 0) {
+        newVal = { ...selectedVal, answer: answerArray } as Inputs;
+      } else {
+        newVal = { ...selectedVal, options: options } as Inputs;
+        const newDisplayAnswersForSelection = typeValue
+          ? newVal.options
+            ? newVal.options
+                .filter((val) => val.isActive)
+                .map((val) => val.value)
+                .join("、")
+            : ""
+          : "";
+        setDisplayAnswersForSelection(newDisplayAnswersForSelection);
+      }
+      data.set(selectedKey, newVal);
+      setData(data);
+      setSelectedVal(newVal);
+      localStorage.setItem("TrueOrFalseData", JSON.stringify([...data]));
+      setLookupKey(newVal?.type);
+      if (setIsOverwirttenForIndex1) {
+        setIsOverwirttenForIndex1(false);
+      }
+    }
+  }, [isOverwirttenForIndex1]);
 
   const handleSelectValidation = (aIsChanged: boolean) => {
     setIsEditBtnDisabled(!aIsChanged);
@@ -301,7 +332,6 @@ export default function QuestionDetailParts({
       setIsEditBtnDisabled(!aAreAnswersChanged);
     } else {
       onUpdate(
-        undefined,
         undefined,
         undefined,
         undefined,
