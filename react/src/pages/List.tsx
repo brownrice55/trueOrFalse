@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import Header from "../components/Header";
 import QuestionList from "../components/QuestionList";
 
-export default function List() {
+function List() {
   const [isDetailPage, setIsDetailPage] = useState<boolean>(false);
 
-  const handleIsDetailPage = (aIsDetail: boolean) => {
+  const handleIsDetailPage = useCallback((aIsDetail: boolean) => {
     setIsDetailPage(aIsDetail);
-  };
+  }, []);
 
   return (
     <>
@@ -21,3 +21,5 @@ export default function List() {
     </>
   );
 }
+
+export default memo(List);

@@ -3,7 +3,17 @@ export const priorityOptionArray = ["低い", "普通", "高い"];
 export const answerArrayText = ["まる", "ばつ"];
 
 import { getCategories } from "./common";
-const originalCategories = getCategories();
-export const categoryNameArray = [...originalCategories.categories].map(
-  (val) => val.categoryName,
-);
+export const categoryNames =
+  getCategories()?.categories?.map((val) => val.categoryName) || [];
+
+export type textArraysType = {
+  category: string[];
+  type: string[];
+  priority: string[];
+};
+
+export const textArrays: textArraysType = {
+  category: categoryNames,
+  type: typeOptionArray,
+  priority: priorityOptionArray,
+};

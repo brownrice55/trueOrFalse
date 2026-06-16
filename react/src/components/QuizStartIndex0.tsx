@@ -2,7 +2,7 @@ import { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FormgroupSelect from "./formgroups/FormgroupSelect";
-import { typeOptionArray, categoryNameArray } from "../utils/labels";
+import { typeOptionArray, categoryNames } from "../utils/labels";
 import type { Inputs, InputsForResult } from "../types/inputs.type";
 
 type QuizStartIndex0Props = {
@@ -60,7 +60,7 @@ export default function QuizStartIndex0({
   return (
     <>
       <FormgroupSelect
-        textArray={categoryNameArray}
+        textArray={categoryNames}
         label={"カテゴリー"}
         name={"category"}
         selectedValue={100000}

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, memo, useCallback } from "react";
 import type { Inputs } from "../types/inputs.type";
 import QuestionDetail from "./QuestionDetail";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -9,24 +9,26 @@ type QuestionListProps = {
   onUpdate: (value: boolean) => void;
 };
 
-export default function QuestionList({ onUpdate }: QuestionListProps) {
+function QuestionList({ onUpdate }: QuestionListProps) {
   const { data, setData } = useContext(DataContext) as DataContextType;
   const [isListPage, setIsListPage] = useState<boolean>(true);
   const [selectedKey, setSelectedKey] = useState<number>(0);
-
-  const handleGoToDetail = (key: number) => {
+  const handleGoToDetail = useCallback((key: number) => {
     setIsListPage(false);
     setSelectedKey(key);
     onUpdate(true);
-  };
+  }, []);
 
-  const handleUpdateIsListPage = (aUpdatedData: Map<number, Inputs> | null) => {
-    setIsListPage(true);
-    onUpdate(false);
-    if (aUpdatedData) {
-      setData(aUpdatedData);
-    }
-  };
+  const handleUpdateIsListPage = useCallback(
+    (aUpdatedData: Map<number, Inputs> | null) => {
+      setIsListPage(true);
+      onUpdate(false);
+      if (aUpdatedData) {
+        setData(aUpdatedData);
+      }
+    },
+    [],
+  );
 
   return (
     <>
@@ -51,3 +53,5 @@ export default function QuestionList({ onUpdate }: QuestionListProps) {
     </>
   );
 }
+
+export default memo(QuestionList);

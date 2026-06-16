@@ -13,6 +13,7 @@ export type Inputs = {
 };
 
 export type InputsOmit = Omit<Inputs, "areCorrectAnswers">;
+export type OptionsType = Inputs["options"];
 
 export type InputsForResult = {
   id: number;

@@ -11,7 +11,7 @@ import Button from "react-bootstrap/Button";
 import {
   typeOptionArray,
   priorityOptionArray,
-  categoryNameArray,
+  categoryNames,
   answerArrayText,
 } from "../utils/labels";
 import type { Inputs } from "../types/inputs.type";
@@ -93,7 +93,7 @@ export default function FormSettings() {
     <Form onSubmit={handleSubmit(onsubmit, onerror)} noValidate>
       <FormgroupSelect
         register={register}
-        textArray={categoryNameArray}
+        textArray={categoryNames}
         label={"カテゴリー"}
         name={"category"}
         selectedValue={0}

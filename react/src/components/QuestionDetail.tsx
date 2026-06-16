@@ -1,202 +1,91 @@
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import QuestionDetailParts from "./QuestionDetailParts";
 import QuestionDetailPartsForCorrectAnswers from "./QuestionDetailPartsForCorrectAnswers";
-import { getCategories } from "../utils/common";
 import { DataContext } from "../contexts/context";
 import type { DataContextType } from "../types/dataContextType.type";
 import type { Inputs } from "../types/inputs.type";
-import { typeOptionArray, priorityOptionArray } from "../utils/labels";
 import Button from "react-bootstrap/Button";
 
 type QuestionDetailProps = {
   selectedKey: number;
   onUpdate: (updatedData: Map<number, Inputs> | null) => void;
 };
-export default function QuestionDetail({
-  selectedKey,
-  onUpdate,
-}: QuestionDetailProps) {
-  const { data, setData } = useContext(DataContext) as DataContextType;
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const selectedVal = data.get(selectedKey);
-  const [typeValue, setTypeValue] = useState<number | undefined>(
-    selectedVal?.type,
+function QuestionDetail({ selectedKey }: QuestionDetailProps) {
+  const { data } = useContext(DataContext) as DataContextType;
+  const [selectedVal, setSelectedVal] = useState<Inputs | undefined>(
+    data.get(selectedKey),
   );
-
-  const originalCategories = getCategories();
-  const categoryNameArray = [...originalCategories.categories].map(
-    (val) => val.categoryName,
-  );
-
-  const handleGoToList = () => {
-    onUpdate(null);
-  };
-
-  const handleDelete = () => {
-    const newMap = new Map(data);
-    newMap.delete(selectedKey);
-    localStorage.setItem("TrueOrFalseData", JSON.stringify([...newMap]));
-    setData(newMap);
-    onUpdate(newMap);
-  };
-
-  const [isIndex1UnderEdit, setIsIndex1UnderEdit] = useState<boolean>(false);
-  const [answerArray, setAnswerArray] = useState<boolean[]>(
-    selectedVal?.answer ?? [true, false],
-  );
-  const [numberOfOptions, setNumberOfOptions] = useState<number>(
-    selectedVal?.numberOfOptions ?? 2,
-  );
-  const [options, setOptions] = useState<
-    { isActive: boolean; value: string }[]
-  >(
-    structuredClone(selectedVal?.options) ?? [
-      { isActive: false, value: "" },
-      { isActive: false, value: "" },
-    ],
-  );
-
-  const [isChangedForAnswersInEditMode, setIsChangedForAnswersInEditMode] =
-    useState<boolean>(false);
-  const [isCanceledForIndex1, setIsCanceledForIndex1] =
-    useState<boolean>(false);
-  const [isOverwirttenForIndex1, setIsOverwirttenForIndex1] =
-    useState<boolean>(false);
-
-  const handleIsDisabled = (
-    aIsUnderEdit?: boolean,
-    aTypeValue?: number,
-    aIsFormOpened?: boolean,
-    aAnswerArray?: boolean[] | { isActive: boolean; value: string }[],
-    aNumberOfOptions?: number,
-    aAreAnswersChanged?: boolean,
-    aIsCanceled?: boolean,
-    aIsOverwirtten?: boolean,
-  ) => {
-    if (aIsUnderEdit !== undefined) {
-      setIsDisabled(aIsUnderEdit);
-    }
-    if (aTypeValue !== undefined) {
-      setTypeValue(aTypeValue);
-    }
-    if (aIsFormOpened !== undefined) {
-      setIsIndex1UnderEdit(aIsFormOpened);
-    }
-    if (aAnswerArray !== undefined) {
-      if (aTypeValue === 0) {
-        setAnswerArray(aAnswerArray as boolean[]);
-      } else if (aTypeValue === 1) {
-        setOptions(aAnswerArray as { isActive: boolean; value: string }[]);
-      }
-    }
-    if (aNumberOfOptions !== undefined) {
-      setNumberOfOptions(aNumberOfOptions);
-    }
-    if (aAreAnswersChanged !== undefined) {
-      setIsChangedForAnswersInEditMode(aAreAnswersChanged);
-    }
-    if (aIsCanceled !== undefined) {
-      // when property==='type'
-      setIsCanceledForIndex1(true);
-    }
-    if (aTypeValue !== undefined && aIsOverwirtten !== undefined) {
-      setIsOverwirttenForIndex1(aIsOverwirtten);
-      setTypeValue(aTypeValue);
-    }
-  };
 
   return (
     <>
       <QuestionDetailParts
+        nameJp="カテゴリー"
+        property="category"
+        formType="select"
         selectedKey={selectedKey}
-        originalSelectedVal={selectedVal}
-        isDisabled={isDisabled}
-        onUpdate={handleIsDisabled}
-        formType={"select"}
-        formInfo={[null, categoryNameArray, "カテゴリー", "category"]}
+        selectedVal={selectedVal as Inputs}
+        setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
       />
       <QuestionDetailParts
+        nameJp="クイズの種類"
+        property="type"
+        formType="select"
         selectedKey={selectedKey}
-        originalSelectedVal={selectedVal}
-        isDisabled={isDisabled}
-        onUpdate={handleIsDisabled}
-        formType={"select"}
-        formInfo={[null, typeOptionArray, "クイズの種類", "type"]}
-        answerArrayForIndex1={answerArray}
-        numberOfOptions={numberOfOptions}
-        optionsForIndex1={options}
-        typeValue={typeValue}
-        isChangedForAnswersInEditMode={isChangedForAnswersInEditMode}
-        setIsChangedForAnswersInEditMode={setIsChangedForAnswersInEditMode}
+        selectedVal={selectedVal as Inputs}
+        setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
       />
       <QuestionDetailParts
+        nameJp="問題"
+        property="question"
+        formType="textarea"
         selectedKey={selectedKey}
-        originalSelectedVal={selectedVal}
-        isDisabled={isDisabled}
-        onUpdate={handleIsDisabled}
-        formType={"textarea"}
-        formInfo={[null, [], "問題", "question"]}
+        selectedVal={selectedVal as Inputs}
+        setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
       />
       <QuestionDetailParts
+        nameJp="答え"
+        property="answer"
+        formType="answer"
         selectedKey={selectedKey}
-        originalSelectedVal={selectedVal}
-        isDisabled={isDisabled}
-        isIndex1UnderEdit={isIndex1UnderEdit}
-        onUpdate={handleIsDisabled}
-        formType={"answer"}
-        formInfo={[null, [], "答え", "answer"]}
-        typeValue={typeValue}
-        answerArrayForIndex1={answerArray}
-        numberOfOptions={numberOfOptions}
-        isCanceledForIndex1={isCanceledForIndex1}
-        setIsCanceledForIndex1={setIsCanceledForIndex1}
-        isOverwirttenForIndex1={isOverwirttenForIndex1}
-        setIsOverwirttenForIndex1={setIsOverwirttenForIndex1}
+        selectedVal={selectedVal as Inputs}
+        setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
       />
       <QuestionDetailParts
+        nameJp="解説"
+        property="explanation"
+        formType="textarea"
         selectedKey={selectedKey}
-        originalSelectedVal={selectedVal}
-        isDisabled={isDisabled}
-        onUpdate={handleIsDisabled}
-        formType={"textarea"}
-        formInfo={[null, [], "解説", "explanation"]}
+        selectedVal={selectedVal as Inputs}
+        setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
       />
       <QuestionDetailParts
+        nameJp="優先順位"
+        property="priority"
+        formType="select"
         selectedKey={selectedKey}
-        originalSelectedVal={selectedVal}
-        isDisabled={isDisabled}
-        onUpdate={handleIsDisabled}
-        formType={"select"}
-        formInfo={[null, priorityOptionArray, "優先順位", "priority"]}
+        selectedVal={selectedVal as Inputs}
+        setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
       />
       <QuestionDetailParts
+        nameJp="メモ"
+        property="notes"
+        formType="textarea"
         selectedKey={selectedKey}
-        originalSelectedVal={selectedVal}
-        isDisabled={isDisabled}
-        onUpdate={handleIsDisabled}
-        formType={"textarea"}
-        formInfo={[null, [], "メモ", "notes"]}
+        selectedVal={selectedVal as Inputs}
+        setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
       />
       <QuestionDetailPartsForCorrectAnswers originalSelectedVal={selectedVal} />
       <div className="text-center mt-5">
-        <Button
-          variant="primary"
-          className="py-2 px-3 me-3"
-          onClick={() => handleGoToList()}
-          disabled={isDisabled}
-        >
+        <Button variant="primary" className="py-2 px-3 me-3">
           一覧に戻る
         </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          className="py-2 px-3"
-          onClick={() => handleDelete()}
-          disabled={isDisabled}
-        >
+        <Button variant="primary" type="submit" className="py-2 px-3">
           削除する
         </Button>
       </div>
     </>
   );
 }
+
+export default memo(QuestionDetail);
