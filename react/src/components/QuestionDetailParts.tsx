@@ -1,4 +1,4 @@
-import { useState, useContext, memo } from "react";
+import { useState, useContext, memo, useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import FormgroupSelectForList from "./formgroups/FormgroupSelectForList";
 import FormgroupTextareaForList from "./formgroups/FormgroupTextareaForList";
@@ -114,6 +114,25 @@ function QuestionDetailParts({
     }
   };
 
+  const [displayAnswersForOptions, setDisplayAnswersForOptions] = useState<
+    string | undefined
+  >("");
+
+  useEffect(() => {
+    if (property === "answer") {
+      setDisplayAnswersForOptions(
+        selectedVal?.type
+          ? selectedVal.options
+            ? selectedVal.options
+                .filter((val) => val.isActive)
+                .map((val) => val.value)
+                .join("、")
+            : ""
+          : "",
+      );
+    }
+  }, [selectedVal.options]);
+
   return (
     <>
       <div>
@@ -182,7 +201,11 @@ function QuestionDetailParts({
                   ? textArrays[property as keyof textArraysType][
                       selectedVal[property as keyof Inputs] as number
                     ]
-                  : "test"}
+                  : !selectedVal.type
+                    ? selectedVal.answer[0]
+                      ? "まる"
+                      : "ばつ"
+                    : displayAnswersForOptions}
             </div>
           )}
         </Row>
