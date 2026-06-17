@@ -23,13 +23,11 @@ function FormgroupForAnswer({
   answer,
   onUpdate,
 }: FormgroupForAnswerProps) {
-  const handleAnswer = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    aProperty: string,
-  ) => {
-    const targetValue = e.currentTarget.value;
+  const handleAnswer = (aIndex: number, aProperty: string) => {
+    const resetAnswer = Array(2).fill(false);
+    resetAnswer[aIndex] = true;
     if (onUpdate) {
-      onUpdate(targetValue, undefined, aProperty);
+      onUpdate(resetAnswer, undefined, aProperty);
     }
   };
 
@@ -67,7 +65,7 @@ function FormgroupForAnswer({
             label={val}
             className="pe-4"
             checked={answer[index]}
-            onChange={(e) => handleAnswer(e, "answer")}
+            onChange={() => handleAnswer(index, "answer")}
           />
         ))}
       </div>

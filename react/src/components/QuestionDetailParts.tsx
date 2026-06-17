@@ -52,7 +52,7 @@ function QuestionDetailParts({
     setIsDisabled(true);
 
     const newVal =
-      property === "answer" || selectedVal.type === 1
+      property === "answer" && selectedVal.type === 1
         ? {
             ...selectedVal,
             numberOfOptions: numberOfOptions,
@@ -114,13 +114,12 @@ function QuestionDetailParts({
     }
   };
 
-  const [displayAnswersForOptions, setDisplayAnswersForOptions] = useState<
+  const [displayAnswersForSelection, setDisplayAnswersForSelection] = useState<
     string | undefined
   >("");
-
   useEffect(() => {
     if (property === "answer") {
-      setDisplayAnswersForOptions(
+      setDisplayAnswersForSelection(
         selectedVal?.type
           ? selectedVal.options
             ? selectedVal.options
@@ -132,6 +131,14 @@ function QuestionDetailParts({
       );
     }
   }, [selectedVal.options]);
+
+  const [displayAnswerForTrueOrFalse, setDisplayAnswerForTrueOrFalse] =
+    useState<string | undefined>("");
+  useEffect(() => {
+    if (property === "answer") {
+      setDisplayAnswerForTrueOrFalse(selectedVal.answer[0] ? "まる" : "ばつ");
+    }
+  }, [selectedVal.answer]);
 
   return (
     <>
@@ -202,10 +209,8 @@ function QuestionDetailParts({
                       selectedVal[property as keyof Inputs] as number
                     ]
                   : !selectedVal.type
-                    ? selectedVal.answer[0]
-                      ? "まる"
-                      : "ばつ"
-                    : displayAnswersForOptions}
+                    ? displayAnswerForTrueOrFalse
+                    : displayAnswersForSelection}
             </div>
           )}
         </Row>
