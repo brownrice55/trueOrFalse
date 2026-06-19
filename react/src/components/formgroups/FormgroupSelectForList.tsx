@@ -23,7 +23,7 @@ function FormgroupSelectForList({
   return (
     <Form.Group className="mb-3">
       <Form.Select id={property} value={value} onChange={handleOnChange}>
-        <option value="100000">指定しない</option>
+        {property !== "priority" && <option value="100000">指定しない</option>}
         {(textArrays[property as keyof textArraysType] as string[]).map(
           (val: string, index: number) => (
             <option value={index} key={index}>
@@ -31,8 +31,8 @@ function FormgroupSelectForList({
             </option>
           ),
         )}
-        {property === "カテゴリー" && (
-          <option value="">カテゴリーを追加する</option>
+        {property === "category" && (
+          <option value="200000">カテゴリーを追加する</option>
         )}
       </Form.Select>
     </Form.Group>

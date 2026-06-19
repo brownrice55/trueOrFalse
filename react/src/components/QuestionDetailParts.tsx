@@ -39,7 +39,7 @@ function QuestionDetailParts({
   );
 
   const [numberOfOptions, setNumberOfOptions] = useState<number>(
-    selectedVal.numberOfOptions,
+    structuredClone(selectedVal.numberOfOptions),
   );
   const [options, setOptions] = useState<OptionsType>(
     structuredClone(selectedVal.options),
@@ -75,6 +75,7 @@ function QuestionDetailParts({
     setUpdatedValue(selectedVal[property as keyof Inputs]);
     if (property === "answer") {
       setOptions(structuredClone(selectedVal.options));
+      setNumberOfOptions(structuredClone(selectedVal.numberOfOptions));
     }
   };
 
@@ -88,35 +89,21 @@ function QuestionDetailParts({
   };
 
   const handleUpdateFromAnswer = (
-    aNewValue: string | boolean | boolean[],
-    aIndex?: number,
+    aNewValue: string | boolean | boolean[] | OptionsType | number,
     aProperty?: string,
   ) => {
-    if (aProperty === "isActive" || aProperty === "value") {
-      const newOptions = structuredClone(selectedVal.options);
-      const targetOption = newOptions[aIndex!];
-      if (!targetOption) return;
-      if (aProperty === "isActive" && typeof aNewValue === "boolean") {
-        targetOption[aProperty] = aNewValue;
-      } else if (aProperty === "value" && typeof aNewValue === "string") {
-        targetOption[aProperty] = aNewValue;
-      }
-      const hasChangedFromOriginal =
-        JSON.stringify(newOptions) !== JSON.stringify(selectedVal.options);
-      setIsDisabled(!hasChangedFromOriginal);
-      setOptions(newOptions as OptionsType);
-    } else if (aProperty === "answer") {
+    if (aProperty === "answer" || aProperty === "options") {
       const hasChangedFromOriginal =
         JSON.stringify(aNewValue) !==
         JSON.stringify(selectedVal[aProperty as keyof Inputs]);
       setIsDisabled(!hasChangedFromOriginal);
       setUpdatedValue(aNewValue as boolean[]);
     } else {
-      const newValue = parseInt(aNewValue as keyof Inputs);
+      //numberOfOptions
       const hasChangedFromOriginal =
-        newValue !== selectedVal[aProperty as keyof Inputs];
+        aNewValue !== selectedVal[aProperty as keyof Inputs];
       setIsDisabled(!hasChangedFromOriginal);
-      setNumberOfOptions(newValue as number);
+      setNumberOfOptions(aNewValue as number);
     }
   };
 
@@ -136,6 +123,7 @@ function QuestionDetailParts({
           : "",
       );
       setOptions(structuredClone(selectedVal.options));
+      setNumberOfOptions(structuredClone(selectedVal.numberOfOptions));
     }
   }, [selectedVal.options]);
 
@@ -201,7 +189,9 @@ function QuestionDetailParts({
                 <FormgroupForAnswer
                   type={selectedVal.type}
                   numberOfOptions={numberOfOptions}
+                  setNumberOfOptions={setNumberOfOptions}
                   options={options as OptionsType}
+                  setOptions={setOptions}
                   answer={updatedValue as boolean[]}
                   onUpdate={handleUpdateFromAnswer}
                 />
