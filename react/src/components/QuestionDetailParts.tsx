@@ -41,7 +41,9 @@ function QuestionDetailParts({
   const [numberOfOptions, setNumberOfOptions] = useState<number>(
     selectedVal.numberOfOptions,
   );
-  const [options, setOptions] = useState<OptionsType>(selectedVal.options);
+  const [options, setOptions] = useState<OptionsType>(
+    structuredClone(selectedVal.options),
+  );
 
   const handleEdit = () => {
     setIsUnderEdit(true);
@@ -71,6 +73,9 @@ function QuestionDetailParts({
     setIsUnderEdit(false);
     setIsDisabled(true);
     setUpdatedValue(selectedVal[property as keyof Inputs]);
+    if (property === "answer") {
+      setOptions(structuredClone(selectedVal.options));
+    }
   };
 
   const handleUpdateFromTextAreaOrSelect = (aNewValue: string | number) => {
@@ -90,6 +95,7 @@ function QuestionDetailParts({
     if (aProperty === "isActive" || aProperty === "value") {
       const newOptions = structuredClone(selectedVal.options);
       const targetOption = newOptions[aIndex!];
+      if (!targetOption) return;
       if (aProperty === "isActive" && typeof aNewValue === "boolean") {
         targetOption[aProperty] = aNewValue;
       } else if (aProperty === "value" && typeof aNewValue === "string") {
@@ -129,6 +135,7 @@ function QuestionDetailParts({
             : ""
           : "",
       );
+      setOptions(structuredClone(selectedVal.options));
     }
   }, [selectedVal.options]);
 

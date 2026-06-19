@@ -31,7 +31,9 @@ function FormgroupSelectForList({
             </option>
           ),
         )}
-        <option value="">カテゴリーを追加する</option>
+        {property === "カテゴリー" && (
+          <option value="">カテゴリーを追加する</option>
+        )}
       </Form.Select>
     </Form.Group>
   );
