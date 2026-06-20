@@ -19,6 +19,8 @@ type QuestionDetailPartsProps = {
   selectedKey: number;
   selectedVal: Inputs;
   setSelectedVal: Dispatch<SetStateAction<Inputs>>;
+  underEditProperty: string;
+  setUnderEditProperty: Dispatch<SetStateAction<string>>;
 };
 
 function QuestionDetailParts({
@@ -28,6 +30,8 @@ function QuestionDetailParts({
   selectedKey,
   selectedVal,
   setSelectedVal,
+  underEditProperty,
+  setUnderEditProperty,
 }: QuestionDetailPartsProps) {
   const { data, setData } = useContext(DataContext) as DataContextType;
 
@@ -47,6 +51,7 @@ function QuestionDetailParts({
 
   const handleEdit = () => {
     setIsUnderEdit(true);
+    setUnderEditProperty(property);
   };
 
   const handleOverwrite = () => {
@@ -67,6 +72,7 @@ function QuestionDetailParts({
     const newMap = new Map(data).set(selectedKey, newVal);
     setData(newMap);
     localStorage.setItem("TrueOrFalseData", JSON.stringify([...newMap]));
+    setUnderEditProperty("");
   };
 
   const handleCancel = () => {
@@ -77,6 +83,7 @@ function QuestionDetailParts({
       setOptions(structuredClone(selectedVal.options));
       setNumberOfOptions(structuredClone(selectedVal.numberOfOptions));
     }
+    setUnderEditProperty("");
   };
 
   const handleUpdateFromTextAreaOrSelect = (aNewValue: string | number) => {
@@ -148,6 +155,15 @@ function QuestionDetailParts({
     }
   }, [selectedVal.answer]);
 
+  const [isDisabledForEdit, setIsDisabledForEdit] = useState<boolean>(false);
+  useEffect(() => {
+    if (underEditProperty) {
+      setIsDisabledForEdit(property !== underEditProperty);
+    } else {
+      setIsDisabledForEdit(false);
+    }
+  }, [underEditProperty]);
+
   return (
     <>
       <div>
@@ -177,6 +193,7 @@ function QuestionDetailParts({
                 variant="primary"
                 className="py-1 px-2"
                 onClick={handleEdit}
+                disabled={isDisabledForEdit}
               >
                 編集する
               </Button>

@@ -17,6 +17,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
     data.get(selectedKey),
   );
 
+  const [underEditProperty, setUnderEditProperty] = useState<string>("");
+
   return (
     <>
       <QuestionDetailParts
@@ -26,6 +28,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         selectedKey={selectedKey}
         selectedVal={selectedVal as Inputs}
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
+        underEditProperty={underEditProperty}
+        setUnderEditProperty={setUnderEditProperty}
       />
       <QuestionDetailParts
         nameJp="クイズの種類"
@@ -34,6 +38,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         selectedKey={selectedKey}
         selectedVal={selectedVal as Inputs}
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
+        underEditProperty={underEditProperty}
+        setUnderEditProperty={setUnderEditProperty}
       />
       <QuestionDetailParts
         nameJp="問題"
@@ -42,6 +48,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         selectedKey={selectedKey}
         selectedVal={selectedVal as Inputs}
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
+        underEditProperty={underEditProperty}
+        setUnderEditProperty={setUnderEditProperty}
       />
       <QuestionDetailParts
         nameJp="答え"
@@ -50,6 +58,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         selectedKey={selectedKey}
         selectedVal={selectedVal as Inputs}
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
+        underEditProperty={underEditProperty}
+        setUnderEditProperty={setUnderEditProperty}
       />
       <QuestionDetailParts
         nameJp="解説"
@@ -58,6 +68,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         selectedKey={selectedKey}
         selectedVal={selectedVal as Inputs}
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
+        underEditProperty={underEditProperty}
+        setUnderEditProperty={setUnderEditProperty}
       />
       <QuestionDetailParts
         nameJp="優先順位"
@@ -66,6 +78,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         selectedKey={selectedKey}
         selectedVal={selectedVal as Inputs}
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
+        underEditProperty={underEditProperty}
+        setUnderEditProperty={setUnderEditProperty}
       />
       <QuestionDetailParts
         nameJp="メモ"
@@ -74,6 +88,8 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         selectedKey={selectedKey}
         selectedVal={selectedVal as Inputs}
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
+        underEditProperty={underEditProperty}
+        setUnderEditProperty={setUnderEditProperty}
       />
       <QuestionDetailPartsForCorrectAnswers originalSelectedVal={selectedVal} />
       <div className="text-center mt-5">
