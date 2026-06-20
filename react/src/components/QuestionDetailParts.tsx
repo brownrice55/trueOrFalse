@@ -156,11 +156,15 @@ function QuestionDetailParts({
   }, [selectedVal.answer]);
 
   const [isDisabledForEdit, setIsDisabledForEdit] = useState<boolean>(false);
+  const [isUnderEditForType, setIsUnderEditForType] = useState<boolean>(false);
   useEffect(() => {
     if (underEditProperty) {
       setIsDisabledForEdit(property !== underEditProperty);
     } else {
       setIsDisabledForEdit(false);
+    }
+    if (property === "answer") {
+      setIsUnderEditForType(underEditProperty ? true : false);
     }
   }, [underEditProperty]);
 
@@ -201,7 +205,7 @@ function QuestionDetailParts({
           )}
         </Row>
         <Row className="mb-3">
-          {isUnderEdit ? (
+          {isUnderEdit || isUnderEditForType ? (
             <Col className="pt-2">
               {formType === "select" ? (
                 <FormgroupSelectForList
