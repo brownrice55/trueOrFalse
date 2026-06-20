@@ -21,6 +21,8 @@ type QuestionDetailPartsProps = {
   setSelectedVal: Dispatch<SetStateAction<Inputs>>;
   underEditProperty: string;
   setUnderEditProperty: Dispatch<SetStateAction<string>>;
+  type?: number;
+  setType?: Dispatch<SetStateAction<number>>;
 };
 
 function QuestionDetailParts({
@@ -32,6 +34,8 @@ function QuestionDetailParts({
   setSelectedVal,
   underEditProperty,
   setUnderEditProperty,
+  type,
+  setType,
 }: QuestionDetailPartsProps) {
   const { data, setData } = useContext(DataContext) as DataContextType;
 
@@ -90,9 +94,12 @@ function QuestionDetailParts({
     const newValue =
       formType === "textarea" ? aNewValue : parseInt(aNewValue as string);
     const hasChangedFromOriginal =
-      newValue && newValue !== selectedVal[property as keyof Inputs];
+      newValue !== selectedVal[property as keyof Inputs];
     setIsDisabled(!hasChangedFromOriginal);
     setUpdatedValue(newValue);
+    if (property === "type" && setType) {
+      setType(newValue as number);
+    }
   };
 
   const handleUpdateFromAnswer = (
@@ -221,7 +228,7 @@ function QuestionDetailParts({
                 />
               ) : (
                 <FormgroupForAnswer
-                  type={selectedVal.type}
+                  type={type as number}
                   numberOfOptions={numberOfOptions}
                   setNumberOfOptions={setNumberOfOptions}
                   options={options as OptionsType}
@@ -239,7 +246,7 @@ function QuestionDetailParts({
                   ? textArrays[property as keyof textArraysType][
                       selectedVal[property as keyof Inputs] as number
                     ]
-                  : !selectedVal.type
+                  : type === 0
                     ? displayAnswerForTrueOrFalse
                     : displayAnswersForSelection}
             </div>

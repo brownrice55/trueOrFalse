@@ -19,6 +19,10 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
 
   const [underEditProperty, setUnderEditProperty] = useState<string>("");
 
+  const [type, setType] = useState<number>(
+    structuredClone(selectedVal?.type ?? 0),
+  );
+
   return (
     <>
       <QuestionDetailParts
@@ -40,6 +44,7 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
         underEditProperty={underEditProperty}
         setUnderEditProperty={setUnderEditProperty}
+        setType={setType}
       />
       <QuestionDetailParts
         nameJp="問題"
@@ -60,6 +65,7 @@ function QuestionDetail({ selectedKey }: QuestionDetailProps) {
         setSelectedVal={setSelectedVal as Dispatch<SetStateAction<Inputs>>}
         underEditProperty={underEditProperty}
         setUnderEditProperty={setUnderEditProperty}
+        type={type}
       />
       <QuestionDetailParts
         nameJp="解説"
