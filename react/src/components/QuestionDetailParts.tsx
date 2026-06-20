@@ -107,6 +107,19 @@ function QuestionDetailParts({
     }
   };
 
+  useEffect(() => {
+    const [isOK, isOK2] =
+      options.length > 0
+        ? [
+            options.some((val) => val.isActive),
+            options.every((val) => val.value !== ""),
+          ]
+        : [false, false];
+    if (!isOK || !isOK2) {
+      setIsDisabled(true);
+    }
+  }, [options]);
+
   const [displayAnswersForSelection, setDisplayAnswersForSelection] = useState<
     string | undefined
   >("");
